@@ -321,6 +321,12 @@
     text-shadow: 0 0 6px var(--accent-glow);
   }
 
+  /* ===== TABLE ===== */
+  table { border-collapse: collapse; font-size: 0.85rem; width: 100%; }
+  th, td { padding: 0.8rem 1.2rem; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--surface); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; font-weight: 600; }
+  td { background: var(--bg2); }
+
   /* ===== FOOTER ===== */
   footer {
     text-align: center;
@@ -357,8 +363,8 @@
 
 <section class="hero">
   <div class="hero-badge">SHARED KNOWLEDGE ENGINE</div>
-  <h1>From 619 Videos to a<br><span class="glow">Knowledge Graph</span></h1>
-  <p class="desc">Shared graph engine that turns unstructured course content into queryable, scored, agent-ready knowledge. Engine knows nothing about the domain.</p>
+  <h1>Shared <span class="glow">Knowledge Graph</span><br>for AI Agents</h1>
+  <p class="desc">Domain-agnostic graph engine. Stores knowledge from any source &mdash; courses, DCC operators, creative methodologies, session insights. Scores, queries, validates. Consumers bring domain, engine brings infrastructure.</p>
   <div class="stats">
     <div class="stat"><div class="num">5,260+</div><div class="lbl">Nodes</div></div>
     <div class="stat"><div class="num">42K+</div><div class="lbl">Edges</div></div>
@@ -368,7 +374,7 @@
   </div>
 </section>
 
-<section><div class="hud-panel"><span class="corner-br"></span><div class="section-tag">context</div><h2>The Problem</h2><p class="sub" style="color:var(--text)">25 years of Houdini &amp; TouchDesigner expertise. 2,500+ students. 619 videos across 28 courses. All <span style="color:var(--accent);text-shadow:0 0 8px var(--accent-glow)">locked inside video files</span>.</p></div></section>
+<section><div class="hud-panel"><span class="corner-br"></span><div class="section-tag">context</div><h2>The Problem</h2><p class="sub" style="color:var(--text)">Expert knowledge scattered across video courses, documentation, AI sessions, creative methodologies. Every AI agent needs the same thing &mdash; <span style="color:var(--accent);text-shadow:0 0 8px var(--accent-glow)">queryable, scored, provenance-tracked knowledge</span>. One engine serves them all.</p></div></section>
 
 <section id="arch"><div class="section-tag">architecture</div><h2>Engine &harr; Sources &harr; Consumers</h2><p class="sub">Sources produce domain data. Engine stores, scores, queries. Consumers get answers. Feedback improves quality.</p>
 <div class="mermaid-wrap"><pre class="mermaid">
