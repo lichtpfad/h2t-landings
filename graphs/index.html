@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>h2t-graphs &mdash; Knowledge Graph Engine for AI Agents</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060609;
+    --bg2:     #0a0a10;
+    --surface: #0e0e16;
+    --accent:  #e94560;
+    --accent-glow: rgba(233,69,96,0.4);
+    --green:   #00ff88;
+    --green-glow: rgba(0,255,136,0.3);
+    --blue:    #4a9eff;
+    --amber:   #ffb800;
+    --text:    #a0a0b8;
+    --text-hi: #d0d0e0;
+    --text-dim:#3a3a50;
+    --grid:    rgba(255,255,255,0.02);
+    --border:  rgba(233,69,96,0.12);
+    --mono:    'JetBrains Mono', monospace;
+    --sans:    'Inter', system-ui, sans-serif;
+    --corner:  12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ===== GRID BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Scanlines removed — grid background is sufficient for HUD feel */
+
+  /* ===== HUD PANEL (corner brackets) ===== */
+  .hud-panel {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+  }
+  .hud-panel::before,
+  .hud-panel::after,
+  .hud-panel .corner-br::before,
+  .hud-panel .corner-br::after {
+    content: '';
+    position: absolute;
+    width: var(--corner); height: var(--corner);
+    border-color: var(--accent);
+    border-style: solid;
+  }
+  .hud-panel::before {
+    top: -1px; left: -1px;
+    border-width: 2px 0 0 2px;
+  }
+  .hud-panel::after {
+    top: -1px; right: -1px;
+    border-width: 2px 2px 0 0;
+  }
+  .hud-panel .corner-br::before {
+    bottom: -1px; left: -1px;
+    border-width: 0 0 2px 2px;
+  }
+  .hud-panel .corner-br::after {
+    bottom: -1px; right: -1px;
+    border-width: 0 2px 2px 0;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(6,6,9,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+  nav .logo { font-weight: 700; color: var(--text-dim); }
+  nav .logo span { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+  nav .links a {
+    color: var(--text-dim); text-decoration: none;
+    margin-left: 2rem; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  nav .links a:hover { color: var(--accent); text-shadow: 0 0 6px var(--accent-glow); }
+
+  /* ===== SECTIONS ===== */
+  section {
+    max-width: 1100px; margin: 0 auto; padding: 5rem 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .section-tag::before { content: '// '; color: var(--accent); }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--text-hi);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+  .sub {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    max-width: 650px;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+  }
+  .hero-badge {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 0.3rem 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  .hero-badge::before, .hero-badge::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 6px;
+    border-color: var(--accent);
+    border-style: solid;
+  }
+  .hero-badge::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+  .hero-badge::after  { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.15;
+    color: var(--text-hi);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+  .hero h1 .glow {
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(233,69,96,0.15);
+  }
+  .hero .desc {
+    font-size: 0.85rem; color: var(--text);
+    max-width: 550px; margin-bottom: 3rem;
+  }
+
+  /* ===== STATS ROW ===== */
+  .stats {
+    display: flex; gap: 0; border: 1px solid var(--border);
+    position: relative;
+  }
+  .stats::before, .stats::after {
+    content: ''; position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .stats::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .stats::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .stat {
+    flex: 1; text-align: center;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .num {
+    font-family: var(--sans);
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+    line-height: 1;
+  }
+  .stat .lbl {
+    font-size: 0.55rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    margin-top: 0.4rem;
+  }
+
+  /* ===== MERMAID ===== */
+  .mermaid-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+  .mermaid-wrap::before, .mermaid-wrap::after {
+    content: ''; position: absolute;
+    width: 10px; height: 10px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .mermaid-wrap::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .mermaid-wrap::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* ===== SCREENS ===== */
+  .screen-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+  .screen-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .screen-card::before, .screen-card::after {
+    content: ''; position: absolute;
+    width: 10px; height: 10px;
+    border-color: var(--green); border-style: solid;
+    z-index: 2;
+  }
+  .screen-card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .screen-card::after  { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .screen-card:hover { border-color: var(--accent); }
+  .screen-card img {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--border);
+    filter: none;
+  }
+  .screen-card .caption { padding: 1rem 1.5rem; }
+  .screen-card .caption .label {
+    font-size: 0.55rem; letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .screen-card .caption .label.g { color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+  .screen-card .caption .label.b { color: var(--blue); }
+  .screen-card .caption h3 {
+    font-family: var(--sans); font-size: 0.95rem;
+    font-weight: 700; color: var(--text-hi);
+    margin-bottom: 0.3rem;
+  }
+  .screen-card .caption p { font-size: 0.75rem; color: var(--text-dim); }
+
+  /* ===== NUMBERS ===== */
+  .num-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .num-grid::before, .num-grid::after {
+    content: ''; position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+    z-index: 2;
+  }
+  .num-grid::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .num-grid::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .num-cell {
+    background: var(--surface);
+    padding: 1.5rem 1rem; text-align: center;
+  }
+  .num-cell .val {
+    font-family: var(--sans);
+    font-size: 1.8rem; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 12px var(--accent-glow);
+    line-height: 1; margin-bottom: 0.3rem;
+  }
+  .num-cell .desc {
+    font-size: 0.55rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.15em;
+  }
+
+  /* ===== STACK ===== */
+  .stack-row {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+  .chip {
+    font-family: var(--mono);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.9rem;
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--text-dim);
+  }
+  .chip.hi {
+    border-color: rgba(233,69,96,0.25);
+    color: var(--accent);
+    text-shadow: 0 0 6px var(--accent-glow);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  footer .motto {
+    font-family: var(--sans);
+    font-size: 1.3rem; font-weight: 800;
+    color: var(--text-hi);
+    margin-bottom: 0.4rem;
+  }
+  footer .motto span {
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+  }
+  footer p { color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.05em; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 700px) {
+    section { padding: 3rem 1rem; }
+    .stats { flex-wrap: wrap; }
+    .stat { min-width: 50%; border-bottom: 1px solid var(--border); }
+  }
+
+  /* ===== PULSE ANIMATION ===== */
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .pulse { animation: pulse 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<nav><div class="logo">[<span>H2T</span>] GRAPHS</div><div class="links"><a href="#arch">Architecture</a><a href="#src">Sources</a><a href="#prov">Provenance</a><a href="https://github.com/lichtpfad/h2t-graphs">GitHub</a></div></nav>
+
+<section class="hero">
+  <div class="hero-badge">SHARED KNOWLEDGE ENGINE</div>
+  <h1>From 619 Videos to a<br><span class="glow">Knowledge Graph</span></h1>
+  <p class="desc">Shared graph engine that turns unstructured course content into queryable, scored, agent-ready knowledge. Engine knows nothing about the domain.</p>
+  <div class="stats">
+    <div class="stat"><div class="num">5,260+</div><div class="lbl">Nodes</div></div>
+    <div class="stat"><div class="num">42K+</div><div class="lbl">Edges</div></div>
+    <div class="stat"><div class="num">5</div><div class="lbl">Sources</div></div>
+    <div class="stat"><div class="num">&lt;100ms</div><div class="lbl">Query</div></div>
+    <div class="stat"><div class="num">105</div><div class="lbl">Tests</div></div>
+  </div>
+</section>
+
+<section><div class="hud-panel"><span class="corner-br"></span><div class="section-tag">context</div><h2>The Problem</h2><p class="sub" style="color:var(--text)">25 years of Houdini &amp; TouchDesigner expertise. 2,500+ students. 619 videos across 28 courses. All <span style="color:var(--accent);text-shadow:0 0 8px var(--accent-glow)">locked inside video files</span>.</p></div></section>
+
+<section id="arch"><div class="section-tag">architecture</div><h2>Engine &harr; Sources &harr; Consumers</h2><p class="sub">Sources produce domain data. Engine stores, scores, queries. Consumers get answers. Feedback improves quality.</p>
+<div class="mermaid-wrap"><pre class="mermaid">
+graph LR
+    subgraph SRC ["SOURCES"]
+        S1["Creative 901"] & S2["TD 674"] & S3["Houdini 3685"] & S4["TRIZ 40"] & S5["Staging"]
+    end
+    subgraph ENGINE ["h2t-graphs"]
+        Q["Query"] & W["Write"] & F["Feedback"] & V["Validate"]
+    end
+    subgraph CON ["CONSUMERS"]
+        C1["DCC Skill"] & C2["Creative"] & C3["Transcription"] & C4["Staging"]
+    end
+    SRC --> ENGINE --> CON
+    CON -->|"feedback"| ENGINE
+    style ENGINE fill:#1a0a10,stroke:#e94560,color:#e94560
+    style SRC fill:#0a0d1a,stroke:#4a9eff,color:#c0c0d0
+    style CON fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+</pre></div></section>
+
+<section><div class="section-tag">agent flow</div><h2>How Agents Use It</h2><p class="sub">Agent queries CLI. Engine scores. JSON results. Feedback loop.</p>
+<div class="mermaid-wrap"><pre class="mermaid">
+graph LR
+    A["AI Agent"] -->|"query --source td --search noise"| CLI["h2t-graphs CLI"]
+    CLI --> E["Score: relevance x weight x confidence"]
+    E --> R["JSON results"]
+    R --> A
+    A -->|"feedback"| F["feedback.jsonl"]
+    F -->|"improves"| E
+    style A fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style CLI fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style F fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+</pre></div></section>
+
+<section><div class="section-tag">telemetry</div><h2>By the Numbers</h2><br>
+<div class="num-grid">
+  <div class="num-cell"><div class="val">5,260+</div><div class="desc">Nodes</div></div>
+  <div class="num-cell"><div class="val">42K+</div><div class="desc">Edges</div></div>
+  <div class="num-cell"><div class="val">5</div><div class="desc">Sources</div></div>
+  <div class="num-cell"><div class="val">2</div><div class="desc">Scoring Modes</div></div>
+  <div class="num-cell"><div class="val">105</div><div class="desc">Tests</div></div>
+  <div class="num-cell"><div class="val">&lt;100ms</div><div class="desc">Latency</div></div>
+</div></section>
+
+<section id="src"><div class="section-tag">sources</div><h2>Knowledge Sources</h2><br>
+<table><tr><th>Source</th><th>Alias</th><th>Nodes</th><th>Domain</th><th>Key Types</th></tr>
+<tr><td>Chernyshov Creative Thinking</td><td style="color:var(--accent)">creative</td><td>901</td><td>methodology</td><td>framework, concept, principle, case</td></tr>
+<tr><td>TRIZ 40 Principles</td><td style="color:var(--accent)">triz</td><td>40+</td><td>methodology</td><td>principle</td></tr>
+<tr><td>TouchDesigner Operators</td><td style="color:var(--blue)">td</td><td>674</td><td>dcc</td><td>operator</td></tr>
+<tr><td>Houdini Operators</td><td style="color:var(--blue)">hou</td><td>3,685</td><td>dcc</td><td>operator</td></tr>
+<tr><td>Learning Loop</td><td style="color:var(--green)">staging</td><td>&mdash;</td><td>learning</td><td>insight, pattern, rule</td></tr>
+</table></section>
+
+<section id="prov"><div class="section-tag">provenance</div><h2>Every Node Has a History</h2><p class="sub">Promotion: model (0.3) &rarr; session (0.6) &rarr; expert (0.9) after human review.</p>
+<div class="mermaid-wrap"><pre class="mermaid">
+graph LR
+    M["MODEL 0.3"] -->|"review"| S["SESSION 0.6"]
+    S -->|"validate"| E["EXPERT 0.9"]
+    style M fill:#0e0e14,stroke:#3a3a50,color:#a0a0b8
+    style S fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style E fill:#0a1a0d,stroke:#00ff88,color:#00ff88,stroke-width:2px
+</pre></div></section>
+
+<section><div class="section-tag">design</div><h2>Engine vs Domain</h2><p class="sub">Engine knows nothing about TouchDesigner, Houdini, or creative thinking.</p>
+<div class="mermaid-wrap"><pre class="mermaid">
+graph LR
+    subgraph ENGINE ["h2t-graphs"]
+        I1["Store"] & I2["Query"] & I3["Validate"] & I4["Feedback"]
+    end
+    ENGINE --> D1["h2t-ai operators"]
+    ENGINE --> D2["creative-thinking frameworks"]
+    ENGINE --> D3["h2t-transcription chapters"]
+    style ENGINE fill:#1a0a10,stroke:#e94560,color:#c0c0d0
+    style D1 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style D2 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style D3 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+</pre></div></section>
+
+<section><div class="section-tag">stack</div><h2>Tech Stack</h2><p class="sub">No Docker. No cloud. Python stdlib + NetworkX + JSON.</p>
+<div class="stack-row"><div class="chip">Python 3.11</div><div class="chip">NetworkX</div><div class="chip">JSON Schema</div><div class="chip">JSONL</div></div>
+<div class="stack-row"><div class="chip hi">Weighted scoring</div><div class="chip hi">Provenance</div><div class="chip hi">Schema validation</div></div>
+<div class="stack-row"><div class="chip gr">h2t-ai</div><div class="chip gr">creative-thinking</div><div class="chip gr">h2t-transcription</div><div class="chip gr">h2t-staging</div></div>
+</section>
+
+<section><div class="section-tag">roadmap</div><h2>Status</h2><p class="sub">v0.1.0 released. Live gate passed.</p>
+<div class="mermaid-wrap"><pre class="mermaid">
+graph LR
+    S1["Scaffold"] --> S2["Eval"] --> S3["Scoring"] --> S4["Feedback"] --> S5["Live Gate GO"]
+    S5 --> S6["Provenance"] --> S7["CLI"] --> S8["Staging"]
+    S8 --> P1["API Server"]
+    P1 --> P2["h2t-evals"]
+    style S1 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S2 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S3 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S4 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S5 fill:#0a1a0d,stroke:#00ff88,color:#00ff88,stroke-width:2px
+    style S6 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S7 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S8 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style P1 fill:#1a0a10,stroke:#e94560,color:#e94560
+    style P2 fill:#0e0e14,stroke:#3a3a50,color:#a0a0b8
+</pre></div></section>
+
+<footer>
+  <div class="motto"><span>Schema-first.</span> Link first, merge later.</div>
+  <p>25 years of expertise. One query. Instant answer.</p>
+  <p style="margin-top:1.5rem;font-size:0.55rem;letter-spacing:0.15em">[HOU2TOUCH] &mdash; Part of the H2T AI Platform &middot; Solo + AI first</p>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#0e0e16',
+      primaryColor: '#16161f',
+      primaryTextColor: '#a0a0b8',
+      primaryBorderColor: '#2a2a3a',
+      lineColor: '#3a3a4a',
+      secondaryColor: '#0e0e16',
+      tertiaryColor: '#0e0e16',
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '9px',
+      clusterBkg: '#0a0a10',
+      clusterBorder: '#1e1e2e',
+      edgeLabelBackground: '#0a0a10',
+    },
+    flowchart: { curve: 'basis', padding: 14, htmlLabels: true }
+  });
+</script>
+</body>
+</html>
