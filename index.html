@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>H2T Project Progress — March 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #c8c8c8;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 40px 60px;
+    min-height: 100vh;
+  }
+
+  .header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 24px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .header .date {
+    font-size: 12px;
+    color: #666;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #222;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #555;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover { color: #999; }
+
+  .tab-btn.active {
+    color: #e0e0e0;
+    border-bottom-color: #d4382c;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Summary cards ── */
+  .summary {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .stat-card {
+    background: #111;
+    border: 1px solid #222;
+    padding: 20px 28px;
+    min-width: 160px;
+  }
+
+  .stat-card .value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-card .value.accent { color: #d4382c; }
+
+  .stat-card .label {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 8px;
+  }
+
+  /* ── Progress bars ── */
+  .projects { display: flex; flex-direction: column; gap: 4px; }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 140px 300px 1fr 90px 55px 55px 55px;
+    align-items: center;
+    padding: 10px 16px;
+    background: #111;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    gap: 10px;
+  }
+
+  .project-row:hover {
+    background: #161616;
+    border-left-color: #d4382c;
+  }
+
+  .project-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+  }
+
+  .project-name .stage {
+    display: block;
+    font-size: 10px;
+    font-weight: 300;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .bar-container {
+    height: 18px;
+    background: #1a1a1a;
+    border: 1px solid #222;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+  }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 2px; height: 100%;
+    background: rgba(255,255,255,0.3);
+  }
+
+  .bar-fill.red    { background: linear-gradient(90deg, #5c1a15, #d4382c); }
+  .bar-fill.amber  { background: linear-gradient(90deg, #5c3a10, #d4922c); }
+  .bar-fill.green  { background: linear-gradient(90deg, #1a4a20, #2ca846); }
+  .bar-fill.blue   { background: linear-gradient(90deg, #15305c, #2c7ad4); }
+  .bar-fill.done   { background: linear-gradient(90deg, #2a2a2a, #444); }
+
+  .bar-milestones {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  .milestone-tick {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .bar-pct {
+    font-size: 12px;
+    text-align: right;
+    font-weight: 600;
+    color: #888;
+  }
+
+  .bar-pct.high { color: #2ca846; }
+  .bar-pct.mid  { color: #d4922c; }
+  .bar-pct.low  { color: #d4382c; }
+
+  .commits {
+    font-size: 11px;
+    text-align: right;
+    color: #555;
+  }
+
+  .desc-col {
+    font-size: 10px;
+    color: #666;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .issues-col {
+    font-size: 11px;
+    text-align: right;
+    color: #666;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .deck-link {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .deck-link a {
+    color: #d4382c;
+    text-decoration: none;
+    border: 1px solid #5c1a15;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.15s;
+    display: inline-block;
+  }
+
+  .deck-link a:hover {
+    background: #2e0d0d;
+    border-color: #d4382c;
+    color: #fff;
+  }
+
+  .grid-header {
+    display: grid;
+    grid-template-columns: 140px 300px 1fr 90px 55px 55px 55px;
+    padding: 8px 16px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #222;
+    gap: 10px;
+  }
+
+  .grid-header span {
+    cursor: pointer;
+    transition: color 0.15s;
+    user-select: none;
+  }
+
+  .grid-header span:hover { color: #d4382c; }
+
+  .grid-header span:nth-child(5),
+  .grid-header span:nth-child(6) { text-align: right; }
+
+  .grid-header span:nth-child(7) { text-align: center; }
+
+  .bar-wrapper {
+    position: relative;
+    height: 20px;
+    background: #1a1a1a;
+    border: 1px solid #222;
+    overflow: hidden;
+  }
+
+  .bar-inner {
+    height: 100%;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .bar-inner.red    { background: linear-gradient(90deg, #5c1a15, #d4382c); }
+  .bar-inner.amber  { background: linear-gradient(90deg, #5c3a10, #d4922c); }
+  .bar-inner.green  { background: linear-gradient(90deg, #1a4a20, #2ca846); }
+  .bar-inner.blue   { background: linear-gradient(90deg, #15305c, #2c7ad4); }
+  .bar-inner.done   { background: linear-gradient(90deg, #2a2a2a, #444); }
+
+  .bar-label {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .bar-inner { width: 0; }
+  .loaded .bar-inner { width: var(--pct); }
+
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #444;
+    padding: 20px 0 10px 16px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .legend {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+    display: flex;
+    gap: 32px;
+    font-size: 10px;
+    color: #555;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-swatch {
+    width: 16px; height: 10px;
+  }
+
+  /* ── Animation ── */
+  .bar-fill { width: 0; }
+  .loaded .bar-fill { width: var(--pct); }
+
+  /* ── Tables (Tab 2) ── */
+  .detail-section {
+    margin-bottom: 48px;
+  }
+
+  .detail-section h2 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #222;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    background: #0a0a0a;
+  }
+
+  thead th.num { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid #151515;
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: #141414; }
+
+  tbody td {
+    padding: 10px 12px;
+    color: #b0b0b0;
+    vertical-align: top;
+  }
+
+  tbody td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: #888;
+  }
+
+  tbody td.name-cell {
+    font-weight: 600;
+    color: #e0e0e0;
+  }
+
+  tbody td.desc {
+    color: #777;
+    font-size: 11px;
+    max-width: 500px;
+  }
+
+  .machine-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid;
+    margin-right: 4px;
+  }
+
+  .machine-tag.win {
+    color: #2c7ad4;
+    border-color: #1a3a5c;
+    background: #0d1a2e;
+  }
+
+  .machine-tag.mac {
+    color: #d4922c;
+    border-color: #5c3a10;
+    background: #2e1a0d;
+  }
+
+  .machine-tag.both {
+    color: #9b59b6;
+    border-color: #4a2560;
+    background: #1a0d2e;
+  }
+
+  .stage-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border: 1px solid;
+  }
+
+  .stage-badge.active   { color: #2c7ad4; border-color: #15305c; background: #0d1525; }
+  .stage-badge.progress { color: #d4922c; border-color: #5c3a10; background: #2e1a0d; }
+  .stage-badge.early    { color: #d4382c; border-color: #5c1a15; background: #2e0d0d; }
+  .stage-badge.done     { color: #2ca846; border-color: #1a4a20; background: #0d2510; }
+  .stage-badge.new      { color: #888;    border-color: #333;    background: #151515; }
+
+  .author-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .author-chip {
+    font-size: 10px;
+    color: #777;
+    background: #151515;
+    border: 1px solid #222;
+    padding: 1px 6px;
+  }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #1a1a1a;
+    font-size: 10px;
+    color: #333;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>[H2T] Project Progress</h1>
+  <div class="date">31 Mar 2026 — 1,460 commits / 30 days</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="progress">Progress</button>
+  <button class="tab-btn" data-tab="details">Details</button>
+  <a href="decks/" class="tab-btn" style="text-decoration:none">Decks &rarr;</a>
+</div>
+
+<!-- ════════════════════════════════════════════ TAB 1: PROGRESS ════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-progress">
+
+<div class="summary">
+  <div class="stat-card">
+    <div class="value">16</div>
+    <div class="label">Repositories</div>
+  </div>
+  <div class="stat-card">
+    <div class="value accent">1,460</div>
+    <div class="label">Commits (30d)</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">138</div>
+    <div class="label">Open Issues</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">183</div>
+    <div class="label">Closed Issues</div>
+  </div>
+</div>
+
+<div class="grid-header">
+  <span>Project</span><span>Description</span><span>Progress</span><span>Stage</span><span>Open</span><span>Closed</span><span>Deck</span>
+</div>
+<div class="projects">
+  <div class="project-row">
+    <div class="project-name">h2t-dcc</div>
+    <div class="desc-col">AI tools for Houdini & TouchDesigner</div>
+    <div class="bar-wrapper"><div class="bar-inner amber" style="--pct:50%"></div><div class="bar-label">50%</div></div>
+    <div class="desc-col" style="color:#d4922c">Active dev</div>
+    <div class="issues-col">31</div>
+    <div class="issues-col">30</div>
+    <div class="deck-link"><a href="decks/h2t-ai.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-skills</div>
+    <div class="desc-col">Claude Code plugin suite + marketplace</div>
+    <div class="bar-wrapper"><div class="bar-inner blue" style="--pct:62%"></div><div class="bar-label">62%</div></div>
+    <div class="desc-col" style="color:#2c7ad4">Active sprint</div>
+    <div class="issues-col">8</div>
+    <div class="issues-col">13</div>
+    <div class="deck-link"><a href="decks/h2t-plugin.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-transcription</div>
+    <div class="desc-col">Automated Educational Content Pipeline</div>
+    <div class="bar-wrapper"><div class="bar-inner amber" style="--pct:45%"></div><div class="bar-label">45%</div></div>
+    <div class="desc-col" style="color:#d4922c">In progress</div>
+    <div class="issues-col">30</div>
+    <div class="issues-col">30</div>
+    <div class="deck-link"><a href="decks/h2t-transcription.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-vision</div>
+    <div class="desc-col">Vision toolkit &mdash; capture, parse UI, execute</div>
+    <div class="bar-wrapper"><div class="bar-inner blue" style="--pct:67%"></div><div class="bar-label">67%</div></div>
+    <div class="desc-col" style="color:#2c7ad4">R&amp;D frontier</div>
+    <div class="issues-col">15</div>
+    <div class="issues-col">30</div>
+    <div class="deck-link"><a href="decks/h2t-vision.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-snap</div>
+    <div class="desc-col">Desktop Vision & Computer Use CLI</div>
+    <div class="bar-wrapper"><div class="bar-inner done" style="--pct:100%"></div><div class="bar-label">100%</div></div>
+    <div class="desc-col" style="color:#2ca846">Released</div>
+    <div class="issues-col">0</div>
+    <div class="issues-col">0</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-evals</div>
+    <div class="desc-col">Centralized eval service and SDK</div>
+    <div class="bar-wrapper"><div class="bar-inner blue" style="--pct:49%"></div><div class="bar-label">49%</div></div>
+    <div class="desc-col" style="color:#2c7ad4">Active sprint</div>
+    <div class="issues-col">22</div>
+    <div class="issues-col">21</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-graphs</div>
+    <div class="desc-col">Knowledge graph toolset for LLM agents</div>
+    <div class="bar-wrapper"><div class="bar-inner green" style="--pct:94%"></div><div class="bar-label">94%</div></div>
+    <div class="desc-col" style="color:#2ca846">Near complete</div>
+    <div class="issues-col">2</div>
+    <div class="issues-col">30</div>
+    <div class="deck-link"><a href="decks/h2t-graphs.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">h2t-staging</div>
+    <div class="desc-col">Autonomous agent sandbox (isolated VMs)</div>
+    <div class="bar-wrapper"><div class="bar-inner red" style="--pct:2%"></div><div class="bar-label">0%</div></div>
+    <div class="desc-col" style="color:#d4382c">Planned</div>
+    <div class="issues-col">15</div>
+    <div class="issues-col">0</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">SpecDesigner</div>
+    <div class="desc-col">Visual graph editor for architecture docs</div>
+    <div class="bar-wrapper"><div class="bar-inner amber" style="--pct:50%"></div><div class="bar-label">50%</div></div>
+    <div class="desc-col" style="color:#d4922c">Distribution MVP</div>
+    <div class="issues-col">30</div>
+    <div class="issues-col">30</div>
+    <div class="deck-link"><a href="decks/docgraph.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">NewsEngine</div>
+    <div class="desc-col">Deep Research Orchestration Framework</div>
+    <div class="bar-wrapper"><div class="bar-inner green" style="--pct:83%"></div><div class="bar-label">83%</div></div>
+    <div class="desc-col" style="color:#2ca846">Near complete</div>
+    <div class="issues-col">3</div>
+    <div class="issues-col">15</div>
+    <div class="deck-link"><a href="decks/newsengine.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">POS</div>
+    <div class="desc-col">Personal Operating System</div>
+    <div class="bar-wrapper"><div class="bar-inner red" style="--pct:2%"></div><div class="bar-label">0%</div></div>
+    <div class="desc-col" style="color:#d4382c">Planned</div>
+    <div class="issues-col">17</div>
+    <div class="issues-col">0</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">creative-thinking</div>
+    <div class="desc-col">Multi-Agent Creative Thinking Framework</div>
+    <div class="bar-wrapper"><div class="bar-inner green" style="--pct:73%"></div><div class="bar-label">73%</div></div>
+    <div class="desc-col" style="color:#d4922c">In progress</div>
+    <div class="issues-col">8</div>
+    <div class="issues-col">22</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">depthkit</div>
+    <div class="desc-col">Depth estimation &rarr; point cloud &rarr; TD</div>
+    <div class="bar-wrapper"><div class="bar-inner green" style="--pct:83%"></div><div class="bar-label">83%</div></div>
+    <div class="desc-col" style="color:#2ca846">Near complete</div>
+    <div class="issues-col">4</div>
+    <div class="issues-col">19</div>
+    <div class="deck-link"><a href="decks/depthkit.html">view</a></div>
+  </div>
+  <div class="project-row">
+    <div class="project-name">gaussian-splat</div>
+    <div class="desc-col">Gaussian Splats from drone video</div>
+    <div class="bar-wrapper"><div class="bar-inner done" style="--pct:100%"></div><div class="bar-label">100%</div></div>
+    <div class="desc-col" style="color:#2ca846">Released</div>
+    <div class="issues-col">0</div>
+    <div class="issues-col">0</div>
+    <div class="deck-link"><a href="decks/">view</a></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span style="color:#d4382c">&#x25cf;</span> Planned</div>
+  <div class="legend-item"><span style="color:#d4922c">&#x25cf;</span> In Progress / Active</div>
+  <div class="legend-item"><span style="color:#2c7ad4">&#x25cf;</span> Active Sprint / R&amp;D</div>
+  <div class="legend-item"><span style="color:#2ca846">&#x25cf;</span> Near Complete / Released</div>
+  <div class="legend-item">Open/Closed = GitHub issues</div>
+</div>
+
+</div><!-- /tab-progress -->
+
+<!-- ════════════════════════════════════════════ TAB 2: DETAILS ════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-details">
+
+<!-- ── Machines ── -->
+<div class="detail-section">
+  <h2>Commits by Machine</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Machine</th>
+        <th>Git Authors</th>
+        <th>Primary Repos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="machine-tag win">WIN</span> Windows PC</td>
+        <td><span class="author-chip">lichtpfad</span></td>
+        <td class="desc">DocGraph, DOR, newsengine, h2t-vision, H2T-AI</td>
+      </tr>
+      <tr>
+        <td><span class="machine-tag mac">MAC</span> MacBook</td>
+        <td>
+          <div class="author-list">
+            <span class="author-chip">Stanislav</span>
+            <span class="author-chip">Stanislav Glazov</span>
+          </div>
+        </td>
+        <td class="desc">h2t-transcription, h2t, creative-thinking, depthkit</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── Full repo table ── -->
+<div class="detail-section">
+  <h2>All Repositories — Detailed</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Repository</th>
+        <th class="num">Commits</th>
+        <th class="num">Open</th>
+        <th class="num">Closed</th>
+        <th>Machine</th>
+        <th>What Was Done</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td>
+        <td class="name-cell">DocGraph</td>
+        <td class="num">448</td>
+        <td class="num">30</td>
+        <td class="num">30</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">API, smoke tests (34 curl checks), security, batch ops, node specs, knowledge model</td>
+      </tr>
+      <tr>
+        <td class="num">2</td>
+        <td class="name-cell">H2T-AI</td>
+        <td class="num">214</td>
+        <td class="num">30</td>
+        <td class="num">30</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">Multi-TD daemon, heartbeat, lazy imports, CLI proxy (transcribe/enrich), subagent daemon context</td>
+      </tr>
+      <tr>
+        <td class="num">3</td>
+        <td class="name-cell">h2t-vision</td>
+        <td class="num">171</td>
+        <td class="num">15</td>
+        <td class="num">30</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">FastAPI HTTP API (Vision Service), POST /interact, e2e tests, access methods guide</td>
+      </tr>
+      <tr>
+        <td class="num">4</td>
+        <td class="name-cell">h2t-transcription</td>
+        <td class="num">172</td>
+        <td class="num">30</td>
+        <td class="num">30</td>
+        <td><span class="machine-tag mac">MAC</span></td>
+        <td class="desc">Phase 5 enrichment merged, pipeline stats CLI, SRT coverage gate, quality validation</td>
+      </tr>
+      <tr>
+        <td class="num">5</td>
+        <td class="name-cell">DOR</td>
+        <td class="num">114</td>
+        <td class="num">14</td>
+        <td class="num">8</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">Telegram pipeline v2, skills migration to h2t plugin, github domain mappings</td>
+      </tr>
+      <tr>
+        <td class="num">6</td>
+        <td class="name-cell">h2t</td>
+        <td class="num">109</td>
+        <td class="num">8</td>
+        <td class="num">13</td>
+        <td><span class="machine-tag both">BOTH</span></td>
+        <td class="desc">Session gatherer refactor (hook replaces agent), handoff path normalization, multi-project workspace</td>
+      </tr>
+      <tr>
+        <td class="num">7</td>
+        <td class="name-cell">newsengine</td>
+        <td class="num">50</td>
+        <td class="num">3</td>
+        <td class="num">15</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">Basic feedback collection, Thompson sampling (gold), Prefect architecture refactoring</td>
+      </tr>
+      <tr>
+        <td class="num">8</td>
+        <td class="name-cell">depthkit</td>
+        <td class="num">28</td>
+        <td class="num">4</td>
+        <td class="num">19</td>
+        <td><span class="machine-tag both">BOTH</span></td>
+        <td class="desc">GPU-native DepthStage (2x FPS, zero CPU roundtrips), TouchDesigner CUDALink driver</td>
+      </tr>
+      <tr>
+        <td class="num">9</td>
+        <td class="name-cell">creative-thinking</td>
+        <td class="num">14</td>
+        <td class="num">8</td>
+        <td class="num">22</td>
+        <td><span class="machine-tag mac">MAC</span></td>
+        <td class="desc">Plugin v0.6.0, aspect detection, h2t-graphs ADR, AutoResearch (Karpathy)</td>
+      </tr>
+      <tr>
+        <td class="num">10</td>
+        <td class="name-cell">POS</td>
+        <td class="num">10</td>
+        <td class="num">17</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">DocGraph API reference, A/B eval template, Phase 0 plan, CLAUDE.md</td>
+      </tr>
+      <tr>
+        <td class="num">11</td>
+        <td class="name-cell">h2t-dcc</td>
+        <td class="num">6</td>
+        <td class="num">1</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">New plugin: td-expert + hou-expert skills, cross-project CLI reference</td>
+      </tr>
+      <tr>
+        <td class="num">12</td>
+        <td class="name-cell">gaussian-splat</td>
+        <td class="num">2</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">Initial release: Gaussian Splat skill for Claude Code, render images</td>
+      </tr>
+      <tr>
+        <td class="num">13</td>
+        <td class="name-cell">h2t-graphs</td>
+        <td class="num">2</td>
+        <td class="num">8</td>
+        <td class="num">16</td>
+        <td><span class="machine-tag mac">MAC</span></td>
+        <td class="desc">Schema + storage design, graph query engine, feedback contracts</td>
+      </tr>
+      <tr>
+        <td class="num">14</td>
+        <td class="name-cell">h2t-snap</td>
+        <td class="num">27</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">NEW — Desktop capture + click/type CLI for AI agents (Win32 API)</td>
+      </tr>
+      <tr>
+        <td class="num">15</td>
+        <td class="name-cell">h2t-evals</td>
+        <td class="num">16</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">NEW — Eval framework for DCC skills and pipeline stages</td>
+      </tr>
+      <tr>
+        <td class="num">16</td>
+        <td class="name-cell">h2t-staging</td>
+        <td class="num">1</td>
+        <td class="num">0</td>
+        <td class="num">0</td>
+        <td><span class="machine-tag win">WIN</span></td>
+        <td class="desc">NEW — H2T staging environment</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── Stages ── -->
+<div class="detail-section">
+  <h2>Project Stages</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Stage</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="name-cell">DocGraph</td>
+        <td class="desc">Phase 9: Distribution MVP — Phases 5-8 complete, Phases 10-12 planned</td>
+        <td><span class="stage-badge active">Active Sprint</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">H2T-AI</td>
+        <td class="desc">MS-A: DCC Skill v2 Validation — 21 milestones closed, MS-A thru MS-G open</td>
+        <td><span class="stage-badge active">Active Sprint</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-transcription</td>
+        <td class="desc">Phase 5 enrichment merged — M1 Input Tools + M2 Core Pipeline + M3 Methodology ahead</td>
+        <td><span class="stage-badge progress">In Progress</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-vision</td>
+        <td class="desc">Vision Service API released — M9 Semantic Accuracy + M11 Packaging open</td>
+        <td><span class="stage-badge active">Active Sprint</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">newsengine</td>
+        <td class="desc">Feedback + Thompson sampling done — LLM Intelligence + Production Deploy ahead</td>
+        <td><span class="stage-badge done">Near Complete</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">depthkit</td>
+        <td class="desc">M1 GPU core + M3 TD driver merged — 2x FPS boost achieved</td>
+        <td><span class="stage-badge done">Near Complete</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">DOR</td>
+        <td class="desc">Skills migration to h2t plugin — Telegram pipeline v2</td>
+        <td><span class="stage-badge progress">In Progress</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t</td>
+        <td class="desc">Gather Framework v0.1 — hook injection, +23 commits, 8 open / 13 closed</td>
+        <td><span class="stage-badge active">Active Sprint</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">creative-thinking</td>
+        <td class="desc">v0.6.0 — aspect detection, graph separation to h2t-graphs</td>
+        <td><span class="stage-badge progress">In Progress</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">POS</td>
+        <td class="desc">DocGraph integration planned — A/B eval template drafted</td>
+        <td><span class="stage-badge early">Early</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-graphs</td>
+        <td class="desc">Schema + storage design — 8 open issues, 16 closed, active development</td>
+        <td><span class="stage-badge progress">In Progress</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-dcc</td>
+        <td class="desc">v0.1.1 — td-expert + hou-expert skills</td>
+        <td><span class="stage-badge done">Released</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">gaussian-splat</td>
+        <td class="desc">Skill released — render images + README</td>
+        <td><span class="stage-badge done">Released</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-snap</td>
+        <td class="desc">Desktop capture + click/type CLI — Win32 API, exe distribution</td>
+        <td><span class="stage-badge done">Released</span></td>
+      </tr>
+      <tr>
+        <td class="name-cell">h2t-evals</td>
+        <td class="desc">Eval framework for DCC skills and pipeline quality</td>
+        <td><span class="stage-badge new">New</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- /tab-details -->
+
+<div class="footer">Generated by Claude Code — data from GitHub API (lichtpfad) — includes both Windows PC and MacBook commits</div>
+
+<script>
+  // Animate bars on load
+  requestAnimationFrame(() => {
+    document.body.classList.add('loaded');
+  });
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Sorting for grid header
+  (function() {
+    const header = document.querySelector('.grid-header');
+    if (!header) return;
+    const container = document.querySelector('.projects');
+    const cols = header.querySelectorAll('span');
+    let sortCol = -1, sortAsc = true;
+
+    function getValue(row, idx) {
+      const cells = row.children;
+      if (idx === 2) { // progress bar — extract % from bar-label
+        const label = row.querySelector('.bar-label');
+        return label ? parseInt(label.textContent) : 0;
+      }
+      if (idx === 4 || idx === 5) { // open, closed — numeric
+        return parseInt(cells[idx].textContent) || 0;
+      }
+      return (cells[idx].textContent || '').trim().toLowerCase();
+    }
+
+    cols.forEach((col, idx) => {
+      if (idx === 6) return; // don't sort deck column
+      col.addEventListener('click', () => {
+        if (sortCol === idx) { sortAsc = !sortAsc; }
+        else { sortCol = idx; sortAsc = true; }
+
+        // Update header indicators
+        cols.forEach(c => c.textContent = c.textContent.replace(/ [▲▼]$/, ''));
+        col.textContent += sortAsc ? ' ▲' : ' ▼';
+
+        const rows = Array.from(container.querySelectorAll('.project-row'));
+        rows.sort((a, b) => {
+          let va = getValue(a, idx), vb = getValue(b, idx);
+          if (typeof va === 'number' && typeof vb === 'number') {
+            return sortAsc ? va - vb : vb - va;
+          }
+          return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+        });
+        rows.forEach(r => container.appendChild(r));
+      });
+    });
+  })();
+</script>
+</body>
+</html>

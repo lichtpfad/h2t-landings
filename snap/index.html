@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>h2t-snap — Eyes and Hands for AI Agents</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:         #060609;
+    --bg2:        #0a0a10;
+    --surface:    #0e0e16;
+    --accent:     #e94560;
+    --accent-glow: rgba(233,69,96,0.4);
+    --green:      #00ff88;
+    --green-glow: rgba(0,255,136,0.3);
+    --blue:       #4a9eff;
+    --amber:      #ffb800;
+    --text:       #a0a0b8;
+    --text-hi:    #d0d0e0;
+    --text-dim:   #3a3a50;
+    --grid:       rgba(255,255,255,0.02);
+    --border:     rgba(233,69,96,0.12);
+    --mono:       'JetBrains Mono', monospace;
+    --sans:       'Inter', system-ui, sans-serif;
+    --corner:     12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(6,6,9,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.7rem; letter-spacing: 0.1em;
+  }
+  nav .logo { font-weight: 700; color: var(--text-dim); }
+  nav .logo span { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+  nav .links a {
+    color: var(--text-dim); text-decoration: none;
+    margin-left: 2rem; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  nav .links a:hover { color: var(--accent); text-shadow: 0 0 6px var(--accent-glow); }
+
+  section {
+    max-width: 1100px; margin: 0 auto; padding: 5rem 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 0.55rem; color: var(--text-dim);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .section-tag::before { content: '// '; color: var(--accent); }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--text-hi);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+  .sub {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    max-width: 650px;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+  }
+  .hero-badge {
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--border);
+    padding: 0.3rem 1rem; margin-bottom: 2rem;
+    position: relative;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  .hero-badge::before, .hero-badge::after {
+    content: ''; position: absolute;
+    width: 6px; height: 6px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .hero-badge::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+  .hero-badge::after  { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.15;
+    color: var(--text-hi);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+  .hero h1 .glow {
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(233,69,96,0.15);
+  }
+  .hero .desc {
+    font-size: 0.85rem; color: var(--text);
+    max-width: 550px; margin-bottom: 3rem;
+  }
+
+  /* STATS */
+  .stats {
+    display: flex; gap: 0; border: 1px solid var(--border);
+    position: relative;
+  }
+  .stats::before, .stats::after {
+    content: ''; position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .stats::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .stats::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .stat {
+    flex: 1; text-align: center;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .num {
+    font-family: var(--sans);
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+    line-height: 1;
+  }
+  .stat .lbl {
+    font-size: 0.55rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    margin-top: 0.4rem;
+  }
+
+  /* HUD PANEL */
+  .hud-panel {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+  }
+  .hud-panel::before, .hud-panel::after {
+    content: ''; position: absolute;
+    width: var(--corner); height: var(--corner);
+    border-color: var(--accent); border-style: solid;
+  }
+  .hud-panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .hud-panel::after  { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .hud-panel .corner-br::before, .hud-panel .corner-br::after {
+    content: ''; position: absolute;
+    width: var(--corner); height: var(--corner);
+    border-color: var(--accent); border-style: solid;
+  }
+  .hud-panel .corner-br::before { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .hud-panel .corner-br::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  /* MERMAID */
+  .mermaid-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+  .mermaid-wrap::before, .mermaid-wrap::after {
+    content: ''; position: absolute;
+    width: 10px; height: 10px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .mermaid-wrap::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .mermaid-wrap::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* COMPARISON TABLE */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .comp-table th, .comp-table td {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .comp-table th {
+    background: var(--surface);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.6rem;
+    font-weight: 600;
+  }
+  .comp-table td { background: var(--bg2); }
+  .comp-table tr td:first-child { color: var(--text-hi); font-weight: 600; }
+  .comp-table .win { color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--text);
+    position: relative;
+    overflow: hidden;
+  }
+  .code-block::before {
+    content: ''; position: absolute;
+    top: -1px; left: -1px;
+    width: 10px; height: 10px;
+    border-color: var(--green); border-style: solid;
+    border-width: 2px 0 0 2px;
+  }
+  .code-block .cmd { color: var(--green); }
+  .code-block .comment { color: var(--text-dim); }
+  .code-block .output { color: var(--blue); }
+
+  /* CHIPS */
+  .stack-row {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+  .chip {
+    font-family: var(--mono);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.9rem;
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--text-dim);
+  }
+  .chip.hi {
+    border-color: rgba(233,69,96,0.25);
+    color: var(--accent);
+    text-shadow: 0 0 6px var(--accent-glow);
+  }
+  .chip.gr {
+    border-color: rgba(0,255,136,0.2);
+    color: var(--green);
+    text-shadow: 0 0 6px var(--green-glow);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  footer .motto {
+    font-family: var(--sans);
+    font-size: 1.3rem; font-weight: 800;
+    color: var(--text-hi); margin-bottom: 0.4rem;
+  }
+  footer .motto span { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+  footer p { color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.05em; }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .pulse { animation: pulse 3s ease-in-out infinite; }
+
+  @media (max-width: 700px) {
+    section { padding: 3rem 1rem; }
+    .stats { flex-wrap: wrap; }
+    .stat { min-width: 50%; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">[<span>H2T</span>] SNAP</div>
+  <div class="links">
+    <a href="#loop">Loop</a>
+    <a href="#commands">Commands</a>
+    <a href="#compare">Compare</a>
+    <a href="https://github.com/lichtpfad/h2t-snap/releases">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">DESKTOP AUTOMATION FOR AI AGENTS</div>
+  <h1>Eyes and <span class="glow">Hands</span><br>for AI Agents</h1>
+  <p class="desc">
+    Capture any desktop window. Click anywhere. Type text.
+    One executable, 17 MB, zero dependencies.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="num">17</div><div class="lbl">MB Binary</div></div>
+    <div class="stat"><div class="num">&lt;100</div><div class="lbl">ms Latency</div></div>
+    <div class="stat"><div class="num">0</div><div class="lbl">Dependencies</div></div>
+    <div class="stat"><div class="num">35</div><div class="lbl">Tests</div></div>
+  </div>
+  <br>
+  <div style="font-size:0.6rem;color:var(--text-dim);letter-spacing:0.15em;" class="pulse">NO PYTHON &middot; NO CLOUD &middot; NO API KEY</div>
+</section>
+
+<!-- PROBLEM -->
+<section>
+  <div class="hud-panel">
+    <span class="corner-br"></span>
+    <div class="section-tag">context</div>
+    <h2>The Problem</h2>
+    <p class="sub" style="color:var(--text)">
+      AI agents see browsers (Playwright) and talk to APIs.
+      But they're <span style="color:var(--accent);text-shadow:0 0 8px var(--accent-glow)">blind to desktop applications</span> &mdash;
+      Photoshop, Houdini, TouchDesigner, Excel, any native software.
+    </p>
+    <p class="sub" style="margin-bottom:0">
+      h2t-snap gives them sight and touch. Download one .exe and your agent can
+      see any window, decide what to do, act, and verify the result.
+    </p>
+  </div>
+</section>
+
+<!-- AGENT LOOP -->
+<section id="loop">
+  <div class="section-tag">agent loop</div>
+  <h2>Capture &rarr; See &rarr; Act &rarr; Verify</h2>
+  <p class="sub">The core loop: screenshot the app, send to vision model, execute action, screenshot again to confirm.</p>
+
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    A["DESKTOP APP\nHoudini, TD,\nPhotoshop..."] -->|"h2t-snap capture"| S["SCREENSHOT\n.png file"]
+    S -->|"Read image"| M["AI AGENT\nClaude, GPT,\nGemini"]
+    M -->|"h2t-snap click\nh2t-snap type"| A
+    M -->|"verify"| S
+
+    style A fill:#0e0e16,stroke:#4a9eff,color:#4a9eff
+    style S fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style M fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+</section>
+
+<!-- COMMANDS -->
+<section id="commands">
+  <div class="section-tag">commands</div>
+  <h2>CLI Reference</h2>
+  <p class="sub">Three command groups. JSON output. Structured exit codes.</p>
+
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TD
+    subgraph CAPTURE ["CAPTURE"]
+        C1["--title 'App'\nby title substring"]
+        C2["--hwnd 12345\nby window handle"]
+        C3["--screen\nfull desktop"]
+        C4["--json\nmetadata output"]
+    end
+
+    subgraph INTERACT ["INTERACT"]
+        I1["click\nleft click"]
+        I2["dclick\ndouble click"]
+        I3["rclick\nright click"]
+        I4["type\nenter text"]
+        I5["hover\nmouse over"]
+    end
+
+    subgraph LIST ["LIST"]
+        L1["list\nall windows"]
+        L2["--filter\ntitle search"]
+    end
+
+    style CAPTURE fill:#0a0a10,stroke:#e94560,color:#e94560
+    style INTERACT fill:#0a0a10,stroke:#00ff88,color:#00ff88
+    style LIST fill:#0a0a10,stroke:#4a9eff,color:#4a9eff
+    </pre>
+  </div>
+</section>
+
+<!-- QUICK START -->
+<section>
+  <div class="section-tag">quick start</div>
+  <h2>30 Seconds to First Screenshot</h2>
+  <br>
+  <div class="code-block">
+    <span class="comment"># See what's running</span><br>
+    <span class="cmd">$ h2t-snap list</span><br>
+    <span class="output">[{"index": 0, "hwnd": 12345, "title": "TouchDesigner - project.toe"}]</span><br>
+    <br>
+    <span class="comment"># Screenshot a window</span><br>
+    <span class="cmd">$ h2t-snap capture --title "TouchDesigner" --json</span><br>
+    <span class="output">{"path": "C:\\...\\snap_20260328.png", "width": 1920, "height": 1080}</span><br>
+    <br>
+    <span class="comment"># Click somewhere</span><br>
+    <span class="cmd">$ h2t-snap click --title "TouchDesigner" --x 450 --y 320</span><br>
+    <br>
+    <span class="comment"># Verify the result</span><br>
+    <span class="cmd">$ h2t-snap capture --title "TouchDesigner"</span><br>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-tag">features</div>
+  <h2>What Makes It Different</h2>
+  <br>
+
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph CAPTURE_F ["CAPTURE"]
+        F1["Background capture\nwindow can be hidden"]
+        F2["Multi-monitor\n--monitor N"]
+        F3["Auto-cleanup\n30 min TTL"]
+        F4["Full screen\nor single window"]
+    end
+
+    subgraph INTERACT_F ["INTERACT"]
+        F5["Background clicks\nno focus needed"]
+        F6["Modifier keys\n--ctrl --shift"]
+        F7["All mouse buttons\nleft, right, middle, double"]
+        F8["Text input\nforeground mode"]
+    end
+
+    subgraph SAFETY ["SAFETY"]
+        F9["Structured exit codes\n0, 1, 2, 3, 4"]
+        F10["JSON output\nmachine-readable"]
+        F11["Title disambiguation\nerror on ambiguity"]
+        F12["No sudo\nno admin required"]
+    end
+
+    style CAPTURE_F fill:#0a0a10,stroke:#e94560,color:#c8c8d4
+    style INTERACT_F fill:#0a0a10,stroke:#00ff88,color:#c8c8d4
+    style SAFETY fill:#0a0a10,stroke:#4a9eff,color:#c8c8d4
+    </pre>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="compare">
+  <div class="section-tag">comparison</div>
+  <h2>h2t-snap vs Alternatives</h2>
+  <br>
+  <table class="comp-table">
+    <tr>
+      <th></th>
+      <th>h2t-snap</th>
+      <th>Playwright</th>
+      <th>Computer Use (Anthropic)</th>
+    </tr>
+    <tr>
+      <td>Target</td>
+      <td class="win">Desktop apps</td>
+      <td>Browsers</td>
+      <td>Full desktop</td>
+    </tr>
+    <tr>
+      <td>Install</td>
+      <td class="win">17 MB .exe</td>
+      <td>npm + browsers (~200 MB)</td>
+      <td>Cloud API</td>
+    </tr>
+    <tr>
+      <td>Latency</td>
+      <td class="win">&lt;100ms</td>
+      <td>~500ms</td>
+      <td>seconds</td>
+    </tr>
+    <tr>
+      <td>Cost</td>
+      <td class="win">Free</td>
+      <td>Free</td>
+      <td>API tokens per action</td>
+    </tr>
+    <tr>
+      <td>Background capture</td>
+      <td class="win">Yes (PrintWindow)</td>
+      <td>N/A</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Dependencies</td>
+      <td class="win">None</td>
+      <td>Node.js</td>
+      <td>API key</td>
+    </tr>
+  </table>
+</section>
+
+<!-- INTEGRATION -->
+<section>
+  <div class="section-tag">integration</div>
+  <h2>Works With Any Agent</h2>
+  <p class="sub">Standard CLI tool with JSON output. Any agent that can shell out can use it.</p>
+
+  <div class="stack-row">
+    <div class="chip hi">Claude Code</div>
+    <div class="chip hi">Claude Agent SDK</div>
+    <div class="chip">OpenAI Agents</div>
+    <div class="chip">LangChain</div>
+    <div class="chip">Custom scripts</div>
+  </div>
+  <br>
+  <div class="stack-row">
+    <div class="chip gr">Houdini</div>
+    <div class="chip gr">TouchDesigner</div>
+    <div class="chip gr">Photoshop</div>
+    <div class="chip gr">Excel</div>
+    <div class="chip gr">Any Windows app</div>
+  </div>
+</section>
+
+<!-- EXIT CODES -->
+<section>
+  <div class="section-tag">contract</div>
+  <h2>Structured Exit Codes</h2>
+  <br>
+  <div class="hud-panel">
+    <span class="corner-br"></span>
+    <div style="display:grid;grid-template-columns:60px 1fr;gap:0.5rem;font-size:0.8rem;">
+      <span style="color:var(--green)">0</span><span>Success</span>
+      <span style="color:var(--accent)">1</span><span>Window not found</span>
+      <span style="color:var(--accent)">2</span><span>Capture failed</span>
+      <span style="color:var(--accent)">3</span><span>Interact failed</span>
+      <span style="color:var(--amber)">4</span><span>Ambiguous title &mdash; multiple windows matched</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="motto">Download. Run. <span>See.</span></div>
+  <p>One .exe &middot; 17 MB &middot; Zero dependencies &middot; Windows</p>
+  <p style="margin-top:1.5rem;">
+    <a href="https://github.com/lichtpfad/h2t-snap/releases" style="color:var(--accent);text-decoration:none;font-size:0.75rem;letter-spacing:0.1em;">
+      DOWNLOAD FROM GITHUB &rarr;
+    </a>
+  </p>
+  <p style="margin-top:2rem;font-size:0.55rem;letter-spacing:0.15em;">
+    [HOU2TOUCH] &mdash; Part of the H2T AI Platform &middot; MIT License
+  </p>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#0e0e16',
+      primaryColor: '#16161f',
+      primaryTextColor: '#a0a0b8',
+      primaryBorderColor: '#2a2a3a',
+      lineColor: '#3a3a4a',
+      secondaryColor: '#0e0e16',
+      tertiaryColor: '#0e0e16',
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '11px',
+      clusterBkg: '#0a0a10',
+      clusterBorder: '#1e1e2e',
+      edgeLabelBackground: '#0a0a10',
+    },
+    flowchart: { curve: 'basis', padding: 14, htmlLabels: true }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>H2T Product Decks</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #c8c8c8;
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+  }
+  h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 48px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 900px;
+    width: 100%;
+  }
+  a.card {
+    background: #111;
+    border: 1px solid #222;
+    border-left: 3px solid #333;
+    padding: 24px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: block;
+  }
+  a.card:hover {
+    background: #161616;
+    border-left-color: #d4382c;
+  }
+  .card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 6px;
+  }
+  .card-tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .card-tag.platform { color: #2c7ad4; border-color: #15305c; }
+  .card-tag.media    { color: #d4922c; border-color: #5c3a10; }
+  .card-tag.product  { color: #2ca846; border-color: #1a4a20; }
+  .card-tag.research { color: #888; border-color: #444; }
+  .card-desc {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .back-link {
+    margin-top: 48px;
+    font-size: 11px;
+    color: #444;
+  }
+  .back-link a { color: #666; text-decoration: none; }
+  .back-link a:hover { color: #d4382c; }
+</style>
+</head>
+<body>
+  <h1>[H2T] Product Decks</h1>
+  <div class="subtitle">March 2026 — 9 projects</div>
+
+  <div class="grid">
+    <a class="card" href="docgraph.html">
+      <span class="card-tag platform">Core</span>
+      <div class="card-name">DocGraph</div>
+      <div class="card-desc">Visual graph editor for AI system architecture</div>
+    </a>
+    <a class="card" href="h2t-ai.html">
+      <span class="card-tag platform">Core</span>
+      <div class="card-name">H2T-AI</div>
+      <div class="card-desc">AI agents for Houdini & TouchDesigner</div>
+    </a>
+    <a class="card" href="h2t-plugin.html">
+      <span class="card-tag platform">Core</span>
+      <div class="card-name">h2t Plugin</div>
+      <div class="card-desc">Claude Code operations layer</div>
+    </a>
+    <a class="card" href="h2t-dcc.html">
+      <span class="card-tag platform">Core</span>
+      <div class="card-name">h2t-dcc</div>
+      <div class="card-desc">Expert AI agents for DCC software</div>
+    </a>
+    <a class="card" href="h2t-vision.html">
+      <span class="card-tag media">Media</span>
+      <div class="card-name">h2t-vision</div>
+      <div class="card-desc">Eyes and hands for AI agents</div>
+    </a>
+    <a class="card" href="h2t-transcription.html">
+      <span class="card-tag media">Media</span>
+      <div class="card-name">h2t-transcription</div>
+      <div class="card-desc">From video to knowledge</div>
+    </a>
+    <a class="card" href="depthkit.html">
+      <span class="card-tag media">Media</span>
+      <div class="card-name">depthkit</div>
+      <div class="card-desc">Real-time depth to 3D in TouchDesigner</div>
+    </a>
+    <a class="card" href="newsengine.html">
+      <span class="card-tag product">Product</span>
+      <div class="card-name">NewsEngine</div>
+      <div class="card-desc">AI content curation for creative communities</div>
+    </a>
+    <a class="card" href="h2t-graphs.html">
+      <span class="card-tag research">Research</span>
+      <div class="card-name">h2t-graphs</div>
+      <div class="card-desc">Knowledge graph engine for AI agents</div>
+    </a>
+  </div>
+
+  <div class="back-link"><a href="../">← Progress Dashboard</a></div>
+</body>
+</html>

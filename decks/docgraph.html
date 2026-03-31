@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>DocGraph</title><style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#0a0a0a;color:#c8c8c8;font-family:'JetBrains Mono',monospace}
+.deck{display:flex;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.slide{min-width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 10vw;padding-top:72px;position:relative;overflow:hidden}
+h1{font-size:clamp(24px,4vw,42px);font-weight:700;color:#e0e0e0;margin-bottom:8px;line-height:1.2}
+h2{font-size:clamp(16px,2.5vw,24px);font-weight:600;color:#e0e0e0;margin-bottom:24px}
+.accent{color:#d4382c}
+.tag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid #333;color:#888;margin-right:8px;margin-bottom:12px}
+.tag.red{color:#d4382c;border-color:#5c1a15}
+.tag.blue{color:#2c7ad4;border-color:#15305c}
+.tag.green{color:#2ca846;border-color:#1a4a20}
+.sub{font-size:13px;color:#666;margin-bottom:32px;line-height:1.7}
+ul{list-style:none;margin-bottom:24px}
+ul li{padding:6px 0;font-size:13px;color:#999;line-height:1.6}
+ul li::before{content:'>';color:#d4382c;margin-right:10px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.card{background:#111;border:1px solid #222;padding:16px;border-left:3px solid #333}
+.card h3{font-size:12px;color:#e0e0e0;margin-bottom:6px}
+.card p{font-size:11px;color:#666;line-height:1.5}
+.stats{display:flex;gap:32px;margin:24px 0}
+.stat .n{font-size:28px;font-weight:700;color:#fff}
+.stat .n.accent{color:#d4382c}
+.stat .l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+pre{background:#111;border:1px solid #222;padding:16px;font-size:11px;color:#888;line-height:1.6;overflow-x:auto;margin:16px 0}
+.progress{position:fixed;bottom:0;left:0;height:2px;background:#d4382c;transition:width .5s;z-index:10}
+.counter{position:fixed;bottom:12px;right:24px;font-size:10px;color:#333;z-index:10}
+.footer{font-size:10px;color:#333;position:absolute;bottom:24px;left:10vw}
+
+.nav-bar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:0;padding:0 80px;height:40px;background:rgba(10,10,10,0.95);border-bottom:1px solid #1a1a1a;z-index:30;backdrop-filter:blur(8px)}
+.nav-item{font-size:10px;font-weight:400;color:#444;letter-spacing:0.5px;padding:10px 12px;cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;white-space:nowrap}
+.nav-item:hover{color:#888}
+.nav-item.active{color:#e0e0e0;border-bottom-color:#d4382c}
+.nav-num{color:#333;margin-right:4px;font-weight:600}
+</style></head><body><div class="nav-bar"><div class="nav-item  active"><span class="nav-num">1</span>Intro</div><div class="nav-item"><span class="nav-num">2</span>Problem</div><div class="nav-item"><span class="nav-num">3</span>Solution</div><div class="nav-item"><span class="nav-num">4</span>Architecture</div><div class="nav-item"><span class="nav-num">5</span>Traction</div><div class="nav-item"><span class="nav-num">6</span>Vision</div></div><div class='deck'><div class="slide"><span class="tag blue">CORE PLATFORM</span><h1><span class="accent">[</span>DocGraph<span class="accent">]</span></h1><p class="sub">Living Architecture Diagrams for AI Teams<br>Visual graph editor with Agent API + MCP integration</p><div class="stats"><div class="stat"><div class="n accent">448</div><div class="l">commits/month</div></div><div class="stat"><div class="n">152+</div><div class="l">tests</div></div><div class="stat"><div class="n">15</div><div class="l">MCP tools</div></div></div><div class="footer">DocGraph // h2t platform</div></div><div class="slide"><h2>The <span class="accent">Problem</span></h2><ul><li>Static diagrams rot &mdash; Miro and Lucidchart are write-once, forget-forever</li><li>AI agents cannot read visual tools &mdash; no API, no structured data</li><li>Architecture docs drift from reality within weeks</li><li>Teams maintain diagrams AND code &mdash; double the work</li></ul><div class="footer">DocGraph // h2t platform</div></div><div class="slide"><h2>The <span class="accent">Solution</span></h2><div class="grid2"><div class="card"><h3>Visual Editor</h3><p>10 node types, multi-level canvas, drag-and-drop, git-backed storage</p></div><div class="card"><h3>Agent API</h3><p>Full REST CRUD &mdash; AI agents create, read, update nodes and edges</p></div><div class="card"><h3>MCP Integration</h3><p>15 Model Context Protocol tools &mdash; LLMs operate on graphs directly</p></div><div class="card"><h3>CLI + Validation</h3><p>22 subcommands, 7 error codes, progressive disclosure</p></div></div><div class="footer">DocGraph // h2t platform</div></div><div class="slide"><h2><span class="accent">Architecture</span></h2><pre>  Browser / CLI / Agent
+      |
+      v
+  +---------------------------+
+  |   Express.js Backend      |
+  |   /api/nodes/*            |
+  |   /api/edges/*            |
+  |   /api/graph/batch/*      |
+  |   MCP Server (15 tools)   |
+  +------------+--------------+
+               |
+       +-------+-------+
+       |  Git Storage   |
+       |  (JSON files)  |
+       +---------------+
+
+  Frontend: React 18 + ReactFlow v12 + Zustand
+  Tests: Playwright + Vitest + Bash smoke</pre><div class="footer">DocGraph // h2t platform</div></div><div class="slide"><h2><span class="accent">Traction</span></h2><div class="stats"><div class="stat"><div class="n accent">448</div><div class="l">commits / 30d</div></div><div class="stat"><div class="n">9</div><div class="l">phases total</div></div><div class="stat"><div class="n">8</div><div class="l">phases done</div></div><div class="stat"><div class="n">60</div><div class="l">issues</div></div></div><p class="sub">Phase 9: Distribution MVP (current)<br>Phases 10-12: Marketplace &rarr; First Users &rarr; Monetization</p><div class="footer">DocGraph // h2t platform</div></div><div class="slide"><h2><span class="accent">Vision</span></h2><ul><li>AI-first documentation standard &mdash; diagrams that update themselves</li><li>Marketplace of shared architecture templates</li><li>Every diagram becomes a living, queryable knowledge base</li></ul><div class="footer">DocGraph // h2t platform</div></div></div><div class='progress'></div><div class='counter'></div><script>
+let cur=0;const slides=document.querySelectorAll('.slide'),deck=document.querySelector('.deck'),bar=document.querySelector('.progress'),cnt=document.querySelector('.counter');
+function go(i){cur=Math.max(0,Math.min(i,slides.length-1));deck.style.transform='translateX(-'+cur*100+'vw)';bar.style.width=((cur+1)/slides.length*100)+'%';cnt.textContent=(cur+1)+'/'+slides.length}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+let tx=0;document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});document.addEventListener('touchend',function(e){if(tx-e.changedTouches[0].clientX>50)go(cur+1);if(e.changedTouches[0].clientX-tx>50)go(cur-1)});
+go(0);
+
+const navItems=document.querySelectorAll('.nav-item');
+const origGo=go;
+go=function(i){origGo(i);navItems.forEach((n,j)=>{n.classList.toggle('active',j===cur)})};
+navItems.forEach((n,i)=>n.addEventListener('click',()=>go(i)));
+go(0);
+</script><a href="./" style="position:fixed;top:16px;left:24px;font-family:JetBrains Mono,monospace;font-size:11px;color:#444;text-decoration:none;z-index:20;padding:4px 8px;border:1px solid #222;background:#0a0a0a" onmouseover="this.style.color='#d4382c';this.style.borderColor='#5c1a15'" onmouseout="this.style.color='#444';this.style.borderColor='#222'">&larr; Decks</a></body></html>
