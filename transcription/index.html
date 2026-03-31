@@ -599,7 +599,15 @@ graph LR
     MTC --> LND
     VDL --> VUP
     LND --> LMS
-    KG --> SKL
+
+    KG --> CTX["CONTEXT\nGRAPH"]
+    CTX --> CHAT["AI\nCHATBOT"]
+    LMS --> PLAT["LMS\nPLATFORM"]
+    KG --> SKL["DCC\nSKILLS"]
+
+    style PLAT fill:#0e0e14,stroke:#ffb800,color:#ffb800,stroke-width:2px
+    style CTX fill:#0e0e14,stroke:#4a9eff,color:#4a9eff,stroke-width:2px
+    style CHAT fill:#0e0e14,stroke:#00ff88,color:#00ff88
 
     style S fill:#0a1a0d,stroke:#00ff88,color:#00ff88
     style T fill:#0a1a0d,stroke:#00ff88,color:#00ff88
@@ -672,7 +680,7 @@ graph LR
       secondaryColor: '#0e0e16',
       tertiaryColor: '#0e0e16',
       fontFamily: 'JetBrains Mono, monospace',
-      fontSize: '11px',
+      fontSize: '9px',
       clusterBkg: '#0a0a10',
       clusterBorder: '#1e1e2e',
       edgeLabelBackground: '#0a0a10',
