@@ -1,0 +1,738 @@
+# projects.yaml — canonical project registry for H2T ecosystem
+# Source of truth for: dashboard, domains.yaml sync, future h2t-graphs import
+# Schema version: 1.0
+# Last updated: 2026-04-01
+
+schema:
+  version: "1.0"
+  axes:
+    type: "What it is: tool | service | pipeline | plugin | dataset | app"
+    ecosystem: "Where it lives: platform | school | personal-os | art | crypto | dev"
+    market_phase: "Current phase: internal | beta | product | saas"
+    product_potential: "Future potential: high | medium | low | none"
+    status: "Maturity: idea | prototype | alpha | beta | stable | frozen"
+
+# ============================================================
+# PLATFORM — shared infrastructure, used by everything
+# ============================================================
+
+projects:
+
+  - id: h2t-graphs
+    name: "h2t-graphs"
+    one_liner: "Shared knowledge graph kernel — scoring, provenance, quality gates"
+    type: service
+    ecosystem: platform
+    market_phase: internal
+    product_potential: high
+    product_vision: "Graph engine for multi-source knowledge, reusable by other AI projects and future LMS"
+    serves: [h2t-transcription, h2t-ai, creative-thinking]
+    depends_on: []
+    enables: [h2t-transcription, h2t-ai, creative-thinking, lms-platform]
+    status: alpha
+    commits: 27
+    has_tests: true
+    docs:
+      readme: true
+      landing: true
+      agent_docs: false
+      marketing_docs: false
+      claude_md: true
+    repos: [h2t-graphs]
+    github_visibility: private
+    mvp_horizon: "1 month"
+    mvp_scope: "Write API + JSON storage + query parity"
+
+  - id: h2t-evals
+    name: "h2t-evals"
+    one_liner: "Centralized eval service with offline-first SDK spool"
+    type: service
+    ecosystem: platform
+    market_phase: internal
+    product_potential: medium
+    product_vision: "Eval-as-a-service for AI pipelines"
+    serves: [h2t-transcription, h2t-ai, h2t-vision]
+    depends_on: []
+    enables: [h2t-transcription, h2t-ai, h2t-vision]
+    status: alpha
+    commits: 23
+    has_tests: true
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-evals]
+    github_visibility: private
+    mvp_horizon: "1 month"
+    mvp_scope: "LLM-as-Judge v1 + scorecard policy"
+
+  - id: h2t-staging
+    name: "h2t-staging"
+    one_liner: "Autonomous agent sandbox — isolated VMs for Claude Code"
+    type: tool
+    ecosystem: platform
+    market_phase: internal
+    product_potential: medium
+    product_vision: "Safe agent execution environment, reusable by others"
+    serves: [h2t-ai, development-workflow]
+    depends_on: []
+    enables: [h2t-ai, h2t-factory]
+    status: alpha
+    commits: 13
+    has_tests: true
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: true
+    repos: [h2t-staging]
+    github_visibility: private
+    mvp_horizon: "1 month"
+    mvp_scope: "WSL provider + watchdog + learning loop"
+
+  - id: h2t-tools
+    name: "h2t-tools"
+    one_liner: "On-demand Serena MCP agent for symbolic code analysis"
+    type: plugin
+    ecosystem: platform
+    market_phase: internal
+    product_potential: low
+    product_vision: ""
+    serves: [development-workflow]
+    depends_on: []
+    enables: []
+    status: prototype
+    commits: 1
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-tools]
+    github_visibility: private
+    mvp_horizon: "frozen"
+    mvp_scope: ""
+
+  - id: h2t-landings
+    name: "h2t-landings"
+    one_liner: "Landing pages and project dashboard for H2T ecosystem"
+    type: app
+    ecosystem: platform
+    market_phase: beta
+    product_potential: none
+    product_vision: ""
+    serves: [all-projects]
+    depends_on: []
+    enables: [content-marketing]
+    status: beta
+    commits: 7
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-landings]
+    github_visibility: public
+    mvp_horizon: "done"
+    mvp_scope: "Project dashboard + per-project landings"
+
+  - id: h2t-factory
+    name: "h2t-factory"
+    one_liner: "Content-as-product pipeline — scan, research, build, package, promote, publish"
+    type: pipeline
+    ecosystem: platform
+    market_phase: internal
+    product_potential: medium
+    internal_value: high  # critical enabler — generates all sellable content
+    product_vision: "Internal pipeline for generating products, not a product itself"
+    serves: [content-marketing, hou2touch-brand]
+    depends_on: [h2t-graphs]
+    enables: [content-marketing, patreon-assets]
+    status: alpha
+    commits: 6
+    has_tests: false
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: true
+    repos: [h2t-factory]
+    github_visibility: private
+    mvp_horizon: "1 month"
+    mvp_scope: "Scan → pick → build → package for 1 asset"
+
+  - id: config
+    name: "config"
+    one_liner: "Shared configuration — domains, taxonomy, session registry"
+    type: dataset
+    ecosystem: platform
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: [personal-os, all-projects]
+    depends_on: []
+    enables: [session-management]
+    status: stable
+    commits: 12
+    has_tests: false
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: true
+    repos: [config]
+    github_visibility: private
+    mvp_horizon: "done"
+    mvp_scope: ""
+
+  # ============================================================
+  # AGENTS — AI tools, DCC automation, vision
+  # ============================================================
+
+  - id: h2t-ai
+    name: "h2t-ai"
+    one_liner: "DCC automation platform — MCP servers for Houdini & TouchDesigner (dev repo for h2t-dcc)"
+    type: service
+    ecosystem: platform
+    market_phase: internal
+    product_potential: low  # dev repo — product ships as h2t-dcc
+    product_vision: "Internal dev repo — product ships as h2t-dcc plugin"
+    serves: [h2t-dcc, development-workflow]
+    depends_on: [h2t-snap]
+    soft_depends_on: [h2t-graphs, h2t-evals]  # fallback works without these
+    enables: [h2t-dcc]
+    notes: |
+      OPEN QUESTION: h2t-ai + h2t-dcc + h2t-graphs + h2t-evals —
+      ship as separate services or bundle as one package?
+      Currently h2t-ai has fallback for graphs, evals being integrated.
+    status: beta
+    commits: 263
+    has_tests: true
+    docs:
+      readme: true
+      landing: false
+      agent_docs: true
+      marketing_docs: false
+      claude_md: true
+    repos: [h2t-ai, H2T-AI]
+    github_visibility: private
+    mvp_horizon: "beta"
+    mvp_scope: "Stable TD daemon + registry + skill feedback loop"
+
+  - id: h2t-dcc
+    name: "h2t-dcc"
+    one_liner: "DCC expert agents for Claude Code — TouchDesigner & Houdini"
+    type: plugin
+    ecosystem: platform
+    market_phase: beta
+    product_potential: high
+    product_vision: "Public Claude Code plugin: DCC automation, knowledge graph for TD/Houdini, student Q&A, scene analysis, commercial work"
+    serves: [development-workflow, hou2touch-school, art-projects, h2t-factory, commercial-work]
+    depends_on: [h2t-ai, h2t-snap, h2t-graphs, h2t-evals]
+    enables: [art-projects, hou2touch-school, h2t-factory, content-marketing]
+    status: beta
+    commits: 6
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-dcc]
+    github_visibility: private
+    mvp_horizon: "1 week"
+    mvp_scope: "Public plugin with td-expert + hou-expert"
+
+  - id: h2t-snap
+    name: "h2t-snap"
+    one_liner: "Desktop vision & computer use CLI — eyes and hands for AI agents"
+    type: tool
+    ecosystem: platform
+    market_phase: beta
+    product_potential: high
+    product_vision: "Universal desktop automation tool for AI agents"
+    serves: [h2t-ai, h2t-vision, development-workflow]
+    depends_on: []
+    enables: [h2t-ai, h2t-vision, h2t-dcc]
+    status: beta
+    commits: 14
+    has_tests: true
+    docs:
+      readme: true
+      landing: true
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-snap]
+    github_visibility: private
+    mvp_horizon: "done"
+    mvp_scope: "v0.1.0 released — capture, click, type, hover"
+
+  - id: h2t-vision
+    name: "h2t-vision"
+    one_liner: "Vision API — video segmentation, desktop capture, NDI/SPIout streams, ML models"
+    type: service
+    ecosystem: platform
+    market_phase: internal
+    product_potential: high
+    product_vision: "Vision API: chapter segmentation, stream analysis, desktop vision. Superset of h2t-snap capabilities. Deployable as external API."
+    serves: [h2t-transcription, h2t-ai, development-workflow]
+    depends_on: []  # h2t-snap is lightweight subset, not a dependency
+    enables: [h2t-transcription, h2t-graphs]
+    notes: |
+      h2t-snap = lightweight desktop vision CLI (done, shipped)
+      h2t-vision = full vision API (video, streams, NDI, segmentation models)
+      Key use case now: chapter detection for h2t-transcription quality
+    status: alpha
+    commits: 175
+    has_tests: true
+    docs:
+      readme: true
+      landing: false
+      agent_docs: true
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-vision]
+    github_visibility: private
+    mvp_horizon: "1 month"
+    mvp_scope: "Chapter detection + keyframe extraction stable API"
+
+  - id: h2t-skills
+    name: "h2t-skills / claude-agent-skills"
+    one_liner: "Personal workflow automation — session, handoff, github, drawio, calendar, creative-thinking"
+    type: plugin
+    ecosystem: personal-os
+    market_phase: internal
+    product_potential: low
+    product_vision: ""
+    serves: [development-workflow, personal-os]
+    depends_on: []
+    enables: [personal-os, development-workflow]
+    status: stable
+    commits: 124
+    has_tests: false
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-skills, claude-agent-skills]  # same entity, two repos (historical)
+    github_visibility: private
+    mvp_horizon: "done"
+    mvp_scope: "Core skills operational"
+    notes: "h2t-skills and claude-agent-skills are the same entity split across two repos historically. Treat as one."
+
+  # ============================================================
+  # SCHOOL — Hou2Touch education
+  # ============================================================
+
+  - id: h2t-transcription
+    name: "h2t-transcription"
+    one_liner: "Video transcription pipeline — 619 videos, 9 stages, 28 courses"
+    type: pipeline
+    ecosystem: school
+    market_phase: internal
+    product_potential: high
+    product_vision: "Content processing tool for school (not content itself). Processes → h2t-content. Future LMS component for any school."
+    serves: [hou2touch-school, h2t-content]
+    depends_on: [h2t-vision, h2t-graphs, h2t-evals]
+    enables: [h2t-content, hou2touch-school, lms-platform, h2t-graphs]
+    notes: |
+      h2t-transcription = tool that processes video into content
+      h2t-content = the output data (transcripts, enrichment)
+      Two different entities, linked by the pipeline
+    status: beta
+    commits: 185
+    has_tests: false
+    docs:
+      readme: true
+      landing: true
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-transcription]
+    github_visibility: private
+    mvp_horizon: "beta"
+    mvp_scope: "Studio frontend + enrichment quality gates"
+
+  - id: h2t-content
+    name: "h2t-content"
+    one_liner: "Course content data — transcripts, visual analysis, enriched metadata"
+    type: dataset
+    ecosystem: school
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: [h2t-transcription, h2t-graphs]
+    depends_on: [h2t-transcription]
+    enables: [hou2touch-school]
+    status: stable
+    commits: 4
+    has_tests: false
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-content]
+    github_visibility: private
+    mvp_horizon: "done"
+    mvp_scope: ""
+
+  # ============================================================
+  # PRODUCTS — standalone, potentially sellable
+  # ============================================================
+
+  - id: creative-thinking
+    name: "Creative Thinking"
+    one_liner: "57 frameworks for creative problem-solving — knowledge graph + idea evaluation"
+    type: plugin
+    ecosystem: personal-os
+    market_phase: internal
+    product_potential: medium  # contains private data, unclear commercial path
+    product_vision: "Internal creative/business research tool. Possible viral product if private data stripped. Works via h2t-graphs."
+    serves: [personal-workflow, h2t-factory, business-strategy]
+    depends_on: [h2t-graphs]
+    enables: [content-marketing, h2t-factory]
+    status: beta
+    commits: 67
+    has_tests: true
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [creative-thinking]
+    github_visibility: private
+    mvp_horizon: "1 week"
+    mvp_scope: "Public plugin with 57 frameworks + eval scoring"
+
+  - id: newsengine
+    name: "NewsEngine"
+    one_liner: "Deep research orchestration — medallion architecture, AI discovery, semantic memory"
+    type: service
+    ecosystem: dev
+    market_phase: internal
+    product_potential: high
+    product_vision: "Originally multi-user product, but resource-constrained. Plan: deploy on VPS as internal research backbone for agents, factory, POS. Product potential remains if resources appear."
+    serves: [content-marketing, personal-workflow, h2t-factory, personal-os]
+    depends_on: []
+    enables: [content-marketing, h2t-factory, personal-os]
+    status: alpha
+    commits: 0  # remote only, not on this machine
+    has_tests: false
+    docs:
+      readme: true
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [newsengine]
+    github_visibility: private
+    mvp_horizon: "3 months"
+    mvp_scope: "Stable pipeline + web UI"
+
+  - id: specdesigner
+    name: "SpecDesigner"
+    one_liner: "Visual graph editor for AI system architecture documentation"
+    type: app
+    ecosystem: dev
+    market_phase: internal
+    product_potential: high
+    product_vision: "SaaS product + internal tool for designing POS, crypto orchestrator, and other systems"
+    serves: [development-workflow, personal-os, crypto-orchestrator]
+    depends_on: []
+    enables: [development-workflow, personal-os, crypto-orchestrator]
+    status: alpha
+    commits: 0  # remote only
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [SpecDesigner]
+    github_visibility: private
+    mvp_horizon: "3 months"
+    mvp_scope: "GitHub storage + public read"
+
+  - id: depthkit
+    name: "depthkit"
+    one_liner: "Modular depth estimation — camera to point cloud to TouchDesigner"
+    type: tool
+    ecosystem: dev
+    market_phase: beta
+    product_potential: high
+    product_vision: "First h2t-factory product candidate: TD plugin for CG/realtime art market. Small, shippable, Patreon/Gumroad."
+    serves: [art-projects, hou2touch-school]
+    depends_on: []
+    enables: [art-projects, content-marketing, h2t-factory]
+    status: alpha
+    commits: 0  # remote only
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [depthkit]
+    github_visibility: public
+    mvp_horizon: "1 month"
+    mvp_scope: "TD .tox with clean interface + 3DGS PLY loader"
+
+  # ============================================================
+  # PERSONAL OS
+  # ============================================================
+
+  - id: dor
+    name: "DOR"
+    one_liner: "Personal Operating System — knowledge, projects, automation skills"
+    type: app
+    ecosystem: personal-os
+    market_phase: internal
+    product_potential: low
+    product_vision: ""
+    serves: [personal-workflow]
+    depends_on: [config, h2t-skills]
+    enables: [personal-workflow]
+    status: alpha
+    commits: 0  # remote only (MacBook)
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [DOR, POS]
+    github_visibility: private
+    mvp_horizon: "3 months"
+    mvp_scope: "Daily brief + calendar + notion integration stable"
+
+  # ============================================================
+  # ART
+  # ============================================================
+
+  - id: hta
+    name: "Hebrew Text Analyzer"
+    one_liner: "DICTA morphological parser, gematria, TouchDesigner integration"
+    type: tool
+    ecosystem: art
+    market_phase: internal
+    product_potential: low
+    product_vision: "Essential tool for QATAL/YIQTOL art installation. Needs priority bump soon."
+    serves: [art-projects]
+    depends_on: []
+    enables: [art-projects]
+    status: prototype
+    commits: 0  # remote only
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [hta]
+    github_visibility: private
+    mvp_horizon: "1 month"  # needs priority bump
+    mvp_scope: "DICTA parser + gematria → TD data feed for QATAL/YIQTOL"
+
+  - id: gaussian-splat-skill
+    name: "Gaussian Splat Skill"
+    one_liner: "Claude Code skill for creating Gaussian Splats from drone video"
+    type: plugin
+    ecosystem: dev
+    market_phase: beta
+    product_potential: medium
+    product_vision: "Like depthkit — small factory product for CG/realtime art market. Public repo, ready to promote."
+    serves: [art-projects, depthkit]
+    depends_on: []
+    enables: [depthkit, h2t-factory]
+    status: beta
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [gaussian-splat-skill]
+    github_visibility: public
+    mvp_horizon: "done"
+    mvp_scope: ""
+
+  # ============================================================
+  # CRYPTO — paid work
+  # ============================================================
+
+  - id: crypto-orchestrator
+    name: "Crypto Regime Orchestrator"
+    one_liner: "Production HFT/quant trading — regime detection, shadow engine"
+    type: service
+    ecosystem: crypto
+    market_phase: internal
+    product_potential: none
+    product_vision: "Paid work for partner. Current active version with approved documentation."
+    serves: [paid-work]
+    depends_on: []
+    enables: []
+    status: alpha
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [crypto-regime-orchestrator]
+    github_visibility: private
+    mvp_horizon: "3 months"
+    mvp_scope: "Shadow engine live validation"
+    notes: |
+      Three repos, one domain, one task (trading system for partner):
+      - crypto-regime-orchestrator = current active version (approved docs)
+      - datascience = earlier ETL piece of the pipeline (partially reusable)
+      - cryptotrading-bot = earlier attempt (frozen)
+
+  - id: datascience
+    name: "Crypto ETL / DataScience"
+    one_liner: "ETL pipeline for blockchain data — earlier piece of crypto system"
+    type: pipeline
+    ecosystem: crypto
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: [crypto-orchestrator]
+    depends_on: []
+    enables: [crypto-orchestrator]
+    status: alpha
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [datascience]
+    github_visibility: private
+    mvp_horizon: "frozen"
+    mvp_scope: ""
+
+  - id: cryptotrading-bot
+    name: "Crypto Trading Bot"
+    one_liner: "Earlier trading bot attempt — concept evolved into crypto-orchestrator"
+    type: service
+    ecosystem: crypto
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: []
+    depends_on: []
+    enables: []
+    status: frozen
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [cryptotrading-bot]
+    github_visibility: private
+    mvp_horizon: "frozen"
+    mvp_scope: ""
+
+  - id: adhd-focus-flow
+    name: "ADHD Focus Flow Tracker"
+    one_liner: "Legacy focus tracker prototype"
+    type: app
+    ecosystem: personal-os
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: []
+    depends_on: []
+    enables: []
+    status: frozen
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [adhd-focus-flow-tracker]
+    github_visibility: private
+    mvp_horizon: "frozen"
+    mvp_scope: ""
+
+  - id: quiz-form
+    name: "Quiz Form"
+    one_liner: "Legacy quiz/form tool"
+    type: app
+    ecosystem: school
+    market_phase: internal
+    product_potential: none
+    product_vision: ""
+    serves: []
+    depends_on: []
+    enables: []
+    status: frozen
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [Quiz-Form]
+    github_visibility: private
+    mvp_horizon: "frozen"
+    mvp_scope: ""
+
+  - id: h2t-progress
+    name: "h2t-progress"
+    one_liner: "Project progress dashboard — merge candidate with h2t-landings"
+    type: app
+    ecosystem: platform
+    market_phase: internal
+    product_potential: none
+    product_vision: "Merge into h2t-landings as unified registry + progress + landings interface"
+    serves: [development-workflow]
+    depends_on: [h2t-landings]
+    enables: []
+    status: alpha  # not frozen — to be merged
+    commits: 0
+    has_tests: false
+    docs:
+      readme: false
+      landing: false
+      agent_docs: false
+      marketing_docs: false
+      claude_md: false
+    repos: [h2t-progress]
+    github_visibility: public
+    mvp_horizon: "frozen"
+    mvp_scope: ""
