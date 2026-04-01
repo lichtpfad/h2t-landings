@@ -376,6 +376,60 @@
     justify-content: space-between;
   }
 
+  /* ===== MATRIX TABLE ===== */
+  .matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  .matrix th {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 1px solid #1a1a2e;
+  }
+
+  .matrix th:first-child { text-align: left; }
+
+  .matrix td {
+    padding: 8px 12px;
+    text-align: center;
+    border-bottom: 1px solid #0e0e16;
+  }
+
+  .matrix td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-hi);
+  }
+
+  .matrix td.mp {
+    text-align: left;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .matrix tr:hover { background: #0e0e16; }
+
+  .matrix td.d { color: var(--green); font-weight: 700; }
+  .matrix td.m { color: #2a2a3e; }
+  .matrix td.na { color: #1a1a2e; font-size: 9px; }
+
+  .matrix .tier-product { color: var(--accent); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .matrix .tier-infra { color: var(--text-dim); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .matrix .score { font-weight: 700; }
+  .matrix .score.hi { color: var(--green); }
+  .matrix .score.mid { color: var(--amber); }
+  .matrix .score.low { color: var(--accent); }
+
+  .matrix tr.sep td { padding: 4px; border-bottom: 1px solid #1a1a2e; }
+
   @media (max-width: 900px) {
     .container { padding: 20px; }
     .cards { grid-template-columns: 1fr; }
@@ -1071,6 +1125,57 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- ════════════ DOCUMENTATION MATRIX ════════════ -->
+  <div class="section-header" style="margin-top:60px;">
+    <div class="dot" style="background: var(--amber);"></div>
+    <h2>Documentation Acceptance Matrix</h2>
+    <div class="count">active projects only</div>
+  </div>
+
+  <div style="overflow-x:auto; margin-bottom:40px;">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Tier</th>
+          <th>CLAUDE.md</th>
+          <th>README</th>
+          <th>Landing</th>
+          <th>Agent Docs</th>
+          <th>Marketing</th>
+          <th>Positioning</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="mp">h2t-dcc</td><td class="tier-product">product</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score low">0/6</td></tr>
+        <tr><td class="mp">creative-thinking</td><td class="tier-product">product</td><td class="m">-</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score low">1/6</td></tr>
+        <tr><td class="mp">depthkit</td><td class="tier-product">product</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score low">0/6</td></tr>
+        <tr><td class="mp">h2t-snap</td><td class="tier-product">product</td><td class="m">-</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score mid">2/6</td></tr>
+        <tr><td class="mp">h2t-transcription</td><td class="tier-product">product</td><td class="m">-</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score mid">2/6</td></tr>
+        <tr><td class="mp">h2t-graphs</td><td class="tier-product">product</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score mid">3/6</td></tr>
+        <tr><td class="mp">h2t-vision</td><td class="tier-product">product</td><td class="m">-</td><td class="d">&#10003;</td><td class="m">-</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="score mid">2/6</td></tr>
+        <tr><td class="mp">newsengine</td><td class="tier-product">product</td><td class="m">-</td><td class="d">&#10003;</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score low">1/6</td></tr>
+        <tr><td class="mp">SpecDesigner</td><td class="tier-product">product</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="m">-</td><td class="score low">0/6</td></tr>
+        <tr class="sep"><td colspan="9"></td></tr>
+        <tr><td>h2t-ai</td><td class="tier-infra">infra</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="na">n/a</td><td class="score hi">3/3</td></tr>
+        <tr><td>h2t-evals</td><td class="tier-infra">infra</td><td class="m">-</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="m">-</td><td class="na">n/a</td><td class="na">n/a</td><td class="score mid">1/3</td></tr>
+        <tr><td>h2t-staging</td><td class="tier-infra">infra</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="m">-</td><td class="na">n/a</td><td class="na">n/a</td><td class="score mid">2/3</td></tr>
+        <tr><td>h2t-factory</td><td class="tier-infra">infra</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="m">-</td><td class="na">n/a</td><td class="na">n/a</td><td class="score mid">2/3</td></tr>
+        <tr><td>h2t-content</td><td class="tier-infra">infra</td><td class="m">-</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="score mid">1/2</td></tr>
+        <tr><td>config</td><td class="tier-infra">infra</td><td class="d">&#10003;</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="score hi">2/2</td></tr>
+        <tr><td>h2t-skills</td><td class="tier-infra">infra</td><td class="m">-</td><td class="d">&#10003;</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="score mid">1/2</td></tr>
+        <tr><td>DOR/POS</td><td class="tier-infra">infra</td><td class="m">-</td><td class="m">-</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="na">n/a</td><td class="score low">0/2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stats" style="margin-bottom:40px;">
+    <div class="stat"><div class="value accent">11</div><div class="label">Missing CLAUDE.md</div></div>
+    <div class="stat"><div class="value amber">7</div><div class="label">Missing Landing</div></div>
+    <div class="stat"><div class="value">9</div><div class="label">No Positioning</div></div>
   </div>
 
   <div class="footer">

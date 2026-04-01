@@ -1,0 +1,48 @@
+# {{PROJECT_NAME}}
+
+> {{ONE_LINER}}
+
+{{BADGES: status, license, language, etc.}}
+
+## What
+
+{{3-5 sentences for a human who's never seen this. What it does, why it exists, who it's for.}}
+
+## Features
+
+- {{Feature 1}}
+- {{Feature 2}}
+- {{Feature 3}}
+
+## Quick Start
+
+```bash
+# Installation
+{{install commands}}
+
+# Basic usage
+{{usage examples}}
+```
+
+## Architecture
+
+{{Brief overview for contributors. Link to docs/ for details.}}
+
+## Status
+
+| Area | Status |
+|------|--------|
+| Core functionality | {{done/in-progress/planned}} |
+| Tests | {{coverage or status}} |
+| Documentation | {{status}} |
+| Landing page | {{link or "planned"}} |
+
+## Related Projects
+
+| Project | Relationship |
+|---------|-------------|
+| {{project}} | {{depends on / enables / part of}} |
+
+## License
+
+{{LICENSE or "Private"}}

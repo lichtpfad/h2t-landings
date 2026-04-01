@@ -1,0 +1,49 @@
+# {{PROJECT_NAME}}
+
+> {{ONE_LINER}}
+
+## Quick Context
+
+- **Type:** {{TYPE}} (tool | service | pipeline | plugin | app | dataset)
+- **Status:** {{STATUS}} (prototype | alpha | beta | stable)
+- **Ecosystem:** {{ECOSYSTEM}}
+- **Repos:** {{REPOS}}
+
+## What This Does
+
+{{2-3 sentences: what problem it solves, for whom, core mechanism}}
+
+## Architecture
+
+{{Key components, entry points, data flow. Keep under 10 lines.}}
+
+```
+{{Simple ASCII diagram if helpful}}
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| {{path}} | {{what it does}} |
+
+## CLI / API
+
+```bash
+# Primary commands an agent needs
+{{command examples}}
+```
+
+## Dependencies
+
+- **Hard:** {{must have to run}}
+- **Soft:** {{optional, fallback works without}}
+- **Enables:** {{who depends on this project}}
+
+## Current Focus
+
+{{What's being worked on now, what MVP means, 2-3 bullet points max}}
+
+## Agent Notes
+
+{{Gotchas, things to avoid, special setup needed. Delete section if none.}}

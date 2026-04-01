@@ -1,0 +1,49 @@
+# {{PROJECT_NAME}} — Positioning
+
+## One-Liner
+
+{{10 words max: what is this?}}
+
+## For Whom
+
+{{Primary audience, 1-2 sentences}}
+
+## Problem
+
+{{What pain does it solve? Be specific.}}
+
+## Solution
+
+{{How does this project solve it? Core mechanism.}}
+
+## Why Now
+
+{{Why is this relevant today? Market timing, tech readiness, personal need.}}
+
+## Competitive Landscape
+
+{{What alternatives exist? How is this different?}}
+
+## Key Metrics
+
+{{How do we know it's working? 2-3 measurable indicators.}}
+
+## MVP Scope
+
+{{Minimum viable: what's in, what's explicitly out}}
+
+### In
+
+- {{feature}}
+
+### Out (for now)
+
+- {{feature}}
+
+## Definition of Done
+
+{{When can we call MVP shipped? Concrete checklist.}}
+
+- [ ] {{criterion}}
+- [ ] {{criterion}}
+- [ ] {{criterion}}
