@@ -271,8 +271,8 @@ projects:
       readme: true
       landing: true
       agent_docs: false
-      marketing_docs: false
-      claude_md: false
+      marketing_docs: true
+      claude_md: true
     repos: [h2t-snap]
     github_visibility: private
     mvp_horizon: "done"
