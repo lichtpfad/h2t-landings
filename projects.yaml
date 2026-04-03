@@ -1,7 +1,8 @@
 # projects.yaml — canonical project registry for H2T ecosystem
 # Source of truth for: dashboard, domains.yaml sync, future h2t-graphs import
 # Schema version: 1.0
-# Last updated: 2026-04-01
+# Last updated: 2026-04-04
+# Verified: filesystem scan 2026-04-04 (local repos only)
 
 schema:
   version: "1.0"
@@ -38,6 +39,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: true
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-graphs]
     github_visibility: private
     mvp_horizon: "1 month"
@@ -63,6 +67,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-evals]
     github_visibility: private
     mvp_horizon: "1 month"
@@ -88,6 +95,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: true
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-staging]
     github_visibility: private
     mvp_horizon: "1 month"
@@ -113,6 +123,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-tools]
     github_visibility: private
     mvp_horizon: "frozen"
@@ -138,6 +151,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-landings]
     github_visibility: public
     mvp_horizon: "done"
@@ -164,6 +180,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: true
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-factory]
     github_visibility: private
     mvp_horizon: "1 month"
@@ -189,6 +208,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: true
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [config]
     github_visibility: private
     mvp_horizon: "done"
@@ -223,6 +245,9 @@ projects:
       agent_docs: true
       marketing_docs: false
       claude_md: true
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-ai, H2T-AI]
     github_visibility: private
     mvp_horizon: "beta"
@@ -248,6 +273,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-dcc]
     github_visibility: private
     mvp_horizon: "1 week"
@@ -271,8 +299,11 @@ projects:
       readme: true
       landing: true
       agent_docs: false
-      marketing_docs: true
+      marketing_docs: false
       claude_md: true
+      positioning: true
+      mvp_scope: false
+      eval_report: true
     repos: [h2t-snap]
     github_visibility: private
     mvp_horizon: "done"
@@ -302,6 +333,9 @@ projects:
       agent_docs: true
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-vision]
     github_visibility: private
     mvp_horizon: "1 month"
@@ -327,6 +361,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-skills, claude-agent-skills]  # same entity, two repos (historical)
     github_visibility: private
     mvp_horizon: "done"
@@ -361,6 +398,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-transcription]
     github_visibility: private
     mvp_horizon: "beta"
@@ -386,6 +426,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-content]
     github_visibility: private
     mvp_horizon: "done"
@@ -415,6 +458,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [creative-thinking]
     github_visibility: private
     mvp_horizon: "1 week"
@@ -440,6 +486,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [newsengine]
     github_visibility: private
     mvp_horizon: "3 months"
@@ -465,6 +514,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [SpecDesigner]
     github_visibility: private
     mvp_horizon: "3 months"
@@ -490,6 +542,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [depthkit]
     github_visibility: public
     mvp_horizon: "1 month"
@@ -519,6 +574,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [DOR, POS]
     github_visibility: private
     mvp_horizon: "3 months"
@@ -548,6 +606,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [hta]
     github_visibility: private
     mvp_horizon: "1 month"  # needs priority bump
@@ -573,6 +634,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [gaussian-splat-skill]
     github_visibility: public
     mvp_horizon: "done"
@@ -602,6 +666,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [crypto-regime-orchestrator]
     github_visibility: private
     mvp_horizon: "3 months"
@@ -632,6 +699,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [datascience]
     github_visibility: private
     mvp_horizon: "frozen"
@@ -657,6 +727,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [cryptotrading-bot]
     github_visibility: private
     mvp_horizon: "frozen"
@@ -682,6 +755,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [adhd-focus-flow-tracker]
     github_visibility: private
     mvp_horizon: "frozen"
@@ -707,6 +783,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [Quiz-Form]
     github_visibility: private
     mvp_horizon: "frozen"
@@ -732,6 +811,9 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: false
+      positioning: false
+      mvp_scope: false
+      eval_report: false
     repos: [h2t-progress]
     github_visibility: public
     mvp_horizon: "frozen"

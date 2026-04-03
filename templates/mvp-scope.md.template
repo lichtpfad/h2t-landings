@@ -1,0 +1,32 @@
+# {{PROJECT_NAME}} — MVP Scope
+
+## One-Liner
+
+{{10 words max: what is the minimum viable product?}}
+
+## In Scope (MVP)
+
+- {{feature 1 — must ship}}
+- {{feature 2 — must ship}}
+- {{feature 3 — must ship}}
+
+## Out of Scope (post-MVP)
+
+- {{feature — explicitly deferred}}
+- {{feature — explicitly deferred}}
+
+## Definition of Done
+
+- [ ] {{concrete, verifiable criterion}}
+- [ ] {{concrete, verifiable criterion}}
+- [ ] {{concrete, verifiable criterion}}
+
+## Dependencies
+
+- **Blocks:** {{what can't ship until this MVP lands}}
+- **Blocked by:** {{what must exist before this MVP can ship}}
+
+## Horizon
+
+**Target:** {{date or relative timeframe}}
+**Effort:** {{rough estimate: hours/days/weeks}}
