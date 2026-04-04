@@ -332,10 +332,10 @@ projects:
       landing: false
       agent_docs: true
       marketing_docs: false
-      claude_md: false
-      positioning: false
-      mvp_scope: false
-      eval_report: false
+      claude_md: true
+      positioning: true
+      mvp_scope: true
+      eval_report: true
     repos: [h2t-vision]
     github_visibility: private
     mvp_horizon: "1 month"
