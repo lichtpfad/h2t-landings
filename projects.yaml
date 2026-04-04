@@ -397,10 +397,10 @@ projects:
       landing: true
       agent_docs: false
       marketing_docs: false
-      claude_md: false
-      positioning: false
-      mvp_scope: false
-      eval_report: false
+      claude_md: true
+      positioning: true
+      mvp_scope: true
+      eval_report: true
     repos: [h2t-transcription]
     github_visibility: private
     mvp_horizon: "beta"
