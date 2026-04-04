@@ -1,0 +1,87 @@
+# h2t-graphs API
+
+> Knowledge graph engine for multi-source graphs consumed by LLM agents.
+
+Base URL: https://graphs.lichtpfadstudio.com
+Auth: X-H2T-Token header required for /api/ endpoints.
+Docs: https://graphs.lichtpfadstudio.com/docs
+
+## API Endpoints
+
+All endpoints are under /api/ prefix.
+
+### Read
+
+- GET /api/sources — list available graph sources
+- GET /api/query?source={alias}&search={keywords} — keyword search
+- GET /api/query?source={alias}&semantic={text} — vector semantic search (Gemini embeddings)
+- GET /api/query?source={alias}&semantic={text}&expand=true — with LLM query expansion
+- GET /api/query?source={alias}&search={kw}&semantic={text} — hybrid (keyword + semantic)
+- GET /api/query?source={alias}&type={node_type} — filter by node type
+- GET /api/related?source={alias}&to={node_id}&depth={n} — BFS graph traversal
+- GET /api/get?source={alias}&id={node_id} — get single node by ID
+- GET /api/stats?source={alias} — node/edge counts
+
+### Write
+
+- POST /api/nodes — add node (auto-embeds on write)
+- PATCH /api/nodes/{node_id}/confidence — update confidence (+/- delta)
+- POST /api/edges — add edges
+- POST /api/feedback — append feedback event
+
+## Sources
+
+| Alias | Nodes | Domain | Description |
+|-------|-------|--------|-------------|
+| creative | 901 | methodology | Chernyshov Creative Thinking: frameworks, concepts, principles, cases |
+| triz | 168 | methodology | TRIZ Altshuller: principles, contradictions, examples |
+| design-thinking | 65 | methodology | d.school Design Thinking: phases, methods, tools |
+| td | 678 | dcc | TouchDesigner operators |
+| courses-en | 6,571 | education | Hou2Touch courses (EN): lessons, chapters, concepts |
+| courses-ru | 2,808 | education | Hou2Touch courses (RU): lessons, chapters, concepts |
+
+## Response Format
+
+All query endpoints return:
+```json
+{
+  "query_meta": {
+    "source": "creative",
+    "nodes_returned": 5,
+    "tokens_estimate": 250
+  },
+  "results": [
+    {
+      "id": "framework_инверсия",
+      "node_type": "framework",
+      "label": "Инверсия",
+      "confidence": 0.95,
+      "_score": 0.87,
+      "description": "...",
+      "when_to_use": "..."
+    }
+  ]
+}
+```
+
+## Search Modes
+
+1. **Keyword** (`search=`) — case-insensitive text match, weighted scoring
+2. **Semantic** (`semantic=`) — Gemini embedding cosine similarity, 768d vectors
+3. **Hybrid** (`search=` + `semantic=`) — merged keyword + semantic with score normalization
+4. **Expanded** (`semantic=` + `expand=true`) — LLM expands query with synonyms before embedding
+
+## Usage from Python
+
+```python
+import httpx
+
+API = "https://graphs.lichtpfadstudio.com"
+TOKEN = "your-token"
+
+r = httpx.get(f"{API}/api/query",
+    params={"source": "td", "semantic": "noise generation"},
+    headers={"X-H2T-Token": TOKEN})
+for node in r.json()["results"][:5]:
+    print(f"{node['_score']:.2f} {node['label']}")
+```
