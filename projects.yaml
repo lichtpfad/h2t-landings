@@ -537,14 +537,14 @@ projects:
     commits: 0  # remote only
     has_tests: false
     docs:
-      readme: false
+      readme: true
       landing: false
       agent_docs: false
       marketing_docs: false
-      claude_md: false
-      positioning: false
-      mvp_scope: false
-      eval_report: false
+      claude_md: true
+      positioning: true
+      mvp_scope: true
+      eval_report: true
     repos: [depthkit]
     github_visibility: public
     mvp_horizon: "1 month"
