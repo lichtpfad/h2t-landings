@@ -30,8 +30,8 @@ projects:
     serves: [h2t-transcription, h2t-ai, creative-thinking]
     depends_on: []
     enables: [h2t-transcription, h2t-ai, creative-thinking, lms-platform]
-    status: alpha
-    commits: 27
+    status: beta
+    commits: 91
     has_tests: true
     docs:
       readme: true
@@ -39,13 +39,13 @@ projects:
       agent_docs: false
       marketing_docs: false
       claude_md: true
-      positioning: false
-      mvp_scope: false
-      eval_report: false
+      positioning: true
+      mvp_scope: true
+      eval_report: true
     repos: [h2t-graphs]
     github_visibility: private
-    mvp_horizon: "1 month"
-    mvp_scope: "Write API + JSON storage + query parity"
+    mvp_horizon: "deployed"
+    mvp_scope: "REST API on VPS + vector search + write API"
 
   - id: h2t-evals
     name: "h2t-evals"
@@ -390,8 +390,8 @@ projects:
       h2t-content = the output data (transcripts, enrichment)
       Two different entities, linked by the pipeline
     status: beta
-    commits: 185
-    has_tests: false
+    commits: 206
+    has_tests: true
     docs:
       readme: true
       landing: true
