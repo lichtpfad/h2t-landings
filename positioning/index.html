@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stanislav Glazov — AI Infrastructure for Creative Tech</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:         #060609;
+    --bg2:        #0a0a10;
+    --surface:    #0e0e16;
+    --accent:     #e94560;
+    --accent-glow: rgba(233,69,96,0.4);
+    --green:      #00ff88;
+    --green-glow: rgba(0,255,136,0.3);
+    --blue:       #4a9eff;
+    --amber:      #ffb800;
+    --text:       #a0a0b8;
+    --text-hi:    #d0d0e0;
+    --text-dim:   #3a3a50;
+    --grid:       rgba(255,255,255,0.02);
+    --border:     rgba(233,69,96,0.12);
+    --mono:       'JetBrains Mono', monospace;
+    --sans:       'Inter', system-ui, sans-serif;
+    --corner:     12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(6,6,9,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.7rem; letter-spacing: 0.1em;
+  }
+  nav .logo { font-weight: 700; color: var(--text-dim); }
+  nav .logo span { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+  nav .links a {
+    color: var(--text-dim); text-decoration: none;
+    margin-left: 2rem; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  nav .links a:hover { color: var(--accent); text-shadow: 0 0 6px var(--accent-glow); }
+
+  section {
+    max-width: 1100px; margin: 0 auto; padding: 5rem 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 0.55rem; color: var(--text-dim);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .section-tag::before { content: '// '; color: var(--accent); }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--text-hi);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+  .sub {
+    color: var(--text);
+    font-size: 0.78rem;
+    max-width: 700px;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+  }
+  .hero-badge {
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--border);
+    padding: 0.3rem 1rem; margin-bottom: 2rem;
+    position: relative;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  .hero-badge::before, .hero-badge::after {
+    content: ''; position: absolute;
+    width: 6px; height: 6px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .hero-badge::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+  .hero-badge::after  { top: -1px; right: -1px; border-width: 1px 1px 0 0; }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900; line-height: 1.15;
+    color: var(--text-hi);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+  .hero h1 .glow {
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(233,69,96,0.15);
+  }
+  .hero .desc {
+    font-size: 0.85rem; color: var(--text);
+    max-width: 600px; margin-bottom: 3rem;
+  }
+
+  /* STATS */
+  .stats {
+    display: flex; gap: 0; border: 1px solid var(--border);
+    position: relative;
+  }
+  .stats::before, .stats::after {
+    content: ''; position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .stats::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .stats::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .stat {
+    flex: 1; text-align: center;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .num {
+    font-family: var(--sans);
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+    line-height: 1;
+  }
+  .stat .lbl {
+    font-size: 0.55rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    margin-top: 0.4rem;
+  }
+
+  /* HUD PANEL */
+  .hud-panel {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .hud-panel::before, .hud-panel::after {
+    content: ''; position: absolute;
+    width: var(--corner); height: var(--corner);
+    border-color: var(--accent); border-style: solid;
+  }
+  .hud-panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .hud-panel::after  { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .hud-panel .corner-br::before, .hud-panel .corner-br::after {
+    content: ''; position: absolute;
+    width: var(--corner); height: var(--corner);
+    border-color: var(--accent); border-style: solid;
+  }
+  .hud-panel .corner-br::before { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .hud-panel .corner-br::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  /* COMPARISON TABLE */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+  }
+  .comp-table th, .comp-table td {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .comp-table th {
+    background: var(--surface);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.6rem;
+    font-weight: 600;
+  }
+  .comp-table td { background: var(--bg2); }
+  .comp-table tr td:first-child { color: var(--text-hi); font-weight: 600; }
+  .comp-table .win { color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+  .comp-table .dim { color: var(--text-dim); }
+
+  /* CHIPS */
+  .stack-row {
+    display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+  .chip {
+    font-family: var(--mono);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.9rem;
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--text-dim);
+  }
+  .chip.hi {
+    border-color: rgba(233,69,96,0.25);
+    color: var(--accent);
+    text-shadow: 0 0 6px var(--accent-glow);
+  }
+  .chip.gr {
+    border-color: rgba(0,255,136,0.2);
+    color: var(--green);
+    text-shadow: 0 0 6px var(--green-glow);
+  }
+  .chip.bl {
+    border-color: rgba(74,158,255,0.2);
+    color: var(--blue);
+  }
+
+  /* PIPELINE */
+  .pipeline {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr;
+    align-items: center;
+    gap: 0;
+    margin: 2rem 0;
+  }
+  .pipeline-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+  }
+  .pipeline-step::before, .pipeline-step::after {
+    content: ''; position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+  }
+  .pipeline-step::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .pipeline-step::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .pipeline-step .step-label {
+    font-size: 0.5rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+  }
+  .pipeline-step .step-title {
+    font-family: var(--sans);
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--text-hi);
+    margin-bottom: 0.4rem;
+  }
+  .pipeline-step .step-desc {
+    font-size: 0.7rem; color: var(--text);
+    line-height: 1.6;
+  }
+  .pipeline-arrow {
+    text-align: center;
+    color: var(--accent);
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* QUOTE */
+  .quote-block {
+    border-left: 2px solid var(--accent);
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    margin: 2rem 0;
+    font-size: 0.85rem;
+    color: var(--text-hi);
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  /* WHITESPACE CARDS */
+  .ws-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .ws-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+  }
+  .ws-card::before {
+    content: ''; position: absolute;
+    top: -1px; left: -1px;
+    width: 8px; height: 8px;
+    border-color: var(--accent); border-style: solid;
+    border-width: 2px 0 0 2px;
+  }
+  .ws-card .ws-num {
+    font-family: var(--sans);
+    font-size: 2rem; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .ws-card .ws-title {
+    font-family: var(--sans);
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--text-hi);
+    margin-bottom: 0.4rem;
+  }
+  .ws-card .ws-desc {
+    font-size: 0.7rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  footer .motto {
+    font-family: var(--sans);
+    font-size: 1.3rem; font-weight: 800;
+    color: var(--text-hi); margin-bottom: 0.4rem;
+  }
+  footer .motto span { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+  footer p { color: var(--text-dim); font-size: 0.7rem; letter-spacing: 0.05em; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-shadow: 0 0 6px var(--accent-glow); }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .pulse { animation: pulse 3s ease-in-out infinite; }
+
+  @media (max-width: 700px) {
+    section { padding: 3rem 1rem; }
+    .stats { flex-wrap: wrap; }
+    .stat { min-width: 50%; border-bottom: 1px solid var(--border); }
+    .pipeline { grid-template-columns: 1fr; gap: 0.5rem; }
+    .pipeline-arrow { transform: rotate(90deg); }
+    .ws-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">[<span>SG</span>] POSITIONING</div>
+  <div class="links">
+    <a href="#problem">Problem</a>
+    <a href="#approach">Approach</a>
+    <a href="#whitespace">Whitespace</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#stack">Stack</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">AI INFRASTRUCTURE FOR CREATIVE TECH</div>
+  <h1>25 years of <span class="glow">procedural thinking</span><br>applied to AI agent systems</h1>
+  <p class="desc">
+    Context graphs, evaluation frameworks, agent pipelines &mdash;
+    there where generic consultants leave a PowerPoint.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="num">25</div><div class="lbl">Years Procedural Systems</div></div>
+    <div class="stat"><div class="num">28</div><div class="lbl">Production Projects</div></div>
+    <div class="stat"><div class="num">2,500</div><div class="lbl">Students Taught</div></div>
+    <div class="stat"><div class="num">5K+</div><div class="lbl">Graph Nodes (live)</div></div>
+  </div>
+  <br>
+  <div style="font-size:0.6rem;color:var(--text-dim);letter-spacing:0.15em;" class="pulse">STANISLAV GLAZOV &middot; BERLIN &middot; 2026</div>
+</section>
+
+<!-- POSITIONING STATEMENT -->
+<section>
+  <div class="quote-block">
+    I build AI infrastructure for creative tech studios &mdash; context graphs,
+    evaluation frameworks, agent pipelines &mdash; applying 25 years of procedural
+    systems thinking where generic consultants leave a PowerPoint.
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="hud-panel">
+    <span class="corner-br"></span>
+    <div class="section-tag">problem</div>
+    <h2>AI Agents Without Structure = Expensive Hallucinations</h2>
+    <p class="sub" style="margin-bottom:1rem">
+      Technical people build their own solutions or use simple tools.
+      Non-technical business owners cobble together ChatGPT + manual processes.
+    </p>
+    <p class="sub" style="margin-bottom:1rem">
+      The AI education market is flooded with generic courses.
+      Nobody offers <span style="color:var(--accent)">practicum with working infrastructure</span>.
+    </p>
+    <p class="sub" style="margin-bottom:0">
+      The gap: structured AI orchestration for businesses that need it built &mdash;
+      not explained, not sold as a deck, but <span style="color:var(--green)">deployed and running</span>.
+    </p>
+  </div>
+</section>
+
+<!-- COMPETITIVE -->
+<section id="competitive">
+  <div class="section-tag">competitive landscape</div>
+  <h2>Where Others Stop, I Ship</h2>
+  <br>
+  <table class="comp-table">
+    <tr>
+      <th></th>
+      <th>What they do</th>
+      <th>What's missing</th>
+    </tr>
+    <tr>
+      <td>Liam Ottley</td>
+      <td>Teaches selling AI solutions</td>
+      <td class="dim">Resells, doesn't build infrastructure</td>
+    </tr>
+    <tr>
+      <td>Cole Medin</td>
+      <td>Developer-focused AI tools</td>
+      <td class="dim">No business layer, no domain expertise</td>
+    </tr>
+    <tr>
+      <td>Dan Shipper</td>
+      <td>AI thought leadership</td>
+      <td class="dim">Same positioning, no code under the hood</td>
+    </tr>
+    <tr>
+      <td>Tiago Forte</td>
+      <td>Personal knowledge management</td>
+      <td class="dim">PKM-level, behind the agent curve</td>
+    </tr>
+    <tr>
+      <td>swyx / Latent Space</td>
+      <td>AI research & podcasts</td>
+      <td class="dim">Academic, no personal OS frame</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);text-shadow:0 0 6px var(--accent-glow)">Stanislav Glazov</td>
+      <td class="win">Ships production AI infra</td>
+      <td class="win">25 yrs domain + working systems</td>
+    </tr>
+  </table>
+</section>
+
+<!-- WHITESPACE -->
+<section id="whitespace">
+  <div class="section-tag">competitive whitespace</div>
+  <h2>Three Gaps Nobody Occupies</h2>
+
+  <div class="ws-grid">
+    <div class="ws-card">
+      <div class="ws-num">01</div>
+      <div class="ws-title">Expertise as Infrastructure</div>
+      <div class="ws-desc">25 years of domain knowledge encoded as context graph &rarr; live AI skills. Not slides. Traversable, scorable, verifiable knowledge.</div>
+    </div>
+    <div class="ws-card">
+      <div class="ws-num">02</div>
+      <div class="ws-title">Creative Tech + AI Pipeline</div>
+      <div class="ws-desc">VFX / procedural thinking applied to agent engineering. The intersection of Houdini-grade systems design and AI orchestration.</div>
+    </div>
+    <div class="ws-card">
+      <div class="ws-num">03</div>
+      <div class="ws-title">AI OS as Architecture</div>
+      <div class="ws-desc">Not tools, not an agency. A complete personal AI operating system &mdash; session management, handoff, evals, feedback loops. Built by one person.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS MODEL PIPELINE -->
+<section id="pipeline">
+  <div class="section-tag">business model</div>
+  <h2>A &rarr; B &rarr; C Pipeline</h2>
+  <p class="sub">Product idea emerges from practice, not hypotheses.</p>
+
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="step-label">Phase A &middot; Now</div>
+      <div class="step-title">AI Integrator</div>
+      <div class="step-desc">Custom AI orchestration for businesses. Revenue from day 1. Accumulate reusable components.</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step">
+      <div class="step-label">Phase B &middot; After 5-10 cases</div>
+      <div class="step-title">Education</div>
+      <div class="step-desc">Cohort-based practicum with working infrastructure. Real cases, not theory. 2,500 student distribution.</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step">
+      <div class="step-label">Phase C &middot; Emerges from A+B</div>
+      <div class="step-title">Product</div>
+      <div class="step-desc">Framework / platform crystallized from patterns across 10+ projects. Open core model.</div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY PREMISES -->
+<section>
+  <div class="section-tag">premises</div>
+  <h2>What's Already Validated</h2>
+  <br>
+  <div class="hud-panel">
+    <span class="corner-br"></span>
+    <div style="font-size:0.78rem; line-height:2.2;">
+      <span style="color:var(--green);">&check;</span> Real advantage = procedural systems thinking (not TD/Houdini domain)<br>
+      <span style="color:var(--green);">&check;</span> Education is distribution channel, not core business<br>
+      <span style="color:var(--green);">&check;</span> Product idea will emerge from consulting practice<br>
+      <span style="color:var(--green);">&check;</span> 2 lectures at AI lab &rarr; peer interest in approach + tools<br>
+      <span style="color:var(--green);">&check;</span> Non-technical founders asking for "business OS with AI orchestration"<br>
+      <span style="color:var(--amber);">&bull;</span> <span style="color:var(--text-dim)">No paying AI customers yet. Assignment: find first pain point this week.</span>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="section-tag">production stack</div>
+  <h2>What's Already Built and Running</h2>
+  <p class="sub">Not slides. Not plans. Deployed systems.</p>
+
+  <div class="stack-row">
+    <div class="chip hi">h2t-graphs</div>
+    <div class="chip hi">h2t-evals</div>
+    <div class="chip hi">SpecDesigner</div>
+    <div class="chip hi">h2t-dcc</div>
+  </div>
+  <div style="text-align:center;font-size:0.55rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.3rem 0 1rem">PUBLIC-FACING PRODUCTS</div>
+
+  <div class="stack-row">
+    <div class="chip gr">h2t-transcription</div>
+    <div class="chip gr">h2t-vision</div>
+    <div class="chip gr">h2t-snap</div>
+    <div class="chip gr">h2t-factory</div>
+  </div>
+  <div style="text-align:center;font-size:0.55rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.3rem 0 1rem">INFRASTRUCTURE (INTERNAL)</div>
+
+  <div class="stack-row">
+    <div class="chip bl">Hou2Touch School</div>
+    <div class="chip bl">619 videos processed</div>
+    <div class="chip bl">28 courses</div>
+    <div class="chip bl">2,500 students</div>
+  </div>
+  <div style="text-align:center;font-size:0.55rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.3rem 0">BEACHHEAD &middot; PROOF OF EXPERTISE</div>
+</section>
+
+<!-- ASPIRATIONAL -->
+<section>
+  <div class="section-tag">mental model</div>
+  <h2>Aspirational Comparisons</h2>
+  <br>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+    <div class="hud-panel" style="text-align:center;padding:1.5rem">
+      <span class="corner-br"></span>
+      <div style="font-size:0.65rem;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:0.5rem">LIKE</div>
+      <div style="font-family:var(--sans);font-weight:800;color:var(--text-hi);font-size:1rem;">Jeremy Howard</div>
+      <div style="font-size:0.65rem;color:var(--text);margin-top:0.3rem">fast.ai</div>
+      <div style="font-size:0.7rem;color:var(--accent);margin-top:0.5rem">but for AI agent orchestration</div>
+    </div>
+    <div class="hud-panel" style="text-align:center;padding:1.5rem">
+      <span class="corner-br"></span>
+      <div style="font-size:0.65rem;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:0.5rem">LIKE</div>
+      <div style="font-family:var(--sans);font-weight:800;color:var(--text-hi);font-size:1rem;">Dan Shipper</div>
+      <div style="font-size:0.65rem;color:var(--text);margin-top:0.3rem">Every</div>
+      <div style="font-size:0.7rem;color:var(--accent);margin-top:0.5rem">but with code under the hood</div>
+    </div>
+    <div class="hud-panel" style="text-align:center;padding:1.5rem">
+      <span class="corner-br"></span>
+      <div style="font-size:0.65rem;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:0.5rem">LIKE</div>
+      <div style="font-family:var(--sans);font-weight:800;color:var(--text-hi);font-size:1rem;">Hamel Husain</div>
+      <div style="font-size:0.65rem;color:var(--text);margin-top:0.3rem">AI consulting</div>
+      <div style="font-size:0.7rem;color:var(--accent);margin-top:0.5rem">but for creative tech stack</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="motto">Build. Observe. <span>Extract.</span></div>
+  <p>Stanislav Glazov &middot; Berlin &middot; AI Infrastructure for Creative Tech</p>
+  <p style="margin-top:1rem;">
+    <a href="https://t.me/latencynotes" style="margin-right:2rem;">Telegram &rarr;</a>
+    <a href="https://github.com/lichtpfad">GitHub &rarr;</a>
+  </p>
+  <p style="margin-top:2rem;font-size:0.55rem;letter-spacing:0.15em;">
+    POSITIONING EXERCISE &middot; APRIL 2026 &middot; INTERNAL DOCUMENT
+  </p>
+</footer>
+
+</body>
+</html>
