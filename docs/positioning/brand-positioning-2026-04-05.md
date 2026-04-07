@@ -39,8 +39,28 @@ Building AI infrastructure for creative tech — context graphs, agent evals, pi
 Строю AI-инфраструктуру для creative tech.
 25 лет процедурных систем (Houdini/TD) → context engineering, agent pipelines, evals.
 
+## Business Model: A → B → C Pipeline
+
+> Source: `h2t-factory/docs/strategy/ai-business-model-design-2026-04-06.md` (APPROVED)
+
+| Phase | Model | Revenue | Timeline |
+|-------|-------|---------|----------|
+| **A. AI Integrator** | Custom AI orchestration for businesses | From day 1 | Now |
+| **B. Education** | Cohort-based practicum with working infra | Recurring | After 5-10 cases |
+| **C. Product** | Framework/platform from accumulated patterns | Scalable | Emerges from A+B |
+
+**Key premises:**
+- Real competitive advantage = procedural systems thinking, not TD/Houdini domain
+- Education = distribution channel, not core business
+- Product idea emerges from consulting practice, not hypotheses
+- Hou2Touch School = existing distribution (2,500 students) + proof of expertise
+
+**Assignment (week of 2026-04-06):** Find one non-technical person with a real business who has a specific AI automation pain point.
+
 ## Implications
 
 - Landing pages should lead with **category** (AI infra), not tools
 - Projects.yaml `product_potential: high` aligns with public-facing layer
 - Ontology v3 (#15) should reflect this visibility model
+- Phase A (integrator) needs a **consulting landing** before dev-tool landings (#5)
+- Hou2Touch School continues as distribution + credibility, not primary revenue bet
