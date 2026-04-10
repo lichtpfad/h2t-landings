@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents — Станислав Глазов</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root {
+    --bg:#060609;--surface:#0e0e16;--accent:#e94560;
+    --accent-glow:rgba(233,69,96,0.4);--green:#00ff88;
+    --green-glow:rgba(0,255,136,0.3);--blue:#4a9eff;
+    --amber:#ffb800;--text:#a0a0b8;--text-hi:#d0d0e0;
+    --text-dim:#3a3a50;--grid:rgba(255,255,255,0.02);
+    --border:rgba(233,69,96,0.12);
+    --mono:'JetBrains Mono',monospace;
+    --sans:'Inter',system-ui,sans-serif;
+  }
+
+  html,body{height:100%;overflow:hidden}
+  body{font-family:var(--mono);background:var(--bg);color:var(--text);cursor:crosshair}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:40px 40px}
+
+  /* SLIDE CONTAINER */
+  .deck{position:relative;width:100%;height:100%}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:4rem 6rem;z-index:0;
+    visibility:hidden;opacity:0;transition:opacity 0.3s;
+  }
+  .slide.active{visibility:visible;opacity:1;z-index:1}
+
+  /* TYPOGRAPHY */
+  h1{font-family:var(--sans);font-size:2.8rem;font-weight:900;color:var(--text-hi);line-height:1.15;letter-spacing:-0.03em;margin-bottom:1.5rem}
+  h1 .glow{color:var(--accent);text-shadow:0 0 20px var(--accent-glow)}
+  h2{font-family:var(--sans);font-size:1.8rem;font-weight:800;color:var(--text-hi);margin-bottom:1.2rem;letter-spacing:-0.02em}
+  h3{font-family:var(--sans);font-size:1.2rem;font-weight:700;color:var(--text-hi);margin-bottom:0.8rem}
+  p,.sub{font-size:0.95rem;color:var(--text);line-height:1.8;max-width:800px}
+  .sub{color:var(--text);font-size:0.9rem}
+  .big{font-family:var(--sans);font-size:2rem;font-weight:900;color:var(--accent);text-shadow:0 0 15px var(--accent-glow);line-height:1.4}
+  .note{font-size:0.8rem;color:var(--text);letter-spacing:0.08em;margin-top:1.5rem}
+  .green{color:var(--green);text-shadow:0 0 6px var(--green-glow)}
+  .red{color:var(--accent);text-shadow:0 0 6px var(--accent-glow)}
+  .blue{color:var(--blue)}
+  .amber{color:var(--amber)}
+
+  /* TAG */
+  .tag{font-size:0.7rem;color:var(--text);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.6rem}
+  .tag::before{content:'// ';color:var(--accent)}
+
+  /* GRID LAYOUTS */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;height:100%}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  .vs>div{padding:1.5rem;background:var(--surface);border:1px solid var(--border);position:relative}
+  .vs>div::before{content:'';position:absolute;top:-1px;left:-1px;width:10px;height:10px;border-color:var(--accent);border-style:solid;border-width:2px 0 0 2px}
+  .list{list-style:none;font-size:0.95rem;line-height:2.2}
+  .list li::before{content:'';display:inline-block;width:6px;height:6px;background:var(--green);margin-right:0.8rem;vertical-align:middle}
+  .list.red li::before{background:var(--accent)}
+
+  /* IMAGE FRAME */
+  .img-frame{background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;max-height:70vh}
+  .img-frame::before,.img-frame::after{content:'';position:absolute;width:10px;height:10px;border-color:var(--accent);border-style:solid;z-index:2}
+  .img-frame::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .img-frame::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+  .img-frame img{width:100%;height:100%;object-fit:contain}
+  .img-label{position:absolute;bottom:8px;left:10px;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);background:rgba(6,6,9,0.85);padding:2px 6px;z-index:3}
+  .film-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-height:50vh}
+  .film-row img{width:100%;height:100%;object-fit:cover;border:1px solid var(--border)}
+
+  /* QUOTE */
+  .quote{border-left:2px solid var(--accent);padding-left:1.5rem;margin:1rem 0;font-style:italic;color:var(--text-hi);font-size:1.15rem;line-height:1.8}
+
+  /* MERMAID */
+  .mermaid-wrap{background:var(--surface);border:1px solid var(--border);padding:1.2rem;overflow:hidden;position:relative;margin-top:1rem}
+  .mermaid-wrap::before,.mermaid-wrap::after{content:'';position:absolute;width:10px;height:10px;border-color:var(--accent);border-style:solid}
+  .mermaid-wrap::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .mermaid-wrap::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+  .mermaid{display:flex;justify-content:center}
+
+  /* HUD PANEL */
+  .panel{background:var(--surface);border:1px solid var(--border);padding:1.5rem 2rem;position:relative}
+  .panel::before,.panel::after{content:'';position:absolute;width:10px;height:10px;border-color:var(--accent);border-style:solid}
+  .panel::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .panel::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+
+  /* STATS */
+  .stats{display:flex;gap:0;border:1px solid var(--border);position:relative;margin:1.5rem 0}
+  .stats::before,.stats::after{content:'';position:absolute;width:8px;height:8px;border-color:var(--accent);border-style:solid}
+  .stats::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .stats::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+  .stat{flex:1;text-align:center;padding:1rem;border-right:1px solid var(--border);background:var(--surface)}
+  .stat:last-child{border-right:none}
+  .stat .num{font-family:var(--sans);font-size:1.8rem;font-weight:900;color:var(--accent);text-shadow:0 0 12px var(--accent-glow);line-height:1}
+  .stat .lbl{font-size:0.7rem;color:var(--text);text-transform:uppercase;letter-spacing:0.12em;margin-top:0.3rem}
+
+  /* PROGRESS BARS */
+  .progress-list{display:flex;flex-direction:column;gap:3px}
+  .prog-row{display:grid;grid-template-columns:120px 1fr 50px;align-items:center;gap:12px;padding:3px 0}
+  .prog-name{font-size:0.75rem;color:var(--text);text-align:right}
+  .prog-bar{height:14px;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden}
+  .prog-fill{height:100%;position:relative}
+  .prog-fill::after{content:'';position:absolute;top:0;right:0;width:2px;height:100%;background:rgba(255,255,255,0.3)}
+  .prog-fill.green{background:linear-gradient(90deg,#0a1a0d,#00ff88)}
+  .prog-fill.amber{background:linear-gradient(90deg,#1a1408,#ffb800)}
+  .prog-fill.blue{background:linear-gradient(90deg,#0a0d1a,#4a9eff)}
+  .prog-fill.red{background:linear-gradient(90deg,#1a0a10,#e94560)}
+  .prog-pct{font-size:0.75rem;font-weight:700;text-align:right}
+
+  /* CODE */
+  pre.code{background:var(--surface);border:1px solid var(--border);padding:1.2rem;font-size:0.85rem;line-height:1.8;overflow:hidden;white-space:pre-wrap;color:var(--text);position:relative}
+  pre.code::before{content:'';position:absolute;top:-1px;left:-1px;width:8px;height:8px;border:2px solid var(--green);border-right:none;border-bottom:none}
+
+  /* FUNNEL */
+  .funnel{display:flex;flex-direction:column;gap:2px}
+  .gate{background:var(--surface);border:1px solid var(--border);padding:0.8rem 1.5rem;display:flex;gap:1.5rem;font-size:0.88rem}
+  .gate .num{color:var(--accent);font-weight:700;min-width:4rem}
+  .gate .q{color:var(--text);font-style:italic;font-size:0.8rem}
+
+  /* TABLE */
+  table{border-collapse:collapse;font-size:0.85rem;width:100%}
+  th,td{padding:0.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--surface);color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;font-size:0.6rem}
+  td{background:var(--bg)}
+  .win{color:var(--green);text-shadow:0 0 6px var(--green-glow)}
+
+  /* NAV */
+  .nav{position:fixed;bottom:1.5rem;right:2rem;z-index:100;font-size:0.6rem;color:var(--text-dim);display:flex;gap:1rem;align-items:center}
+  .nav span{opacity:0.5}
+  .nav .current{color:var(--accent)}
+  .nav-keys{position:fixed;bottom:1.5rem;left:2rem;z-index:100;font-size:0.55rem;color:var(--text-dim);letter-spacing:0.1em}
+
+  /* SLIDE NAV */
+  .slide-nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;gap:1px;
+    background:rgba(6,6,9,0.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .slide-nav .sn{
+    flex:1;
+    padding:4px 2px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:var(--mono);
+    color:var(--text-dim);
+    background:var(--surface);
+    border:none;border-right:1px solid rgba(255,255,255,0.03);
+    cursor:pointer;
+    transition:all 0.15s;
+    overflow:hidden;
+  }
+  .slide-nav .sn .sn-num{font-size:0.5rem;font-weight:700;line-height:1}
+  .slide-nav .sn .sn-title{font-size:0.35rem;line-height:1;margin-top:2px;opacity:0.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .slide-nav .sn:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+  .slide-nav .sn.active{color:var(--accent);background:rgba(233,69,96,0.1);text-shadow:0 0 6px var(--accent-glow)}
+  .slide-nav .sn.active .sn-title{opacity:1}
+
+  @media(max-width:900px){
+    .slide{padding:2rem 2.5rem}
+    h1{font-size:2rem}
+    .two-col,.vs,.split{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACT 0: TITLE                               -->
+<!-- ═══════════════════════════════════════════ -->
+
+<div class="slide active" data-slide="1" data-title="Title">
+  <div class="tag">Soulmates Masterclass</div>
+  <h1>AI Agents.<br><span class="glow">Фантастические твари</span><br>и где они обитают</h1>
+  <p>Станислав Глазов<br>Media Artist & Developer</p>
+  <p class="note">Hou2Touch School</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACT 1: BACKGROUND                          -->
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- S02 — 1998 -->
+<div class="slide" data-slide="2" data-title="1998">
+  <div class="split">
+    <div>
+      <div class="tag">Background</div>
+      <h1>1998.</h1>
+      <p>Как я из художника стал программистом</p>
+      <p class="note" style="font-style:italic;color:var(--text-hi)">«Люди которые строят software — казались богами.»</p>
+    </div>
+    <div class="img-frame">
+      <img src="Houdini.png" alt="Houdini">
+      <div class="img-label">Houdini · 1998</div>
+    </div>
+  </div>
+</div>
+
+<!-- S03 — Film Pipeline -->
+<div class="slide" data-slide="3" data-title="Film Pipeline">
+  <div class="split">
+    <div>
+      <div class="tag">Irixter, Scanline VFX · Munich · 2002–2006</div>
+      <h1>Technical Director.</h1>
+      <p>C++ плагины под Maya. Программирование Pipeline для VFX.<br>Управление производством.</p>
+      <p class="note" style="font-style:italic">building reusable non-destructive workflow.</p>
+    </div>
+    <div class="film-row">
+      <img src="LissiFilm.jpg" alt="Lissi">
+      <img src="HuBuhFilm.jpg" alt="Hui Buh">
+      <img src="DragonHuntersFiolm.jpg" alt="Dragon Hunters">
+    </div>
+  </div>
+</div>
+
+<!-- S04 — Флакон / ELMA -->
+<div class="slide" data-slide="4" data-title="BPMN">
+  <div class="split">
+    <div>
+      <div class="tag">2010 · PM / BPMN Integration</div>
+      <h1>PM / BPMN Integration.<br>Флакон.</h1>
+      <p>BPMN. Автоматизация бизнес-процессов.<br>Завод Флакон, документооборот, интеграции.</p>
+      <p class="note" style="font-style:italic">Архитектурное мышление работает везде.</p>
+    </div>
+    <div class="img-frame">
+      <img src="ELma.webp" alt="ELMA">
+      <div class="img-label">ELMA · BPMN · 2010</div>
+    </div>
+  </div>
+</div>
+
+<!-- S05 — New Media Art / TouchDesigner -->
+<div class="slide" data-slide="5" data-title="New Media Art">
+  <div class="split">
+    <div>
+      <div class="tag">2011</div>
+      <h1>Из программиста —<br>обратно в художники.</h1>
+      <p>Реалтайм. VJing. Музыка.<br>Но теперь — как системный архитектор.</p>
+      <p class="note" style="font-style:italic">Процедурализм — это инженерное мышление.</p>
+    </div>
+    <div class="img-frame">
+      <img src="TouchDesigner.png" alt="TouchDesigner">
+      <div class="img-label">TouchDesigner · Node Network</div>
+    </div>
+  </div>
+</div>
+
+<!-- S06 — Building Applications -->
+<div class="slide" data-slide="6" data-title="Applications">
+  <div class="split">
+    <div>
+      <div class="tag">TouchDesigner · продукты для клиентов</div>
+      <h1>Строил инструменты.</h1>
+      <p>Медиа-серверы для театра.<br>Автоматизация инфографики для Коммерсант ТВ.<br>Стриминг системы и интерактивные инсталляции.</p>
+      <p class="note" style="font-style:italic">Архитектура.</p>
+    </div>
+    <div class="img-frame">
+      <img src="MediaServer.JPG" alt="Media Server">
+      <div class="img-label">Media Server · Theatre</div>
+    </div>
+  </div>
+</div>
+
+<!-- S07 — School -->
+<div class="slide" data-slide="7" data-title="School">
+  <div class="split">
+    <div>
+      <div class="tag">Hou2Touch · 2014 — сейчас</div>
+      <h1>Школа.</h1>
+      <p>2500+ студентов. Houdini. TouchDesigner.</p>
+      <p class="note" style="font-style:italic">От художника к менеджеру.</p>
+    </div>
+    <div class="img-frame">
+      <img src="Hou2touch.png" alt="Hou2Touch" style="transform:scale(1.28) translateY(3%);transform-origin:center center;object-fit:cover">
+      <div class="img-label">Hou2Touch · School</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACT 1: STORY ARC                           -->
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- S08 — Пароход уходит -->
+<div class="slide" data-slide="8" data-title="Пароход">
+  <div class="tag">Superheros Soulmates · 2023</div>
+  <h1>Пароход уходит.</h1>
+  <div class="quote">«Я занимаюсь прошлым.<br>Хочется заниматься будущим.»</div>
+</div>
+
+<!-- S09 — Bottleneck -->
+<div class="slide" data-slide="9" data-title="Bottleneck">
+  <div class="tag">Soulmates Leadership · весна 2025</div>
+  <h1>Bottleneck — <span class="glow">это я.</span></h1>
+  <p style="font-size:1.1rem">ENFP-T · Prudence 2/10 · ADHD<br>Фаундер без управленца.</p>
+</div>
+
+<!-- S10 — AI как зеркало -->
+<div class="slide" data-slide="10" data-title="AI зеркало">
+  <div class="tag">2024</div>
+  <h1>AI как зеркало.</h1>
+  <p style="font-size:1.1rem">Миллион токенов контекста.<br>Паттерны в собственной коммуникации.</p>
+</div>
+
+<!-- S11 — Vibecoding to AI SWE -->
+<div class="slide" data-slide="11" data-title="Vibecoding → SWE">
+  <div class="tag">2024 — 2025</div>
+  <h1>Vibecoding <span style="color:var(--text-dim)">→</span> <span class="glow">AI SWE</span></h1>
+  <p style="font-size:1.05rem">Чатики → VSCode → Copilot Agent →<br>Claude Code → собственный harness.</p>
+  <p class="note" style="font-style:italic">Копипаст скриптов из чатиков. Memory Bank. C4. Claude Code.</p>
+</div>
+
+<!-- S12 — Сингулярность -->
+<div class="slide" data-slide="12" data-title="Сингулярность">
+  <div class="tag">Февраль 2026</div>
+  <h1>Персональная<br>сингулярность.</h1>
+  <p style="font-size:1.05rem">POS — Push vs Pull.<br>Не нужны люди чтобы проверить идею.</p>
+  <p class="note" style="font-style:italic">Меньше тревожности. Больше уверенности.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACT 2: МАСШТАБ + DECK (from deck.html)     -->
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- S13 МАСШТАБ -->
+<div class="slide" data-slide="13" data-title="Масштаб">
+  <div class="tag">масштаб</div>
+  <div class="stats" style="margin-bottom:1.5rem">
+    <div class="stat"><div class="num">16</div><div class="lbl">Repositories</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent)">1,460</div><div class="lbl">Commits / 30d</div></div>
+    <div class="stat"><div class="num">138</div><div class="lbl">Open Issues</div></div>
+    <div class="stat"><div class="num">183</div><div class="lbl">Closed Issues</div></div>
+  </div>
+  <div class="progress-list">
+    <div class="prog-row"><span class="prog-name">h2t-graphs</span><div class="prog-bar"><div class="prog-fill green" style="width:94%"></div></div><span class="prog-pct green">94%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-snap</span><div class="prog-bar"><div class="prog-fill green" style="width:100%"></div></div><span class="prog-pct green">100%</span></div>
+    <div class="prog-row"><span class="prog-name">NewsEngine</span><div class="prog-bar"><div class="prog-fill green" style="width:83%"></div></div><span class="prog-pct green">83%</span></div>
+    <div class="prog-row"><span class="prog-name">depthkit</span><div class="prog-bar"><div class="prog-fill green" style="width:83%"></div></div><span class="prog-pct green">83%</span></div>
+    <div class="prog-row"><span class="prog-name">creative-think</span><div class="prog-bar"><div class="prog-fill amber" style="width:73%"></div></div><span class="prog-pct amber">73%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-vision</span><div class="prog-bar"><div class="prog-fill blue" style="width:67%"></div></div><span class="prog-pct blue">67%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-skills</span><div class="prog-bar"><div class="prog-fill blue" style="width:62%"></div></div><span class="prog-pct blue">62%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-dcc</span><div class="prog-bar"><div class="prog-fill amber" style="width:50%"></div></div><span class="prog-pct amber">50%</span></div>
+    <div class="prog-row"><span class="prog-name">SpecDesigner</span><div class="prog-bar"><div class="prog-fill amber" style="width:50%"></div></div><span class="prog-pct amber">50%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-evals</span><div class="prog-bar"><div class="prog-fill blue" style="width:49%"></div></div><span class="prog-pct blue">49%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-transcrip.</span><div class="prog-bar"><div class="prog-fill amber" style="width:45%"></div></div><span class="prog-pct amber">45%</span></div>
+    <div class="prog-row"><span class="prog-name">h2t-staging</span><div class="prog-bar"><div class="prog-fill red" style="width:2%"></div></div><span class="prog-pct red">0%</span></div>
+    <div class="prog-row"><span class="prog-name">POS</span><div class="prog-bar"><div class="prog-fill red" style="width:2%"></div></div><span class="prog-pct red">0%</span></div>
+  </div>
+  <p class="big" style="margin-top:1rem">1 человек. 0 команда. 1 месяц.</p>
+</div>
+
+<!-- S14 ДОМЕНЫ -->
+<div class="slide" data-slide="14" data-title="Домены">
+  <div class="tag">домены</div>
+  <h2>Карта доменов</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    POS["Personal OS"] --> ART["Art"]
+    POS --> EDU["Education"]
+    POS --> DEV["Dev"]
+    POS --> PHOTO["Photo"]
+    POS --> LIFE["Life"]
+    ART --> AP["Projects, Open Calls, SMM"]
+    EDU --> H2T["Hou2Touch, Lessons, Content Mktg"]
+    DEV --> SD["SpecDesigner, NewsEngine, Crypto\nVision, Graphs, Evals"]
+    PHOTO --> PF["Portfolio, Open Calls"]
+    LIFE --> BC["Bureaucracy, Psychology, Health"]
+    style POS fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style DEV fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style EDU fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <p class="note">9 доменов &middot; 46+ проектов &middot; domains.yaml как единый реестр</p>
+</div>
+
+<!-- S15 СТЕК -->
+<div class="slide" data-slide="15" data-title="Стек">
+  <div class="tag">стек</div>
+  <h2>Экосистема инструментов</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TB
+    subgraph SK ["Skills (22 skills)"]
+        S["gmail, calendar, notion\ntelegram, handoff, session"]
+    end
+    subgraph CLI ["CLI (hub + proxy)"]
+        C["h2t CLI"]
+    end
+    subgraph FW ["Frameworks"]
+        F1["h2t-ai"] & F2["h2t-vision"] & F3["h2t-graphs"] & F4["h2t-evals"] & F5["h2t-transcription"]
+    end
+    SK -->|"вызывают"| CLI
+    CLI -->|"роутит"| F1 & F2 & F3 & F4 & F5
+    style SK fill:#1a0a10,stroke:#e94560,color:#e94560
+    style CLI fill:#0e0e16,stroke:#ffb800,color:#ffb800
+    style FW fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+    </pre>
+  </div>
+  <p class="note">Skills &rarr; CLI &rarr; Frameworks. Каждый уровень не знает о других.</p>
+</div>
+
+<!-- S16 NEWSENGINE -->
+<div class="slide" data-slide="16" data-title="NewsEngine">
+  <div class="tag">newsengine</div>
+  <h2>NewsEngine</h2>
+  <p class="sub">AI-powered research intelligence pipeline</p>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph SRC ["SOURCES"]
+        S1["YouTube"] & S2["RSS"] & S3["Telegram"] & S4["Substack"] & S5["Search APIs"]
+    end
+
+    subgraph BRZ ["BRONZE"]
+        P["Parsers"] --> F["Fetcher"] --> R["Raw Storage"]
+    end
+
+    subgraph SLV ["SILVER"]
+        I["Ingestion"] --> N["Normalize"] --> E["LLM Enrich"] --> D["Dedup + Embed"]
+    end
+
+    subgraph GLD ["GOLD"]
+        SC["Scoring\n4 scorers"] --> TH["Thompson\nSampling"]
+    end
+
+    subgraph OUT ["OUTPUT"]
+        UI["Dashboard"] & DG["Digest"] & RA["DeepResearch\nAgent"] & TP["Telegram\nPublisher"]
+    end
+
+    SRC --> BRZ --> SLV --> GLD --> OUT
+    OUT -->|"feedback"| TH
+
+    style SRC fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style BRZ fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+    style SLV fill:#0a0d1a,stroke:#4a9eff,color:#c0c0d0
+    style GLD fill:#1a0a10,stroke:#e94560,color:#e94560
+    style OUT fill:#0e0e16,stroke:#ffb800,color:#c0c0d0
+    </pre>
+  </div>
+  <p class="note">Prefect (5 flows) &middot; PostgreSQL + pgvector &middot; OpenAI + Ollama &middot; Medallion architecture</p>
+</div>
+
+<!-- S17 VISION + SNAP -->
+<div class="slide" data-slide="17" data-title="Vision+Snap">
+  <div class="tag">vision + snap</div>
+  <h2>h2t-vision + h2t-snap</h2>
+  <div class="vs">
+    <div>
+      <h3 class="red">H2T-VISION</h3>
+      <p>Semantic video analysis<br><br>SceneDetect &rarr; CLIP &rarr; VLM<br>Smart keyframes<br>10-100x inference reduction<br><br>262 tests &middot; 8 endpoints</p>
+    </div>
+    <div>
+      <h3 class="green">H2T-SNAP</h3>
+      <p>Lightweight computer use<br><br>Capture &rarr; Click &rarr; Type &rarr; Hover<br>JSON output<br>Background capture<br><br>17 MB &middot; zero deps &middot; Windows + macOS</p>
+    </div>
+  </div>
+</div>
+
+<!-- S18 TRANSCRIPTION -->
+<div class="slide" data-slide="18" data-title="Transcription">
+  <div class="tag">transcription</div>
+  <h2>h2t-transcription</h2>
+  <p class="sub">9-stage video processing pipeline. 582 videos, 265 hours.</p>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    S["SCAN"] --> T["TRANSCRIBE"] --> C["CORRECT"]
+    C --> Q["QUALITY"]
+    S --> VA["VISUAL ANALYSIS\n(h2t-vision)\nCLIP + SceneDetect"]
+
+    Q --> CH["CHAPTER\nDETECTION"]
+    VA --> CH
+
+    CH --> E["ENRICHMENT\nсаммари, outcomes\nconcepts, techniques"]
+    E --> EM["EMBED"] --> D["DEDUP"] --> G["GRAPH\n20K nodes"]
+    G --> LMS["LMS\nPlatform"]
+    G --> BOT["AI\nChatbot"]
+
+    style S fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style T fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style C fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style Q fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style VA fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style CH fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style E fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style EM fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style D fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style G fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style LMS fill:#0e0e14,stroke:#ffb800,color:#ffb800
+    style BOT fill:#0e0e14,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <p class="note">Текст + визуал сходятся в Chapter Detection &rarr; качественные саммари &rarr; Knowledge Graph</p>
+</div>
+
+<!-- S19 ВОРОНКА -->
+<div class="slide" data-slide="19" data-title="Воронка">
+  <div class="tag">формализация</div>
+  <h2>Воронка формализации</h2>
+  <div class="funnel">
+    <div class="gate"><span class="num red">ГЕЙТ 0</span><span>Делаю руками, долго, повторяется</span><span class="q">&rarr; из каких шагов состоит?</span></div>
+    <div class="gate"><span class="num red">ГЕЙТ 1</span><span>Формализую последовательность</span><span class="q">&rarr; могу ли написать инструкцию агенту?</span></div>
+    <div class="gate"><span class="num red">ГЕЙТ 2</span><span>Скилл (SKILL.md)</span><span class="q">&rarr; что из этого детерминированно?</span></div>
+    <div class="gate"><span class="num red">ГЕЙТ 3</span><span>Скрипт</span><span class="q">&rarr; может ли стать отдельным модулем?</span></div>
+    <div class="gate"><span class="num red">ГЕЙТ 4</span><span>CLI-инструмент (uvx)</span><span class="q">&rarr; нужен ли где-то ещё?</span></div>
+    <div class="gate"><span class="num red">ГЕЙТ 5</span><span>Инфраструктура + онтология</span><span class="q">&rarr; можно разделить шаблон и данные?</span></div>
+    <div class="gate"><span class="num">ГЕЙТ 6</span><span>Node в сети инструментов</span></div>
+  </div>
+</div>
+
+<!-- S20 EVOLUTION 1 -->
+<div class="slide" data-slide="20" data-title="Эволюция 1">
+  <div class="tag">эволюция 1/4</div>
+  <h2>Один граф, один потребитель</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TB
+    subgraph CT ["creative-thinking plugin"]
+        QE["query.py\n405 lines"] --> GD["context_graph.json\n901 nodes"]
+        SK["Skills"] --> QE
+    end
+    CC["Claude Code"] --> SK
+    style CT fill:#0a0a10,stroke:#e94560,color:#c0c0d0
+    style CC fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <p class="note">Один граф. Один движок. Hardcoded внутри plugin.</p>
+</div>
+
+<!-- S21 EVOLUTION 2 -->
+<div class="slide" data-slide="21" data-title="Эволюция 2">
+  <div class="tag">эволюция 2/4</div>
+  <h2>Второй потребитель &mdash; паттерн ясен</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TB
+    subgraph CT ["creative-thinking"]
+        Q1["query.py"] --> G1["901 nodes"]
+    end
+    subgraph AI ["h2t-ai"]
+        Q2["query.py copy"] --> G2["674 + 3685 nodes"]
+    end
+    subgraph TR ["h2t-transcription"]
+        Q3["query.py ???"]
+    end
+    Q1 -.-|"duplicated"| Q2
+    Q2 -.-|"copy again?"| Q3
+    Q3 --> ADR["ADR-001:\nвынести в shared package"]
+    style ADR fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    </pre>
+  </div>
+  <p class="note">Одна логика, несколько потребителей &mdash; пора выносить.</p>
+</div>
+
+<!-- S22 EVOLUTION 3 -->
+<div class="slide" data-slide="22" data-title="Эволюция 3">
+  <div class="tag">эволюция 3/4</div>
+  <h2>Движок не знает домен</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph ENGINE ["h2t-graphs (shared kernel)"]
+        Q["Query"]
+        W["Write"]
+        F["Feedback"]
+        V["Validation"]
+    end
+
+    ENGINE -->|"query + scoring"| CT["creative-thinking\nframework, concept"]
+    ENGINE -->|"query + scoring"| AI["h2t-ai\noperator, pattern"]
+    ENGINE -->|"query + scoring"| TR["h2t-transcription\nchapter, outcome"]
+    CT -->|"nodes + edges"| ENGINE
+    AI -->|"nodes + edges"| ENGINE
+    TR -->|"nodes + edges"| ENGINE
+
+    style ENGINE fill:#1a0a10,stroke:#e94560,color:#e94560
+    style CT fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style AI fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style TR fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <p class="note">Engine &mdash; фреймворк. Ontology &mdash; данные. Они не смешиваются.</p>
+</div>
+
+<!-- S23 EVOLUTION 4 -->
+<div class="slide" data-slide="23" data-title="Эволюция 4">
+  <div class="tag">эволюция 4/4</div>
+  <h2>Паттерн повторяется</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    A["Компонент\nвнутри одного repo"] -->|"2-й потребитель"| C["Сразу extract:\nshared kernel"]
+    C -->|"CLI + API"| D["Service"]
+    style A fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style C fill:#1a0a10,stroke:#e94560,color:#e94560
+    style D fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <table style="margin-top:1.5rem">
+    <tr><th></th><th>h2t-graphs</th><th>h2t-evals</th></tr>
+    <tr><td>Компонент</td><td>query.py в CT</td><td>eval_baseline.py в graphs</td></tr>
+    <tr><td>Потребители</td><td>h2t-ai, transcription</td><td>vision, transcription, ai</td></tr>
+    <tr><td>Extract</td><td class="win">ADR-001 &rarr; repo</td><td class="win">&rarr; h2t-evals repo</td></tr>
+  </table>
+  <p class="note">Второй потребитель = сразу shared kernel.</p>
+</div>
+
+<!-- S24 ЗОНЫ -->
+<div class="slide" data-slide="24" data-title="Скрипт vs LLM">
+  <div class="tag">зоны ответственности</div>
+  <h2>Скрипт vs LLM</h2>
+  <div class="vs">
+    <div>
+      <h3 class="green">СКРИПТ (детерм.)</h3>
+      <ul class="list">
+        <li>Сбор данных из API</li>
+        <li>Парсинг, трансформация</li>
+        <li>Валидация</li>
+        <li>State management</li>
+        <li>Scheduling, routing</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="red">LLM (стохаст.)</h3>
+      <ul class="list red">
+        <li>Классификация</li>
+        <li>Суммаризация</li>
+        <li>Генерация</li>
+        <li>Reasoning</li>
+        <li>Creative tasks</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- S25 MEDALLION -->
+<div class="slide" data-slide="25" data-title="Medallion">
+  <div class="tag">архитектура</div>
+  <h2>POS as Medallion Architecture</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    B["BRONZE\nRaw dump\nAPI response\nGit data"] --> RL["RAW LAKE\nAppend-only\nВоспроизводимый"]
+    RL --> S["SILVER\nКлассификация\nТегирование\nСуммаризация"]
+    S --> DB["DB / VAULT\nObsidian\nSQLite\nContext graph"]
+    DB --> G["GOLD\nNotion tasks\nDashboard\nDaily digest"]
+    style B fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S fill:#1a0a10,stroke:#e94560,color:#e94560
+    style G fill:#0e0e16,stroke:#ffb800,color:#ffb800,stroke-width:2px
+    </pre>
+  </div>
+  <p class="note">Bronze = детерм. &middot; Silver = стохаст. &middot; Gold = готов к действию</p>
+</div>
+
+<!-- S26 ETL -->
+<div class="slide" data-slide="26" data-title="ETL">
+  <div class="tag">паттерн</div>
+  <h2>Personal OS = ETL</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph E ["EXTRACT (скрипт)"]
+        E1["Gmail API"] & E2["Calendar"] & E3["Telegram"] & E4["GitHub"] & E5["MeetGeek"]
+    end
+    subgraph T ["TRANSFORM (LLM)"]
+        T1["Суммаризация\nКлассификация\nПриоритизация"]
+    end
+    subgraph L ["LOAD (скрипт)"]
+        L1["Notion tasks"] & L2["Vault"] & L3["Daily brief"] & L4["Dashboard"]
+    end
+    E --> T --> L
+    style E fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+    style T fill:#1a0a10,stroke:#e94560,color:#c0c0d0
+    style L fill:#0a0d1a,stroke:#4a9eff,color:#c0c0d0
+    </pre>
+  </div>
+  <p class="note">Оркестратор: cron &middot; hook &middot; агент &middot; человек</p>
+</div>
+
+<!-- S27 CLI = 2 РЕЖИМА -->
+<div class="slide" data-slide="27" data-title="CLI=2 режима">
+  <div class="tag">паттерн</div>
+  <h2>Skill + CLI = один инструмент</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    CLI["notion_cli.py\nquery, create, update, get"] --> P["ETL PIPELINE\nскрипт, cron"]
+    CLI --> A["SKILL (агент)\nиз чата"]
+    style CLI fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style P fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style A fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    </pre>
+  </div>
+  <p class="note">CLI = единый интерфейс для скрипта И для агента</p>
+</div>
+
+<!-- S28 BACKFILL -->
+<div class="slide" data-slide="28" data-title="Backfill">
+  <div class="tag">загрузка</div>
+  <h2>Два режима загрузки</h2>
+  <div class="vs">
+    <div>
+      <h3 class="amber">BACKFILL (один раз)</h3>
+      <p>Gmail: за 30 дней<br>Telegram: за 3 месяца<br>Calendar: все события<br>Notion: все задачи</p>
+    </div>
+    <div>
+      <h3 class="green">REAL-TIME (по расписанию)</h3>
+      <p>Gmail: новые за час<br>Telegram: новые<br>Calendar: изменения<br>Notion: обновлённые</p>
+    </div>
+  </div>
+  <p class="note" style="margin-top:2rem">Medallion принимает оба потока одинаково</p>
+</div>
+
+<!-- S29 PREREQUISITES -->
+<div class="slide" data-slide="29" data-title="Prerequisites">
+  <div class="tag">prerequisites</div>
+  <h2>&laquo;Спроси у своего агента&raquo;</h2>
+  <p class="sub" style="margin-bottom:1.5rem">Работает, если знаешь:</p>
+  <ul class="list" style="font-size:1rem;line-height:2.5">
+    <li>Что такое venv и зачем</li>
+    <li>Чем CLI отличается от API</li>
+    <li>Зачем нужен git</li>
+    <li>Что такое hook</li>
+    <li>Где граница скрипт / LLM</li>
+    <li>json, yaml, toml, jq</li>
+  </ul>
+</div>
+
+<!-- S30 КОНТЕКСТ -->
+<div class="slide" data-slide="30" data-title="Контекст">
+  <div class="tag">контекст</div>
+  <h2>Динамический контекст</h2>
+  <pre class="code">domains.yaml (онтология)
+├── art:        6 проектов
+├── dev:        8 проектов
+├── education:  4 проекта
+├── crypto:     3 проекта
+└── всего 9 доменов, 46+ проектов
+
+git remote → repo-mapping → domain → контекст
+
+Claude динамически определяет домен
+из директории, в которой запущен</pre>
+</div>
+
+<!-- S31 CLI vs MCP -->
+<div class="slide" data-slide="31" data-title="CLI vs MCP">
+  <div class="tag">архитектура</div>
+  <h2>CLI-first</h2>
+  <table>
+    <tr><th></th><th>CLI</th><th>MCP</th></tr>
+    <tr><td>Токены</td><td class="win">~0 (1 tool)</td><td>50K+ (100 tools)</td></tr>
+    <tr><td>Тестирование</td><td class="win">terminal</td><td>нужен MCP client</td></tr>
+    <tr><td>Framework</td><td class="win">нет lock-in</td><td>привязан</td></tr>
+    <tr><td>Auto-fix</td><td class="win">в wrapper</td><td>невозможно</td></tr>
+    <tr><td>Determinism</td><td class="win">стабильно</td><td>непредсказуемо</td></tr>
+  </table>
+</div>
+
+<!-- S32 UVX -->
+<div class="slide" data-slide="32" data-title="UVX">
+  <div class="tag">инструмент</div>
+  <h2>uvx: один CLI, все репозитории</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph REPOS ["Репозитории (каждый со .venv)"]
+        R1["h2t-graphs"] & R2["h2t-vision"] & R3["h2t-transcription"]
+    end
+    UVX["uv tool install -e .\n→ глобальный PATH"]
+    subgraph GLOBAL ["Доступно отовсюду"]
+        H["$ h2t graphs query ...\n$ h2t vision analyze ...\n$ h2t transcribe status ..."]
+    end
+    REPOS --> UVX --> GLOBAL
+    AG["Агент из ЛЮБОГО проекта"] --> GLOBAL
+    style UVX fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style AG fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    </pre>
+  </div>
+  <div class="vs" style="margin-top:1.5rem">
+    <div>
+      <h3 class="red">БЕЗ UVX</h3>
+      <pre class="code" style="font-size:0.8rem">$ cd ~/h2t-graphs
+$ source .venv/bin/activate
+$ python scripts/query.py \
+    --type framework
+$ deactivate
+$ cd ~/h2t-vision
+$ source .venv/bin/activate
+$ python scripts/analyze.py ...
+
+<span style="color:var(--accent)">Агент забывает source .venv
+в 80% случаев</span></pre>
+    </div>
+    <div>
+      <h3 class="green">С UVX</h3>
+      <pre class="code" style="font-size:0.8rem">$ h2t graphs query --type framework
+
+
+
+
+<span style="color:var(--green)">Одна команда.
+Из любой директории.
+venv активируется автоматически.</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- S33 ИНФРА vs ОНТОЛОГИЯ -->
+<div class="slide" data-slide="33" data-title="Infra vs Onto">
+  <div class="tag">принцип</div>
+  <h2>Инфраструктура vs Онтология</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    subgraph INFRA ["ИНФРАСТРУКТУРА"]
+        I1["h2t-graphs\nh2t-evals"]
+    end
+    INFRA -->|"не знает домен"| D1["h2t-transcription\nchapters, topics"]
+    INFRA --> D2["creative-thinking\ntechniques, lessons"]
+    INFRA --> D3["TD skill\nnodes, params"]
+    style INFRA fill:#1a0a10,stroke:#e94560,color:#c0c0d0
+    style DOMAIN fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+    </pre>
+  </div>
+  <p class="note">PostgreSQL не знает про твой бизнес. Твой бизнес не знает про WAL.</p>
+</div>
+
+<!-- S34 SPECDESIGNER -->
+<div class="slide" data-slide="34" data-title="SpecDesigner">
+  <div class="tag">product</div>
+  <h2><span class="glow">SpecDesigner</span> &mdash; Miro для AI-агентов</h2>
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:center">
+    <div style="border:1px solid var(--border);overflow:hidden;position:relative">
+      <div style="position:absolute;top:-1px;left:-1px;width:10px;height:10px;border:2px solid var(--accent);border-right:none;border-bottom:none"></div>
+      <img src="https://specdesigner.netlify.app/specdesigner.png" style="width:100%;display:block">
+    </div>
+    <div style="padding-left:0.5rem">
+      <p style="font-size:1rem;color:var(--text-hi);margin-bottom:1rem">
+        Визуальный редактор архитектуры &mdash;<br>
+        <span class="glow">single source of truth</span><br>для кодинга агентов.
+      </p>
+      <p style="margin-bottom:1.5rem">Рисуешь граф сервисов, очередей, акторов &rarr;<br>
+      агент читает спецификацию &rarr;<br>генерирует код по графу.</p>
+      <p>
+        <a href="https://specdesigner.netlify.app/" style="color:var(--accent);text-decoration:none;font-size:0.9rem;letter-spacing:0.1em;border:1px solid var(--border);padding:0.5rem 1.2rem;display:inline-block">WAITLIST OPEN &rarr;</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- NEW: AGENTS EXPLAINED                     -->
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- S35 ВОРОНКА МОДЕЛЕЙ -->
+<div class="slide" data-slide="35" data-title="Base→Agent">
+  <div class="tag">модели</div>
+  <h2>От текста к действию</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    BASE["BASE MODEL\nпредсказывает\nследующий токен"] -->|"+ RLHF"| INST["INSTRUCT MODEL\nследует\nинструкциям"]
+    INST -->|"+ tools\n+ memory\n+ loop"| AGENT["AGENT\nдумает → действует\n→ проверяет"]
+
+    style BASE fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style INST fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style AGENT fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    </pre>
+  </div>
+  <div class="stats" style="margin-top:1.5rem">
+    <div class="stat"><div class="num" style="font-size:1.2rem;color:var(--text-dim)">текст</div><div class="lbl">Base</div></div>
+    <div class="stat"><div class="num" style="font-size:1.2rem;color:var(--blue)">задача</div><div class="lbl">Instruct</div></div>
+    <div class="stat"><div class="num" style="font-size:1.2rem;color:var(--accent)">процесс</div><div class="lbl">Agent</div></div>
+  </div>
+</div>
+
+<!-- S36 АНАТОМИЯ АГЕНТА -->
+<div class="slide" data-slide="36" data-title="Анатомия агента">
+  <div class="tag">анатомия</div>
+  <h2>LLM в упряжке</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph TB
+    subgraph MEM ["MEMORY"]
+        M1["sessions"] & M2["vault"] & M3["context graph"]
+    end
+
+    subgraph CTX ["CONTEXT WINDOW"]
+        direction TB
+        SP["system prompt"] & CMD["CLAUDE.md\nrules"] & SK["skills\nMCP"] & USR["user messages"]
+        LLM["⬡ LLM"]
+    end
+
+    subgraph TOOLS ["TOOLS"]
+        T1["bash"] & T2["disk"] & T3["web"] & T4["APIs"]
+    end
+
+    MEM --> CTX
+    CTX --> TOOLS
+    TOOLS -->|"result"| CTX
+
+    style MEM fill:#0a0d1a,stroke:#4a9eff,color:#c0c0d0
+    style CTX fill:#1a0a10,stroke:#e94560,color:#c0c0d0
+    style TOOLS fill:#0a1a0d,stroke:#00ff88,color:#c0c0d0
+    style LLM fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    </pre>
+  </div>
+  <p class="note">Агент = модель + контекст + инструменты + цикл think &rarr; act &rarr; observe</p>
+</div>
+
+<!-- S37 MANAGED PIPELINE -->
+<div class="slide" data-slide="37" data-title="Pipeline">
+  <div class="tag">подход 1</div>
+  <h2>Managed Pipeline</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    IN["INPUT"] --> S1["СКРИПТ\nextract"]
+    S1 --> L1["LLM\nenrich"]
+    L1 --> S2["СКРИПТ\nvalidate"]
+    S2 --> S3["СКРИПТ\nload"]
+    S3 --> OUT["RESULT"]
+
+    style IN fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style S1 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style L1 fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style S2 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style S3 fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style OUT fill:#0e0e16,stroke:#ffb800,color:#ffb800,stroke-width:2px
+    </pre>
+  </div>
+  <div class="vs" style="margin-top:1.5rem">
+    <div>
+      <h3 class="green">Плюсы</h3>
+      <p>Предсказуемо<br>Один проход<br>Каждый шаг тестируем<br>Дешёвые токены</p>
+    </div>
+    <div>
+      <h3 class="red">Минусы</h3>
+      <p>Не улучшается со временем<br>Качество = качество промпта<br>Хрупкий к новым данным</p>
+    </div>
+  </div>
+</div>
+
+<!-- S38 SELF-IMPROVING (GEPA) -->
+<div class="slide" data-slide="38" data-title="Self-Improving">
+  <div class="tag">подход 2 &middot; GEPA pattern</div>
+  <h2>Self-Improving System</h2>
+  <div class="mermaid-wrap">
+    <pre class="mermaid">
+graph LR
+    GEN["GENERATE\nкандидат"] --> EXEC["EXECUTE\nна тест-сете"]
+    EXEC --> EVAL["EVALUATE\nscore + WHY"]
+    GT["GROUND\nTRUTH"] --> EVAL
+    EVAL -->|"fail"| REF["REFLECT\nпочему провал?"]
+    REF --> IMP["IMPROVE\nprompt / strategy"]
+    IMP --> GEN
+    EVAL -->|"pass"| DONE["✓ DONE"]
+
+    style GEN fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style EXEC fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style EVAL fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+    style GT fill:#0e0e16,stroke:#ffb800,color:#ffb800,stroke-width:2px
+    style REF fill:#0a0d1a,stroke:#4a9eff,color:#4a9eff
+    style IMP fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style DONE fill:#0a1a0d,stroke:#00ff88,color:#00ff88,stroke-width:2px
+    </pre>
+  </div>
+  <p style="margin-top:1rem;font-size:0.95rem;color:var(--text-hi)">
+    <span class="amber">Ключ:</span> EVALUATE знает не только <strong>что</strong> неправильно, но <strong>почему</strong>.<br>
+    REFLECT анализирует причину, IMPROVE меняет стратегию, не просто retry.
+  </p>
+  <p class="note">Нужен ground truth set. С каждым циклом &mdash; точнее.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- ════���════════════════════════════════════���═ -->
+<!-- Q&A PREPARED SLIDES                       -->
+<!-- ═════════���═════════════════════════════════ -->
+
+<!-- S39 АВТОНОМНОСТЬ -->
+<div class="slide" data-slide="39" data-title="Автономность">
+  <div class="tag">автономность</div>
+  <h2>Три режима агента</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:1.05rem;color:var(--text-hi);line-height:1.8">Автоматизируй где ошибка безопасна.<br>Контроль — где ошибка дорога.</p>
+    </div>
+    <div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 class="red">HUMAN-IN-THE-LOOP</h3>
+        <p>Email, коммиты, git push<br>&rarr; только с подтверждения</p>
+      </div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 class="amber">HUMAN-ON-THE-LOOP</h3>
+        <p>Daily Brief: 4 API каждое утро<br>&rarr; ты только читаешь результат</p>
+      </div>
+      <div class="panel">
+        <h3 class="green">FULLY AUTONOMOUS</h3>
+        <p>Telegram digest, транскрипты<br>&rarr; worst case = плохой summary</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S40 С ЧЕГО НАЧАТЬ -->
+<div class="slide" data-slide="40" data-title="С чего начать">
+  <div class="tag">старт</div>
+  <h2>Воронка формализации</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:1.05rem;color:var(--text-hi);line-height:1.8">Руками &rarr; инструкция агенту &rarr;<br>скрипт &rarr; CLI &rarr; node в сети</p>
+      <p class="note">Не дробить заранее.<br>Позволить структуре вырасти из работы.</p>
+    </div>
+    <div>
+      <div class="panel">
+        <p style="font-size:0.95rem;line-height:2.2">
+          <span class="big" style="font-size:1.1rem">1.</span> Claude Code — поставить<br>
+          <span class="big" style="font-size:1.1rem">2.</span> CLAUDE.md — написать<br>
+          <span class="big" style="font-size:1.1rem">3.</span> Одна рутина — автоматизировать<br>
+          <span class="big" style="font-size:1.1rem">4.</span> 30 минут — первый результат
+        </p>
+        <p class="note" style="margin-top:1rem">Пример: лень считать маршруты &rarr; gather.py &rarr; Daily Brief &rarr; gather переиспользуется в session-start, handoff, pre-merge-check</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S41 БЕЗОПАСНОСТЬ ДАННЫХ -->
+<div class="slide" data-slide="41" data-title="Данные">
+  <div class="tag">данные</div>
+  <h2>Три слоя защиты</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:1.05rem;color:var(--text-hi);line-height:1.8">Detection &rarr; Masking &rarr; Data Minimization</p>
+      <p style="margin-top:1rem"><span class="green">Гибрид:</span><br>Ollama (сенситивное, локально)<br>Claude (reasoning, облако)</p>
+      <p class="note">Отдельный токен с минимальными правами.<br>Стажёру — доступ в офис, но не ключ от сейфа.</p>
+    </div>
+    <div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 class="red">DETECTION</h3>
+        <p>Microsoft Presidio (open-source)<br>имена, email, телефоны, карты</p>
+      </div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 class="amber">MASKING</h3>
+        <p>alice@gmail.com &rarr; <span class="green">[EMAIL_1]</span><br>карта токенов хранится локально</p>
+      </div>
+      <div class="panel">
+        <h3 class="green">DATA MINIMIZATION</h3>
+        <p>Gmail: последнее сообщение<br>Calendar: тип + длительность<br>Telegram: последние 20 сообщений</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S42 БЮДЖЕТ -->
+<div class="slide" data-slide="42" data-title="Бюджет">
+  <div class="tag">деньги</div>
+  <h2>Где теряются токены</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:1.05rem;color:var(--text-hi)">Без оптимизации <span class="red">$2-3K/мес</span><br>С оптимизацией <span class="green">$500-1K/мес</span></p>
+      <div class="stats" style="margin-top:1.5rem">
+        <div class="stat"><div class="num" style="font-size:1rem">$$$</div><div class="lbl">Opus</div></div>
+        <div class="stat"><div class="num" style="font-size:1rem;color:var(--amber)">$</div><div class="lbl">Haiku</div></div>
+        <div class="stat"><div class="num" style="font-size:1rem;color:var(--green)">$0</div><div class="lbl">Ollama</div></div>
+      </div>
+    </div>
+    <div>
+      <table>
+        <tr><th>Проблема</th><th>Решение</th><th>Экономия</th></tr>
+        <tr><td>100 MCP tools<br>= 50K токенов</td><td class="win">CLI</td><td class="win">96-99%</td></tr>
+        <tr><td>Каждый запрос<br>с нуля</td><td class="win">Prompt caching</td><td class="win">68-90%</td></tr>
+        <tr><td>Opus для<br>простых задач</td><td class="win">Model routing</td><td class="win">70%</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- S43 ГАРДРЕЙЛЫ -->
+<div class="slide" data-slide="43" data-title="Гардрейлы">
+  <div class="tag">безопасность</div>
+  <h2>Гардрейлы</h2>
+  <div class="two-col">
+    <div>
+      <p style="color:var(--text-hi);font-size:0.95rem;line-height:1.8"><span class="red">War story:</span> AI-агент удалил 100% файлов с Google Drive. Причина: унаследовал полные OAuth credentials.</p>
+      <p style="margin-top:1rem;line-height:2.2">
+        <strong>1.</strong> Отдельный токен<br>
+        <strong>2.</strong> Approval gates<br>
+        <strong>3.</strong> Audit trail<br>
+        <strong>4.</strong> Sandboxing<br>
+        <strong>5.</strong> Kill switch
+      </p>
+    </div>
+    <div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 style="color:var(--text-hi);font-size:0.85rem">OPEN-SOURCE</h3>
+        <p style="font-size:0.85rem;line-height:1.8">
+          <span class="green">NeMo Guardrails</span> (NVIDIA) — middleware, Colang DSL<br>
+          <span class="green">Guardrails AI</span> — валидация выходов LLM<br>
+          <span class="green">LlamaGuard 3</span> (Meta) — safe/unsafe classifier<br>
+          <span class="green">LLM Guard</span> (Protect AI) — PII, injection, toxicity
+        </p>
+      </div>
+      <div class="panel" style="margin-bottom:8px">
+        <h3 style="color:var(--text-hi);font-size:0.85rem">CLOUD</h3>
+        <p style="font-size:0.85rem;line-height:1.8">AWS Bedrock Guardrails<br>Azure AI Content Safety<br>Google Vertex AI Safety</p>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--text-hi);font-size:0.85rem">COMPLIANCE</h3>
+        <p style="font-size:0.85rem;line-height:1.8">OWASP LLM Top 10 (2025)<br>NIST AI RMF<br>EU AI Act (дедлайн: авг 2026)<br>ISO/IEC 42001</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S44 ОРКЕСТРАЦИЯ -->
+<div class="slide" data-slide="44" data-title="Оркестрация">
+  <div class="tag">оркестрация</div>
+  <h2>Три паттерна оркестрации</h2>
+  <div class="three-col">
+    <div>
+      <h3 class="green">SEQUENTIAL</h3>
+      <div class="mermaid-wrap" style="margin-bottom:0.8rem">
+        <pre class="mermaid">
+graph LR
+    A["Extract"] --> B["Enrich"] --> C["Load"]
+    style A fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+    style B fill:#1a0a10,stroke:#e94560,color:#e94560
+    style C fill:#0a1a0d,stroke:#00ff88,color:#00ff88
+        </pre>
+      </div>
+      <p style="font-size:0.85rem">Daily Brief<br>Bronze &rarr; Silver &rarr; Gold</p>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:0.5rem">&check; просто<br>&check; предсказуемо</p>
+    </div>
+    <div>
+      <h3 class="amber">PARALLEL</h3>
+      <div class="mermaid-wrap" style="margin-bottom:0.8rem">
+        <pre class="mermaid">
+graph TB
+    IN["Task"] --> A["Agent 1"] & B["Agent 2"] & C["Agent 3"]
+    A & B & C --> SYN["Synthesize"]
+    style IN fill:#0e0e16,stroke:#3a3a50,color:#a0a0b8
+    style SYN fill:#0e0e16,stroke:#ffb800,color:#ffb800,stroke-width:2px
+        </pre>
+      </div>
+      <p style="font-size:0.85rem">CEO Council<br>4-6 советников &rarr; синтез</p>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:0.5rem">&check; diversity<br>&check; быстрее</p>
+    </div>
+    <div>
+      <h3 class="red">HIERARCHICAL</h3>
+      <div class="mermaid-wrap" style="margin-bottom:0.8rem">
+        <pre class="mermaid">
+graph TB
+    M["Manager"] --> W1["Worker 1"] & W2["Worker 2"] & W3["Worker 3"]
+    W1 & W2 & W3 --> M
+    style M fill:#1a0a10,stroke:#e94560,color:#e94560,stroke-width:2px
+        </pre>
+      </div>
+      <p style="font-size:0.85rem">Manager &rarr; sub-agents<br>Для 50+ агентов</p>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:0.5rem">&check; масштаб<br>&cross; сложно, дорого</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+
+<!-- S45 TAKEAWAYS -->
+<div class="slide" data-slide="45" data-title="Takeaways">
+  <div class="tag">итоги</div>
+  <h2>5 вещей на завтра</h2>
+  <div style="font-size:0.9rem;line-height:2.5">
+    <p><span class="big" style="font-size:1.3rem">1</span> &nbsp;<strong>ВОРОНКА</strong> &mdash; промпт &rarr; скилл &rarr; скрипт &rarr; CLI &rarr; node в сети</p>
+    <p><span class="big" style="font-size:1.3rem">2</span> &nbsp;<strong>ЗОНЫ</strong> &mdash; скрипт собирает, LLM обогащает. Medallion.</p>
+    <p><span class="big" style="font-size:1.3rem">3</span> &nbsp;<strong>CLI-FIRST</strong> &mdash; subprocess предсказуемее MCP</p>
+    <p><span class="big" style="font-size:1.3rem">4</span> &nbsp;<strong>ETL</strong> &mdash; Personal OS = Extract &rarr; Transform &rarr; Load</p>
+    <p><span class="big" style="font-size:1.3rem">5</span> &nbsp;<strong>CONTEXT GRAPH</strong> &mdash; schema-first, движок не знает домен</p>
+  </div>
+</div>
+
+<!-- S46 КОНТАКТЫ -->
+<div class="slide" data-slide="46" data-title="Контакты">
+  <div class="tag">контакты</div>
+  <h1>Станислав Глазов</h1>
+  <p>Media Artist & Developer</p>
+  <p style="margin-top:1rem">Hou2Touch School &middot; SpecDesigner</p>
+  <p style="margin-top:2rem;color:var(--text-hi);font-size:1.1rem">
+    Открыт к консультациям по построению<br><span class="glow">агентных пайплайнов</span> и <span class="glow">AI-native процессов</span>
+  </p>
+  <p style="margin-top:1.5rem;font-size:0.95rem">
+    <a href="https://t.me/prcdrl" style="color:var(--blue);text-decoration:none">@prcdrl</a> &mdash; Telegram
+  </p>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div class="slide-nav" id="slideNav"></div>
+<div class="nav-keys">&larr; &rarr; / SPACE</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad:true,theme:'dark',
+    themeVariables:{
+      darkMode:true,background:'#0e0e16',primaryColor:'#16161f',
+      primaryTextColor:'#a0a0b8',primaryBorderColor:'#2a2a3a',
+      lineColor:'#3a3a4a',secondaryColor:'#0e0e16',tertiaryColor:'#0e0e16',
+      fontFamily:'JetBrains Mono,monospace',fontSize:'9px',
+      clusterBkg:'#0a0a10',clusterBorder:'#1e1e2e',edgeLabelBackground:'#0a0a10'
+    },
+    flowchart:{curve:'basis',padding:14,htmlLabels:true}
+  });
+
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('slideNav');
+  let current = 0;
+
+  // Build nav squares with titles
+  slides.forEach((s, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'sn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = '<span class="sn-num">' + (i+1) + '</span><span class="sn-title">' + (s.dataset.title || '') + '</span>';
+    btn.onclick = () => show(i);
+    nav.appendChild(btn);
+  });
+  const navBtns = nav.querySelectorAll('.sn');
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    navBtns[current].classList.remove('active');
+    current = ((n % slides.length) + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    navBtns[current].classList.add('active');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); show(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); show(current - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+
+  // Touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+  });
+</script>
+
+</body>
+</html>
