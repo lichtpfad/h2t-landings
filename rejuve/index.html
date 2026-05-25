@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REjuve — Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #ffffff;
+      --text: #1a1a1a; --text-dim: #6b6b6b;
+      --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #5a8a5c;
+      --border: #e0ddd8;
+      --font-heading: 'Playfair Display','Georgia',serif;
+      --font-body: 'Inter','Helvetica Neue','Arial',sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    .page-wrap { max-width: 1100px; margin: 0 auto; padding: 52px 40px 80px; }
+    @media (max-width: 600px) { .page-wrap { padding: 28px 18px 60px; } }
+
+    /* header */
+    .site-header { border-bottom: 1px solid var(--border); padding-bottom: 28px; margin-bottom: 48px; }
+    .client-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+    .site-header h1 { font-family: var(--font-heading); font-size: 36px; font-weight: 700; line-height: 1.15; }
+    .site-header .tagline { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+    .site-header .meta-row { display: flex; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+    .meta-chip { font-size: 11px; color: var(--text-dim); background: var(--bg-light); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+
+    /* category section */
+    .cat-section { margin-bottom: 48px; }
+    .cat-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .cat-title { font-family: var(--font-heading); font-size: 18px; font-weight: 700; }
+    .cat-count { font-size: 11px; color: var(--text-dim); }
+
+    /* card grid */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px) { .card-grid { grid-template-columns: 1fr; } }
+
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 22px 18px; display: flex; flex-direction: column; gap: 0; transition: border-color 0.15s, box-shadow 0.15s; }
+    .card:hover { border-color: #c8c4be; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .card-date { font-size: 10px; color: var(--text-dim); font-weight: 500; }
+    .aud-badge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 3px; }
+    .aud-client { background: #e8f0e8; color: var(--accent3); }
+    .aud-internal { background: #f0eeeb; color: var(--text-dim); }
+    .card-title { font-family: var(--font-heading); font-size: 16px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+    .card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.55; flex: 1; }
+    .card-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none; }
+    .card-link:hover { text-decoration: underline; }
+    .card-link::after { content: '→'; }
+
+    /* footer */
+    .site-footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-dim); }
+    .site-footer a { color: var(--accent2); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="site-header">
+    <div class="client-label">Клиентский портал</div>
+    <h1>REjuve</h1>
+    <div class="tagline">Zug, Switzerland · Kristina Busse · AI-assisted marketing infrastructure</div>
+    <div class="meta-row">
+      <span class="meta-chip">Постоянный клиент</span>
+      <span class="meta-chip" id="page-count">—</span>
+      <span class="meta-chip" id="last-updated">—</span>
+    </div>
+  </div>
+
+  <div id="portal-root"></div>
+
+  <div class="site-footer">
+    h2t-landings / rejuve · <a href="..">все проекты</a>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// РЕЕСТР СТРАНИЦ — добавлять сюда новые entries
+// Поля: cat, title, desc, file, date (YYYY-MM-DD), audience ('client' | 'internal')
+//
+// Категории: 'proposal' | 'analytics' | 'research' | 'appendix'
+// ═══════════════════════════════════════════════════════════
+
+const PAGES = [
+
+  // ── PROPOSAL ───────────────────────────────────────────
+  {
+    cat: 'proposal',
+    title: 'AI Revenue Infrastructure',
+    desc: 'Главная презентация: Option R, три волны, ценообразование. Для показа клиенту.',
+    file: 'pitch-deck.html',
+    date: '2026-04-21',
+    audience: 'client'
+  },
+  {
+    cat: 'proposal',
+    title: 'Три фазы',
+    desc: 'Roadmap трёх волн запуска. Сроки, deliverables, KPI по фазам.',
+    file: 'phases-deck.html',
+    date: '2026-04-21',
+    audience: 'client'
+  },
+
+  // ── ANALYTICS ──────────────────────────────────────────
+  {
+    cat: 'analytics',
+    title: 'Аналитика студии',
+    desc: 'Данные SimplyBook: средний чек, сегменты, воронки, ICP, бенчмарки.',
+    file: 'data-summary-deck.html',
+    date: '2026-05-25',
+    audience: 'internal'
+  },
+
+  // ── RESEARCH ───────────────────────────────────────────
+  {
+    cat: 'research',
+    title: 'Research Hub',
+    desc: 'GYM-партнёры (8 студий), корпораты (12 компаний), медицинские профили устройств (10).',
+    file: 'research-hub.html',
+    date: '2026-05-25',
+    audience: 'internal'
+  },
+  {
+    cat: 'research',
+    title: 'Европейские референс-студии',
+    desc: '11 студий wellness/longevity по Европе. Позиционирование, ценообразование, устройства.',
+    file: 'european-reference-deck.html',
+    date: '2026-05-23',
+    audience: 'internal'
+  },
+  {
+    cat: 'research',
+    title: 'Конкурентная разведка',
+    desc: 'Досье конкурентов, матрица позиционирования, рыночные сигналы, аудитория и регуляторика.',
+    file: 'appendix-competitive-report.html',
+    date: '2026-04-21',
+    audience: 'internal'
+  },
+
+  // ── APPENDIX ───────────────────────────────────────────
+  {
+    cat: 'appendix',
+    title: 'Декомпозиция и вопросы к клиенту',
+    desc: '12 рабочих блоков, 70 элементов, распределение по волнам, Tier 1/2/3 вопросы.',
+    file: 'appendix-elpodium-decomposition.html',
+    date: '2026-04-21',
+    audience: 'internal'
+  }
+
+  // ── ДОБАВИТЬ НОВУЮ СТРАНИЦУ — скопировать шаблон ниже ──
+  // ,{
+  //   cat: 'research',          // proposal | analytics | research | appendix
+  //   title: 'Название',
+  //   desc: 'Одна-две строки: что внутри.',
+  //   file: 'filename.html',    // файл должен лежать в rejuve/
+  //   date: 'YYYY-MM-DD',
+  //   audience: 'internal'      // client | internal
+  // }
+
+];
+
+// ═══════════════════════════════════════════════════════════
+// Ниже — рендер. Менять не нужно.
+// ═══════════════════════════════════════════════════════════
+
+const CATS = [
+  { id: 'proposal',  label: 'Proposal',   icon: '📋' },
+  { id: 'analytics', label: 'Аналитика',  icon: '📊' },
+  { id: 'research',  label: 'Research',   icon: '🔬' },
+  { id: 'appendix',  label: 'Приложения', icon: '📎' }
+];
+
+function fmtDate(d) {
+  const [y, m, dd] = d.split('-');
+  const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  return `${parseInt(dd)} ${months[parseInt(m)-1]} ${y}`;
+}
+
+function renderPortal() {
+  const root = document.getElementById('portal-root');
+  let html = '';
+
+  for (const cat of CATS) {
+    const pages = PAGES.filter(p => p.cat === cat.id);
+    if (!pages.length) continue;
+
+    html += `<div class="cat-section">
+      <div class="cat-header">
+        <span class="cat-title">${cat.label}</span>
+        <span class="cat-count">${pages.length} ${pages.length === 1 ? 'страница' : pages.length < 5 ? 'страницы' : 'страниц'}</span>
+      </div>
+      <div class="card-grid">`;
+
+    for (const p of pages) {
+      html += `<div class="card">
+        <div class="card-top">
+          <span class="card-date">${fmtDate(p.date)}</span>
+          <span class="aud-badge aud-${p.audience}">${p.audience === 'client' ? 'клиент' : 'внутреннее'}</span>
+        </div>
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.desc}</div>
+        <a class="card-link" href="${p.file}">Открыть</a>
+      </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  root.innerHTML = html;
+
+  // meta chips
+  document.getElementById('page-count').textContent = PAGES.length + ' страниц';
+  const latest = PAGES.map(p => p.date).sort().at(-1);
+  document.getElementById('last-updated').textContent = 'обновлено ' + fmtDate(latest);
+}
+
+renderPortal();
+</script>
+</body>
+</html>
