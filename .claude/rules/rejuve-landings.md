@@ -8,6 +8,15 @@ cp <source>.html C:/dev/h2t-landings/rejuve/<filename>.html
 ```
 Имя файла: kebab-case, без даты-префикса, max 40 символов.
 
+### Шаг 1б — добавить nav-бар в HTML-файл
+Вставить сразу после тега `<body>` в скопированном файле:
+
+```html
+<nav style="background:#f0eeeb;border-bottom:1px solid #e0ddd8;padding:9px 40px;font-size:12px;font-family:'Inter','Helvetica Neue',sans-serif;">
+  <a href="index.html" style="color:#6b6b6b;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">← REjuve Portal</a>
+</nav>
+```
+
 ### Шаг 2 — добавить запись в реестр
 Открыть `C:/dev/h2t-landings/rejuve/index.html`.  
 Найти блок `// ── ДОБАВИТЬ НОВУЮ СТРАНИЦУ` в конце массива `PAGES`.  
