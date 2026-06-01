@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REjuve — Customer Language v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #ffffff;
+      --text: #1a1a1a; --text-dim: #6b6b6b;
+      --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #5a8a5c;
+      --accent4: #8a5c2d;
+      --border: #e0ddd8;
+      --font-heading: 'Playfair Display','Georgia',serif;
+      --font-body: 'Inter','Helvetica Neue','Arial',sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.6; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 40px 80px; }
+    @media (max-width: 600px) { .page-wrap { padding: 24px 16px 60px; } }
+
+    .site-header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 0; }
+    .site-header h1 { font-family: var(--font-heading); font-size: 32px; font-weight: 700; line-height: 1.2; }
+    .site-header .meta { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+
+    .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 40px; margin-top: 0; overflow-x: auto; }
+    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 14px 24px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+    h2 { font-family: var(--font-heading); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    h4 { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 10px; }
+    .section-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+    .view-subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+    .content-section { border-top: 1px solid var(--border); padding-top: 28px; margin-top: 36px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; border-bottom: 2px solid var(--border); background: var(--bg-light); }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-light); }
+    .table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; margin-bottom: 24px; }
+
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+    .badge-high { background: #e8f0e8; color: #3a7a3a; }
+    .badge-med { background: #e8eef5; color: #2d5f8a; }
+    .badge-low { background: #f5f0e8; color: #8a6a2d; }
+    .badge-warn { background: #fff3e0; color: #c47a00; }
+    .badge-nf { background: #f0eeeb; color: var(--text-dim); }
+    .badge-internal { background: #fde8e2; color: var(--accent); }
+    .badge-draft { background: #fff3e0; color: #c47a00; }
+    .badge-tier3 { background: #f5f0e8; color: var(--accent4); }
+
+    blockquote { border-left: 3px solid var(--border); padding: 8px 14px; margin: 6px 0; font-style: italic; font-size: 12px; color: var(--text-dim); background: var(--bg-light); border-radius: 0 3px 3px 0; }
+    blockquote cite { display: block; margin-top: 4px; font-style: normal; font-size: 11px; color: var(--accent2); }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Stat cards */
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    @media (max-width: 700px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; }
+    .stat-num { font-family: var(--font-heading); font-size: 36px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+    /* Score bars */
+    .score-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .score-row:last-child { border-bottom: none; }
+    .score-proc { font-size: 13px; min-width: 180px; }
+    .score-bar-wrap { flex: 1; background: var(--bg-light); border-radius: 3px; height: 8px; overflow: hidden; }
+    .score-bar { height: 8px; background: var(--accent); border-radius: 3px; }
+    .score-val { font-size: 13px; font-weight: 600; min-width: 36px; text-align: right; }
+    .score-top { color: var(--accent); }
+
+    /* Pattern cards */
+    .pattern-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; margin-bottom: 14px; }
+    .pattern-id { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 4px; }
+    .pattern-n { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+    .pattern-quote { font-size: 13px; font-style: italic; color: var(--text); border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; line-height: 1.55; }
+    .pattern-quote cite { display: block; font-style: normal; font-size: 11px; color: var(--accent2); margin-top: 3px; }
+    .pattern-insight { font-size: 12px; color: var(--accent3); margin-top: 8px; }
+
+    /* Col layouts */
+    .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 700px) { .col2 { grid-template-columns: 1fr; } }
+    .col3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .col3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .col3 { grid-template-columns: 1fr; } }
+
+    /* Procedure blocks */
+    .proc-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 16px; overflow: hidden; }
+    .proc-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--bg-light); cursor: pointer; flex-wrap: wrap; }
+    .proc-header:hover { background: #e8e5e0; }
+    .proc-header.open { border-bottom: 1px solid var(--border); }
+    .proc-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; flex: 1; }
+    .proc-count { font-size: 11px; color: var(--text-dim); }
+    .proc-arrow { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; margin-left: auto; }
+    .proc-header.open .proc-arrow { transform: rotate(90deg); }
+    .proc-body { padding: 20px 18px; display: none; }
+    .proc-body.open { display: block; }
+
+    .cat-section { margin-bottom: 20px; }
+    .cat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .quote-item { padding: 7px 0; border-bottom: 1px solid var(--bg-light); font-size: 13px; }
+    .quote-item:last-child { border-bottom: none; }
+    .quote-text { font-style: italic; color: var(--text); }
+    .quote-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+    /* Gem table */
+    .gem-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+    .gem-num { font-size: 22px; font-weight: 800; font-family: var(--font-heading); color: var(--accent); }
+    .gem-quote { font-size: 14px; font-style: italic; margin: 8px 0; line-height: 1.5; border-left: 3px solid var(--accent); padding-left: 10px; }
+    .gem-proc { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); background: var(--bg-light); border-radius: 3px; padding: 2px 7px; margin-right: 6px; }
+    .gem-lang { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); background: #e8eef5; border-radius: 3px; padding: 2px 7px; }
+    .gem-why { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+
+    /* Warn box */
+    .warn-box { background: #fff8f0; border: 1px solid #f0c878; border-left: 3px solid #c47a00; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 24px; font-size: 13px; }
+    .warn-box strong { color: #8a5a00; }
+
+    /* Data not found */
+    .dnf-box { background: #f0eeeb; border: 1px solid var(--border); border-radius: 6px; padding: 14px 18px; margin-bottom: 14px; }
+    .dnf-proc { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+    .dnf-insight { font-size: 12px; color: var(--accent3); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+<nav style="background:#f0eeeb;border-bottom:1px solid #e0ddd8;padding:9px 40px;font-size:12px;font-family:'Inter','Helvetica Neue',sans-serif;">
+  <a href="index.html" style="color:#6b6b6b;text-decoration:none;">← REjuve Portal</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="site-header">
+    <div class="section-label">REjuve — внутренние материалы · #48</div>
+    <h1>Customer Language v2 — Digital Ethnography</h1>
+    <div class="meta" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+      <span>2026-06-01</span>
+      <span class="badge badge-internal">Internal</span>
+      <span class="badge badge-draft">status: draft</span>
+      <span style="color:#c45a3c;font-weight:600;font-size:11px;">⚠ Не передавать клиенту</span>
+    </div>
+    <div class="meta" style="margin-top:6px;">471 цитата · 9 процедур · Tier 1 EN (311) + Tier 2 DE (85) + Tier 3 (75)</div>
+  </div>
+
+  <div class="tab-nav" style="margin-top:28px;">
+    <button class="tab-btn active" onclick="switchTab('synthesis', this)">Синтез</button>
+    <button class="tab-btn" onclick="switchTab('tier1', this)">Tier 1 · EN</button>
+    <button class="tab-btn" onclick="switchTab('tier2', this)">Tier 2 · DE</button>
+    <button class="tab-btn" onclick="switchTab('tier3', this)">Tier 3 · Вторичный</button>
+  </div>
+
+  <!-- ═══════════════════ СИНТЕЗ ═══════════════════ -->
+  <div id="tab-synthesis" class="view active">
+
+    <!-- Stat cards -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">396</div>
+        <div class="stat-label">Основной корпус (Tier 1/2)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">311</div>
+        <div class="stat-label">EN цитат (Tier 1)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">85</div>
+        <div class="stat-label">DE цитат (Tier 2)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--accent4);">75</div>
+        <div class="stat-label">Вторичный корпус (Tier 3)</div>
+      </div>
+    </div>
+
+    <!-- Scoring -->
+    <div class="content-section">
+      <h2>Скоринг процедур</h2>
+      <p class="view-subtitle">A = объём дискурса · B = категориальная широта · C = позитивный сигнал · D = языковое покрытие · Score = avg(A+B+C+D)</p>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:12px;">
+        <div class="score-row">
+          <span class="score-proc score-top">🥇 Флоатинг</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:93%;"></div></div>
+          <span class="score-val score-top">9.3</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">ИК-сауна</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:90%;"></div></div>
+          <span class="score-val">9.0</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">Фотобиомодуляция</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:88%;"></div></div>
+          <span class="score-val">8.8</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">Криотерапия</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:85%;"></div></div>
+          <span class="score-val">8.5</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">PEMF</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:80%;"></div></div>
+          <span class="score-val">8.0</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">IHHT</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:68%; background:var(--accent4);"></div></div>
+          <span class="score-val" style="color:var(--accent4);">6.8</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">Молекулярный водород</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:68%; background:var(--accent4);"></div></div>
+          <span class="score-val" style="color:var(--accent4);">6.8</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">Вибрация</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:65%; background:var(--accent4);"></div></div>
+          <span class="score-val" style="color:var(--accent4);">6.5</span>
+        </div>
+        <div class="score-row">
+          <span class="score-proc">Общее</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:60%; background:var(--text-dim);"></div></div>
+          <span class="score-val" style="color:var(--text-dim);">6.0</span>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-dim);">Высокий score = богатый, двуязычный дискурс с разнообразными сигналами. IHHT и H₂ — нишевые, но активные EN-аудитории. Вибрация: EN-сигнал есть, DE = data not found → возможность для позиционирования как первооткрывателя.</p>
+    </div>
+
+    <!-- Frequency table -->
+    <div class="content-section">
+      <h2>Частотная таблица</h2>
+      <p class="view-subtitle">Суммарно EN + DE (396 цитат). Т = триггер · Б = барьер · Ц = ценность · R = retention · Р = разочарование · Я = язык-самородок</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Процедура</th><th>Т</th><th>Б</th><th>Ц</th><th>R</th><th>Р</th><th>Я</th><th>Итого</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Флоатинг</td><td>11</td><td>9</td><td>28</td><td>8</td><td>4</td><td>11</td><td><strong>71</strong></td></tr>
+            <tr><td>ИК-сауна</td><td>10</td><td>5</td><td>32</td><td>9</td><td>2</td><td>6</td><td><strong>64</strong></td></tr>
+            <tr><td>Фотобиомодуляция</td><td>9</td><td>6</td><td>29</td><td>4</td><td>3</td><td>8</td><td><strong>59</strong></td></tr>
+            <tr><td>Криотерапия</td><td>8</td><td>10</td><td>20</td><td>6</td><td>5</td><td>7</td><td><strong>56</strong></td></tr>
+            <tr><td>PEMF</td><td>6</td><td>7</td><td>17</td><td>3</td><td>3</td><td>3</td><td><strong>39</strong></td></tr>
+            <tr><td>Молекулярный водород</td><td>2</td><td>7</td><td>19</td><td>3</td><td>1</td><td>4</td><td><strong>36</strong></td></tr>
+            <tr><td>Вибрация</td><td>2</td><td>5</td><td>17</td><td>1</td><td>1</td><td>3</td><td><strong>29</strong></td></tr>
+            <tr><td>IHHT</td><td>5</td><td>5</td><td>11</td><td>0</td><td>3</td><td>3</td><td><strong>27</strong></td></tr>
+            <tr><td>Общее</td><td>1</td><td>1</td><td>4</td><td>5</td><td>0</td><td>4</td><td><strong>15</strong></td></tr>
+            <tr style="background:var(--bg-light);font-weight:600;"><td><strong>ИТОГО</strong></td><td>54</td><td>55</td><td>177</td><td>39</td><td>22</td><td>49</td><td><strong>396</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Language comparison -->
+    <div class="content-section">
+      <h2>Языковое сравнение EN vs DE</h2>
+      <div class="col3" style="margin-bottom:24px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+          <div class="cat-label" style="color:var(--accent2);">Только в EN</div>
+          <ul style="font-size:12px;list-style:none;padding:0;">
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Celebrity как триггер: "Tony Robbins sold me on it" (n=2)</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Тревожное расстройство → флоатинг (n=6)</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Страх клаустрофобии как барьер (n=5)</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Скептицизм "woo-woo" к PEMF (n=3)</li>
+            <li style="padding:5px 0;">Anti-aging / кожа как ценность ФБМ (n=8) · mood/euphoria крио (n=6) · сон PEMF+флоатинг (n=12)</li>
+          </ul>
+        </div>
+        <div style="background:#f5fff5;border:1px solid #c8e8c8;border-radius:6px;padding:16px 18px;">
+          <div class="cat-label" style="color:var(--accent3);">Совпадают EN + DE</div>
+          <ul style="font-size:12px;list-style:none;padding:0;">
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Боль в суставах → ИК-сауна (EN n=4, DE n=4)</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Recovery после спорта → криотерапия</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">"Слышал от знакомого" как триггер</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Первоначальный холод → барьер крио</li>
+            <li style="padding:5px 0;">Снижение боли/воспаления · улучшение сна (7 из 9 процедур)</li>
+          </ul>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;">
+          <div class="cat-label" style="color:var(--accent4);">Только в DE</div>
+          <ul style="font-size:12px;list-style:none;padding:0;">
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">Хронические заболевания как триггер: ревматизм, Lyme, фибромиалгия</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">"Kostenübernahme abgelehnt" — страховой барьер (n=4)</li>
+            <li style="padding:5px 0;border-bottom:1px solid var(--border);">"wie neugeboren" / "leicht wie eine Feder" (n=3)</li>
+            <li style="padding:5px 0;">Длительный эффект: "6 Monate schmerzfrei" (n=2)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Data not found -->
+      <h4 style="margin-bottom:12px;">Data Not Found</h4>
+      <div class="dnf-box">
+        <div class="dnf-proc">Вибрация (DE)</div>
+        <div style="font-size:12px;color:var(--text-dim);">Reddit r/de, r/Fitness, r/Biohacking, r/BIOHackersGerman, r/FitnessDE, r/PeptideDACH, r/LongevityDE · Exa форумы</div>
+        <div style="font-size:12px;margin-top:6px;">DATA NOT FOUND. В DE-интернете нет пользовательского дискурса про вибрацию как wellness/biohacking процедуру.</div>
+        <div class="dnf-insight">Маркетинговый инсайт: DACH-рынок не знаком с форматом → возможность для REjuve как первооткрывателя, при условии немецкоязычного объяснения.</div>
+      </div>
+      <div class="dnf-box">
+        <div class="dnf-proc">Молекулярный водород (DE)</div>
+        <div style="font-size:12px;color:var(--text-dim);">Reddit r/de, r/Biohacking, r/BIOHackersGerman, r/PeptideDACH · Exa wellness/biohacking форумы</div>
+        <div style="font-size:12px;margin-top:6px;">DATA NOT FOUND. H₂-терапия не обсуждается как пользовательский опыт в DACH.</div>
+        <div class="dnf-insight">Маркетинговый инсайт: «процедура без голоса потребителя» — высокий риск непонимания при продвижении без образовательного контента на немецком.</div>
+      </div>
+    </div>
+
+    <!-- Universal patterns -->
+    <div class="content-section">
+      <h2>Универсальные паттерны</h2>
+      <p class="view-subtitle">n ≥ 3, встречаются в обоих языках</p>
+      <div class="col2">
+        <div>
+          <h4 style="margin-bottom:12px;">Триггеры</h4>
+          <div class="pattern-card">
+            <div class="pattern-id">T1 · Хроническая боль как точка входа</div>
+            <div class="pattern-n">n=18 суммарно, 8 процедур — самый частый триггер</div>
+            <div class="pattern-quote">"I was desperate to see if I can get some relief"<cite>ИК-сауна · <a href="https://www.phoenixrising.me/forums/" target="_blank">Phoenix Rising</a> · EN</cite></div>
+            <div class="pattern-quote">"ich wollte aber auch nicht ganz darauf verzichten, da ich auch oft Gelenkschmerzen hab"<cite>ИК-сауна · Poolpowershop-Forum · DE</cite></div>
+            <div class="pattern-insight">→ Люди приходят не за wellness, а за облегчением от боли которую медицина не устранила</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">T2 · Рекомендация врача / физиотерапевта</div>
+            <div class="pattern-n">n=5, ФБМ + криотерапия + вибрация</div>
+            <div class="pattern-quote">"I had two doctors recommend red light to me"<cite>ФБМ · ChemistryCachet · EN</cite></div>
+            <div class="pattern-insight">→ Авторитетное мнение снижает барьер входа, особенно для скептиков</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">T3 · "Слышал от знакомого / в сообществе"</div>
+            <div class="pattern-n">n=6, все процедуры</div>
+            <div class="pattern-quote">"Ich kenne jemanden aus der Selbsthilfegruppe der gute Erfolge damit hatte"<cite>IHHT · DE</cite></div>
+            <div class="pattern-insight">→ Сарафанное радио мощнее рекламы. DE: «из группы помощи», EN: «podcast», «Reddit post»</div>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom:12px;">Барьеры</h4>
+          <div class="pattern-card">
+            <div class="pattern-id">B1 · Цена без страховки</div>
+            <div class="pattern-n">n=8, криотерапия + IHHT + PEMF — особенно DE</div>
+            <div class="pattern-quote">"Eine Kostenübernahme seitens meiner privaten Krankenversicherung wurde bisher abgelehnt"<cite>IHHT · AMSEL · DE</cite></div>
+            <div class="pattern-insight">→ Снимается не скидкой, а рамкой «инвестиция которую страховка не покрывает»</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">B2 · Скептицизм / "woo-woo"</div>
+            <div class="pattern-n">n=9, PEMF + ФБМ + вибрация</div>
+            <div class="pattern-quote">"She got me to lay on this mat... I was sure I was being scammed, but whatever I was willing to be scammed out of $15"<cite>PEMF · EN</cite></div>
+            <div class="pattern-insight">→ Скептик-который-удивился = мощный нарратив доверия</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">B3 · Физический дискомфорт первого раза</div>
+            <div class="pattern-n">n=12, криотерапия + флоатинг + ИК-сауна</div>
+            <div class="pattern-quote">"every second feels like a minute... you're freezing your ass off to the point where it's becoming painful"<cite>Криотерапия · EN</cite></div>
+            <div class="pattern-insight">→ Онбординг требует явного предупреждения и нарратива «первый раз — всегда так»</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col2" style="margin-top:16px;">
+        <div>
+          <h4 style="margin-bottom:12px;">Ценность</h4>
+          <div class="pattern-card">
+            <div class="pattern-id">V1 · Сон как неожиданный бонус</div>
+            <div class="pattern-n">n=28, 7 процедур — самая частая ценность</div>
+            <div class="pattern-quote">"I started using it for recovery but the sleep benefits surprised me the most"<cite>ИК-сауна · r/infraredsauna · EN</cite></div>
+            <div class="pattern-quote">"The most obvious change, and not at all what I expected was SLEEP!"<cite>PEMF · EN</cite></div>
+            <div class="pattern-insight">→ Формулировать как бонус, а не основное обещание</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">V2 · Снижение боли / воспаления</div>
+            <div class="pattern-n">n=31, все 9 процедур</div>
+            <div class="pattern-quote">"meine Schmerzen waren fast sofort weg"<cite>ИК-сауна · Borreliose-Forum · DE</cite></div>
+            <div class="pattern-insight">→ Самый распространённый явный результат, универсальный для всех языков</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">V3 · Ментальный reset / ясность</div>
+            <div class="pattern-n">n=14, флоатинг + криотерапия + IHHT</div>
+            <div class="pattern-quote">"I walked out feeling like someone had defragged my brain"<cite>Флоатинг · BestDosage.com · EN</cite></div>
+            <div class="pattern-insight">→ Богатый нарратив у флоатинга: «defragged», «reset button», «the most productive nothing»</div>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom:12px;">Retention</h4>
+          <div class="pattern-card">
+            <div class="pattern-id">R1 · Процедура стала ритуалом</div>
+            <div class="pattern-n">n=12, ИК-сауна + флоатинг + PEMF</div>
+            <div class="pattern-quote">"weekly non-negotiiable!!!"<cite>ИК-сауна · Listen360 · EN</cite></div>
+            <div class="pattern-quote">"Wir haben unsere Infrarotkabine mittlerweile das 3. Jahr. Möchte ich nicht mehr missen"<cite>ИК-сауна · DE</cite></div>
+            <div class="pattern-insight">→ Retention = осознанный выбор, «инвестиция в себя», не просто привычка</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-id">R2 · Замечают отсутствие</div>
+            <div class="pattern-n">n=5, ФБМ + флоатинг + вибрация</div>
+            <div class="pattern-quote">"Whenever I have to have gaps of weeks or months between floating... I certainly notice my symptoms drastically returning"<cite>Флоатинг · EN</cite></div>
+            <div class="pattern-insight">→ Возврат симптомов при паузе = сильнейший аргумент для продления</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top-10 gems -->
+    <div class="content-section">
+      <h2>Топ-10 язык-самородков</h2>
+      <p class="view-subtitle">Высокий маркетинговый потенциал — можно использовать в messaging напрямую</p>
+      <div class="col2">
+        <div class="gem-card">
+          <div class="gem-num">1</div>
+          <div class="gem-quote">"It was the most productive nothing I've ever done."</div>
+          <div><span class="gem-proc">Флоатинг</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why"><a href="https://bestdosage.com/" target="_blank">BestDosage.com</a> · Парадоксальная формулировка — переворачивает guilt за «ничегонеделание»</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">2</div>
+          <div class="gem-quote">"someone had defragged my brain"</div>
+          <div><span class="gem-proc">Флоатинг</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why"><a href="https://bestdosage.com/" target="_blank">BestDosage.com</a> · Технический образ для современного человека</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">3</div>
+          <div class="gem-quote">"frei von Schmerzen, frei von schlechten Gedanken, leicht wie eine Feder!"</div>
+          <div><span class="gem-proc">ИК-сауна</span><span class="gem-lang">DE</span></div>
+          <div class="gem-why">Borreliose-Forum · Физическое + ментальное освобождение в одном образе</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">4</div>
+          <div class="gem-quote">"throw all the bad news at me, it doesn't matter, I did cryo and can't feel bad about anything!"</div>
+          <div><span class="gem-proc">Криотерапия</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why"><a href="https://neilcarson.me/" target="_blank">NeilCarson.me</a> · Эмоциональная неуязвимость как результат</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">5</div>
+          <div class="gem-quote">"the procedure reset her systems much like working in safe mode to fix a computer"</div>
+          <div><span class="gem-proc">Криотерапия</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why">Health Rising Forums · Технический образ сброса/перезагрузки</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">6</div>
+          <div class="gem-quote">"It seems crazy to me but it works."</div>
+          <div><span class="gem-proc">Фотобиомодуляция</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why">HealthUnlocked NRAS · Честность скептика = доверие к результату</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">7</div>
+          <div class="gem-quote">"wie neugeboren"</div>
+          <div><span class="gem-proc">ИК-сауна</span><span class="gem-lang">DE</span></div>
+          <div class="gem-why">Poolpowershop-Forum + Borreliose-Forum · Устойчивая немецкая метафора нулевой боли и лёгкости</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">8</div>
+          <div class="gem-quote">"Reset-Button" / "inneren Reset-Knopf gedrückt"</div>
+          <div><span class="gem-proc">Флоатинг</span><span class="gem-lang">DE</span></div>
+          <div class="gem-why">Blitz-Webkatalog + Das Wellness Magazin · Точная, емкая, повторяемая</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">9</div>
+          <div class="gem-quote">"like when Superman flies above Earth's atmosphere and recharges from the sun"</div>
+          <div><span class="gem-proc">ИК-сауна</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why">r/infraredsauna · Яркий визуальный образ перезарядки</div>
+        </div>
+        <div class="gem-card">
+          <div class="gem-num">10</div>
+          <div class="gem-quote">"One of the unexpected effects was literally blasting away my depression symptoms... nothing came close to the rapidity of effect of hydrogen."</div>
+          <div><span class="gem-proc">Молекулярный водород</span><span class="gem-lang">EN</span></div>
+          <div class="gem-why">r/Biohackers · Сила в «неожиданности» + сравнительная скорость</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /synthesis -->
+
+  <!-- ═══════════════════ TIER 1 EN ═══════════════════ -->
+  <div id="tab-tier1" class="view">
+    <div class="view-subtitle">311 цитат · Reddit + форумы + Trustpilot · только независимые источники</div>
+
+    <!-- ИК-сауна -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">ИК-сауна</span>
+        <span class="proc-count">47 цитат · 13 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"I was desperate to see if I can get some relief"</span><div class="quote-meta"><a href="https://www.phoenixrising.me/forums/" target="_blank">Phoenix Rising ME/CFS Forums</a> · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"My Physical Therapists suggested purchasing an infrared sauna blanket"</span><div class="quote-meta">Fibromyalgia Forums · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"I bought it to help with pain and detoxification"</span><div class="quote-meta">r/infraredsauna · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"I started using it for recovery but the sleep benefits surprised me the most"</span><div class="quote-meta">r/infraredsauna · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"like when Superman flies above Earth's atmosphere and recharges from the sun"</span><div class="quote-meta">r/infraredsauna · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок</span></div></div>
+          <div class="quote-item"><span class="quote-text">"The most obvious change, and not at all what I expected was SLEEP!"</span><div class="quote-meta">r/infraredsauna · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Retention</div>
+          <div class="quote-item"><span class="quote-text">"weekly non-negotiiable!!!"</span><div class="quote-meta"><a href="https://listen360.com/" target="_blank">Listen360</a> · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"craving sauna time" — сауна как осознанное желание, не обязанность</span><div class="quote-meta">r/infraredsauna · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Язык-самородок</div>
+          <div class="quote-item"><span class="quote-text">"like when Superman flies above Earth's atmosphere and recharges from the sun"</span><div class="quote-meta">r/infraredsauna · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"flushed out"</span><div class="quote-meta">r/infraredsauna · EN · образ очищения изнутри</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Флоатинг -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Флоатинг</span>
+        <span class="proc-count">58 цитат · 25 источников · наибольший score 9.3</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"Anxiety disorder brought me here — 6 sessions changed everything"</span><div class="quote-meta">Reddit r/FloatTank · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"I was completely burned out — couldn't quiet my brain for months"</span><div class="quote-meta">Reddit r/FloatTank · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"It was the most productive nothing I've ever done."</span><div class="quote-meta"><a href="https://bestdosage.com/" target="_blank">BestDosage.com</a> · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #1</span></div></div>
+          <div class="quote-item"><span class="quote-text">"I walked out feeling like someone had defragged my brain"</span><div class="quote-meta"><a href="https://bestdosage.com/" target="_blank">BestDosage.com</a> · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #2</span></div></div>
+          <div class="quote-item"><span class="quote-text">"Ninety minutes later, I walked out... That night I slept seven hours straight for the first time in weeks"</span><div class="quote-meta">Reddit r/FloatTank · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"Once a week, I've noticed my sleep patterns have changed"</span><div class="quote-meta">r/FloatTank · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"it's lowered my baseline stress level"</span><div class="quote-meta">r/FloatTank · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"The first time I completely closed the pod I got oddly panicky"</span><div class="quote-meta">r/FloatTank · EN · клаустрофобия</div></div>
+          <div class="quote-item"><span class="quote-text">"I couldn't stop thinking about what I was supposed to be doing — the 'nothing' was hard"</span><div class="quote-meta">r/FloatTank · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Retention</div>
+          <div class="quote-item"><span class="quote-text">"As I evaluated my 2026 budget, it was important to me to keep Restore in it"</span><div class="quote-meta">Listen360 · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"Whenever I have to have gaps of weeks or months between floating... I certainly notice my symptoms drastically returning"</span><div class="quote-meta">r/FloatTank · EN</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Криотерапия -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Криотерапия</span>
+        <span class="proc-count">33 цитаты · 11 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"throw all the bad news at me, it doesn't matter, I did cryo and can't feel bad about anything!"</span><div class="quote-meta"><a href="https://neilcarson.me/" target="_blank">NeilCarson.me</a> · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #4</span></div></div>
+          <div class="quote-item"><span class="quote-text">"the procedure reset her systems much like working in safe mode to fix a computer"</span><div class="quote-meta">Health Rising Forums · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"high as a kite... euphoric waves of chills and smiles for hours"</span><div class="quote-meta">r/cryotherapy · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"I tried it today for the first time... I'm hooked, I felt so much less inflamed"</span><div class="quote-meta">r/cryotherapy · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"every second feels like a minute... you're freezing your ass off to the point where it's becoming painful"</span><div class="quote-meta">r/cryotherapy · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"it is not cheap thing to do"</span><div class="quote-meta"><a href="https://neilcarson.me/" target="_blank">NeilCarson.me</a> · EN</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Фотобиомодуляция -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Фотобиомодуляция (ФБМ / Red Light)</span>
+        <span class="proc-count">52 цитаты · 14 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"I had two doctors recommend red light to me"</span><div class="quote-meta">ChemistryCachet · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"started for joint pain, stayed for the skin"</span><div class="quote-meta">r/redlighttherapy · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"It seems crazy to me but it works."</span><div class="quote-meta">HealthUnlocked NRAS · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #6</span></div></div>
+          <div class="quote-item"><span class="quote-text">"I haven't missed a day of use since" — апгрейд устройства как высший retention-сигнал</span><div class="quote-meta">r/redlighttherapy · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"I took the light over to my sister... After 3 days of not using it, I flared and missed work"</span><div class="quote-meta">r/redlighttherapy · EN</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEMF -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">PEMF</span>
+        <span class="proc-count">28 цитат · 10 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"Sleep time gradually increased from 4 or 5 hours to now some nights that magical 11 hour deep sleep session"</span><div class="quote-meta">Flux Health Forum · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"The most obvious change, and not at all what I expected was SLEEP!"</span><div class="quote-meta">EN · неожиданный эффект</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"She got me to lay on this mat... I was sure I was being scammed, but whatever I was willing to be scammed out of $15"</span><div class="quote-meta">EN · скептицизм → конверсия</div></div>
+          <div class="quote-item"><span class="quote-text">"I didn't experience the quick relief I expected... it took me more than a year"</span><div class="quote-meta">EN · долгий старт</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вибрация -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Вибрация</span>
+        <span class="proc-count">29 цитат · 9 источников · только EN</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="warn-box"><strong>⚠ DE = data not found.</strong> Нет пользовательского дискурса в DACH.</div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"after 7-10 minutes I almost go into this meditative trance like state"</span><div class="quote-meta">r/Biohackers · EN · слабый сигнал n=1</div></div>
+          <div class="quote-item"><span class="quote-text">"helped with lower back pain in 3 weeks of daily use"</span><div class="quote-meta">r/Biohackers · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"Is this just placebo? I can't tell if I'm being scammed"</span><div class="quote-meta">r/Biohackers · EN</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Молекулярный водород -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Молекулярный водород</span>
+        <span class="proc-count">36 цитат · 10 источников · только EN</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="warn-box"><strong>⚠ DE = data not found.</strong> H₂-терапия не обсуждается в DACH.</div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"One of the unexpected effects was literally blasting away my depression symptoms... nothing came close to the rapidity of effect of hydrogen."</span><div class="quote-meta">r/Biohackers · EN · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #10</span></div></div>
+          <div class="quote-item"><span class="quote-text">"digestion improved within the first week, energy levels noticeably up"</span><div class="quote-meta">r/Biohackers · EN</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"I cannot isolate out the effects of Molecular Hydrogen" — трудно атрибутировать эффект</span><div class="quote-meta">r/Biohackers · EN</div></div>
+          <div class="quote-item"><span class="quote-text">"headaches in the first two weeks then it passed"</span><div class="quote-meta">r/Biohackers · EN</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IHHT -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">IHHT</span>
+        <span class="proc-count">13 цитат · 6 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="warn-box">Нишевая процедура, цитат мало. Retention = 0 в обоих корпусах — данных о повторных курсах нет.</div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"I recently heard several famous people... Tony Robbins is the one that sold me on it" — podcast как триггер</span><div class="quote-meta">EN</div></div>
+          <div class="quote-item"><span class="quote-text">"energy boost in the first week was noticeable, but hard to sustain after the course"</span><div class="quote-meta">EN</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tier1 -->
+
+  <!-- ═══════════════════ TIER 2 DE ═══════════════════ -->
+  <div id="tab-tier2" class="view">
+    <div class="view-subtitle">85 цитат · Reddit DE + форумы DACH (Rheuma-Online, Hashimoto-Forum, Fibromyalgie-fms.de) · только независимые источники</div>
+
+    <!-- ИК-сауна DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">ИК-сауна</span>
+        <span class="proc-count">17 цитат · 6 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"frei von Schmerzen, frei von schlechten Gedanken, leicht wie eine Feder!"</span><div class="quote-meta">Borreliose-Forum · DE · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #3</span></div></div>
+          <div class="quote-item"><span class="quote-text">"wie neugeboren"</span><div class="quote-meta">Poolpowershop-Forum + Borreliose-Forum · DE · устойчивая метафора</div></div>
+          <div class="quote-item"><span class="quote-text">"meine Schmerzen waren fast sofort weg"</span><div class="quote-meta">Borreliose-Forum · DE · скорость эффекта</div></div>
+          <div class="quote-item"><span class="quote-text">"Tiefenwärme die bis in die Muskeln geht — das kann eine normale Sauna nicht"</span><div class="quote-meta">Poolpowershop-Forum · DE · дифференциация от финской сауны</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Retention</div>
+          <div class="quote-item"><span class="quote-text">"Wir haben unsere Infrarotkabine mittlerweile das 3. Jahr. Möchte ich nicht mehr missen"</span><div class="quote-meta">DE · 3 года использования</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Криотерапия DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Криотерапия</span>
+        <span class="proc-count">23 цитаты · 8 источников · богатейший DE-корпус</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"Eine deutliche Linderung... die sicher 6 Monate andauerte"</span><div class="quote-meta">DE · длительный эффект — уникальный DE-нарратив</div></div>
+          <div class="quote-item"><span class="quote-text">"6 Monate schmerzfrei — für mich war das ein Wunder"</span><div class="quote-meta">DE · сравнение с тем чего не давала медицина</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"Es waren zehn Sitzungen die nichts gebracht haben, ausser das wir pro Person u. 400€ leichter waren"</span><div class="quote-meta">DE · разочарование (важный сигнал для онбординга)</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"Ich leide seit Jahren an Rheuma — die Kälte schreckt mich ab, aber ich will es trotzdem versuchen"</span><div class="quote-meta">Rheuma-Online Forum · DE · хроническое заболевание как триггер</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IHHT DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">IHHT</span>
+        <span class="proc-count">14 цитат · 7 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"wieder in der Lage, eine halbe Stunde spazieren zu gehen"</span><div class="quote-meta">DE · возвращение к повседневной активности как конкретный критерий улучшения</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"Eine Kostenübernahme seitens meiner privaten Krankenversicherung wurde bisher abgelehnt"</span><div class="quote-meta">AMSEL · DE · страховой барьер</div></div>
+          <div class="quote-item"><span class="quote-text">"Ich war anfangs skeptisch — wieder so eine 'neue Methode'?"</span><div class="quote-meta"><a href="https://longevity-u.com/" target="_blank">longevity-u.com</a> · DE</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"Ich kenne jemanden aus der Selbsthilfegruppe der gute Erfolge damit hatte"</span><div class="quote-meta">DE · сарафанное радио в группе поддержки</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Флоатинг DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Флоатинг</span>
+        <span class="proc-count">13 цитат · 5 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"inneren Reset-Knopf gedrückt"</span><div class="quote-meta">Das Wellness Magazin · DE · <span class="badge badge-high" style="font-size:9px;">Язык-самородок #8</span></div></div>
+          <div class="quote-item"><span class="quote-text">"Reset-Button" — одно слово, которое описывает всё</span><div class="quote-meta">Blitz-Webkatalog · DE</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Триггеры</div>
+          <div class="quote-item"><span class="quote-text">"Wenn es eine Sache gab, die ich von den ganzen Ärzten ständig hörte, dann, dass die Symptome sehr sicher stressinduziert seien"</span><div class="quote-meta"><a href="https://float-stuttgart.de/" target="_blank">Float Stuttgart</a> · DE · после диагноза «всё в голове»</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEMF DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">PEMF</span>
+        <span class="proc-count">11 цитат · 5 источников</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"Meine Bemer-Matte nutze ich täglich — nach 3 Monaten spüre ich den Unterschied deutlich"</span><div class="quote-meta">DE · Bemer как домашнее устройство</div></div>
+        </div>
+        <div class="cat-section">
+          <div class="cat-label">Барьеры</div>
+          <div class="quote-item"><span class="quote-text">"Die Krankenkasse übernimmt das natürlich nicht"</span><div class="quote-meta">DE · страховой барьер</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Фотобиомодуляция DE -->
+    <div class="proc-block">
+      <div class="proc-header" onclick="toggleProc(this)">
+        <span class="proc-name">Фотобиомодуляция (ФБМ)</span>
+        <span class="proc-count">7 цитат · 4 источника · ограниченный DE-корпус</span>
+        <span class="proc-arrow">▶</span>
+      </div>
+      <div class="proc-body">
+        <div class="warn-box">DE-корпус ограничен. EN богат — см. Tier 1.</div>
+        <div class="cat-section">
+          <div class="cat-label">Ценность</div>
+          <div class="quote-item"><span class="quote-text">"nach 8 Wochen deutlich weniger Gelenkschmerzen — ich bin erstaunt"</span><div class="quote-meta">DE · суставная боль как первичная ценность</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tier2 -->
+
+  <!-- ═══════════════════ TIER 3 ═══════════════════ -->
+  <div id="tab-tier3" class="view">
+
+    <div class="warn-box">
+      <strong>⚠ Вторичный корпус — другие стандарты качества источников.</strong><br>
+      Помимо независимых форумов: отобранные отзывы (нутрициолог ~7/27), личные блоги, travel-блоги, журнальные материалы с первым лицом (brigitte.de, allure.com, businessinsider.de).<br>
+      Использовать для <strong>инсайтов и поиска языка</strong> — НЕ как доказательную базу наравне с Tier 1/2.
+    </div>
+
+    <div class="view-subtitle">75 цитат · 3 темы: OligoScan (19) · Нутрициолог-консультация (27) · Профиль студии (29)</div>
+
+    <!-- OligoScan -->
+    <div class="content-section">
+      <h3>OligoScan — 19 цитат</h3>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Доминируют барьеры (12/19 = 63%). Центральный нарратив: «медицина не нашла ничего, но я знаю что что-то не так».</p>
+      <div class="cat-section">
+        <div class="cat-label">Язык-самородки и ценности</div>
+        <div class="quote-item"><span class="quote-text">"I had done every test imaginable, but the results would always come back negative. I felt desperate. I knew something was wrong with me, but all the doctors would say is 'everything is normal' while I feeling anything but. That was when I found out about a new non-invasive test called Oligoscan."</span><div class="quote-meta"><a href="https://mindbodyspirit.blog/" target="_blank">mindbodyspirit.blog</a> · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"My results were shocking. They revealed sky-high levels of Mercury... After taking the recommended vitamins and detoxing the heavy metals I felt like a new man who had finally got his life back."</span><div class="quote-meta"><a href="https://mindbodyspirit.blog/" target="_blank">mindbodyspirit.blog</a> · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"Meine Patienten lieben diese Art der Erfassung und Auswertung."</span><div class="quote-meta">Heilpraktikerschule Isolde Richter Forum · DE</div></div>
+      </div>
+      <div class="cat-section">
+        <div class="cat-label">Барьеры (активное недоверие — n=12)</div>
+        <div class="quote-item"><span class="quote-text">"expensive woo" / "Budenzauber" / "Humbug" / "Quatsch"</span><div class="quote-meta">Пациентские форумы · EN + DE · не интернет-шум, а голоса реальных пациентов</div></div>
+      </div>
+      <p style="font-size:12px;background:#fff8f0;border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 4px 4px 0;color:var(--text-dim);">OligoScan нельзя продавать как измерение само по себе — работает только в контексте: что показывает, чем отличается от анализа крови, что делать дальше.</p>
+    </div>
+
+    <!-- Нутрициолог -->
+    <div class="content-section">
+      <h3>Нутрициолог-консультация — 27 цитат</h3>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Богатейший язык корпуса: 18 из 27 цитат — язык-самородки. Три доминирующих нарратива: (1) «наконец кто-то понял лучше, чем врач», (2) «root cause, не симптом», (3) «разрозненные попытки сложились в картину».</p>
+      <div class="cat-section">
+        <div class="cat-label">Язык-самородки</div>
+        <div class="quote-item"><span class="quote-text">"Instead of throwing stuff at the wall, I have a clearer understanding of what's happening below the surface."</span><div class="quote-meta">wholisticabode.com (отобранный отзыв) · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"In that first one-hour session with Erin, I felt like she already knew me better than my primary care physician, whom I have been seeing for several years. I feel like I went from 50% mental and physical capacity to 100%."</span><div class="quote-meta">thefunktionalnutritionist.com (отобранный отзыв) · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"Over four and a half months, I lost six kilos. But the weight loss felt like a by-product, not the headline. The real win was feeling capable and in control again."</span><div class="quote-meta"><a href="https://ethicallykate.com/" target="_blank">ethicallykate.com</a> · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"Ich habe wirklich sehr viele Sachen vorher ausprobiert, aber es blieb alles Stückwerk. Es waren zu viele einzelne Puzzleteile, Thilo hat mir geholfen, einen für mich sinnvollen Weg zu gehen und die ganzen Puzzleteile zusammenzusetzen."</span><div class="quote-meta"><a href="https://ernaehrungsprofi.com/" target="_blank">ernaehrungsprofi.com</a> (отобранный отзыв) · DE</div></div>
+        <div class="quote-item"><span class="quote-text">"Wenn ich ein Jahr zurückdenke, ist meine Entwicklung unvorstellbar: Von keiner Freude, kein Lachen zu einem inneren Strahlen und einer Zuversicht."</span><div class="quote-meta"><a href="https://ernaehrungsprofi.com/" target="_blank">ernaehrungsprofi.com</a> (отобранный отзыв) · DE</div></div>
+      </div>
+    </div>
+
+    <!-- Профиль студии -->
+    <div class="content-section">
+      <h3>Профиль студии — 29 цитат</h3>
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Два полюса: «не как у врача, пространство дышит, clarity» vs «обещали похудение — ничего не произошло, corporate and heartless». Retention возникает только когда студия даёт не просто процедуры, а ощущение принадлежности.</p>
+      <div class="cat-section">
+        <div class="cat-label">Язык-самородки (позитивный полюс)</div>
+        <div class="quote-item"><span class="quote-text">"When I walked out of the clinic at 6:30 p.m., after nearly ten hours of testing, I was tired but exhilarated... I left with something priceless: clarity."</span><div class="quote-meta"><a href="https://valbiohacker.com/" target="_blank">valbiohacker.com</a> (YEARS Berlin) · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"We're often passengers in our own health and this is going to allow you to be an active participant."</span><div class="quote-meta"><a href="https://www.allure.com/" target="_blank">Allure.com</a> (Love.Life NYC) · EN</div></div>
+        <div class="quote-item"><span class="quote-text">"The better play is one turnkey partner who handles everything: baseline blood work, diagnostics, protocol design... One team, one relationship, one medical record."</span><div class="quote-meta">vanja.io · EN · самая точная формулировка ценности комплексного подхода</div></div>
+        <div class="quote-item"><span class="quote-text">"Weil ich Zeit spare, wenn ich nicht zu zehn verschiedenen Medizinern rennen muss."</span><div class="quote-meta"><a href="https://www.brigitte.de/" target="_blank">Brigitte.de</a> (YEARS Berlin) · DE</div></div>
+        <div class="quote-item"><span class="quote-text">"man fühlt sich eher wie in einem Wellnesshotel als beim Arzt"</span><div class="quote-meta"><a href="https://lady-blog.de/" target="_blank">lady-blog.de</a> (AIVA Berlin) · DE</div></div>
+        <div class="quote-item"><span class="quote-text">"Keine sterile Kälte, kein hektisches Durcheinander. Stattdessen Klarheit, Ruhe, ein Hauch frischer Energie, als würde der Raum selbst atmen."</span><div class="quote-meta"><a href="https://echtes-leben.com/" target="_blank">echtes-leben.com</a> (Health Zone 7 Wien) · DE</div></div>
+      </div>
+      <div class="cat-section">
+        <div class="cat-label">Барьеры (отрицательный полюс)</div>
+        <div class="quote-item"><span class="quote-text">"Mich stört, dass es eine Vorsorgemedizin für Reiche ist"</span><div class="quote-meta"><a href="https://www.brigitte.de/" target="_blank">Brigitte.de</a> · DE · моральный заряд ценового барьера</div></div>
+      </div>
+    </div>
+
+    <!-- Cross-corpus patterns -->
+    <div class="content-section">
+      <h3>Кросс-корпусные паттерны (Tier 1/2 + Tier 3)</h3>
+      <div class="pattern-card">
+        <div class="pattern-id">CX-1 · «Конвенциональная медицина не помогла» — точка входа</div>
+        <div class="pattern-n">n=5, 4 темы, 2 языка, разные годы — средний сигнал</div>
+        <div class="pattern-quote">"all the doctors would say is 'everything is normal' while I feeling anything but"<cite>OligoScan · mindbodyspirit.blog · EN</cite></div>
+        <div class="pattern-insight">→ Позиционирование REjuve как «следующий шаг после того, как врач не нашёл ничего» опирается на реальный нарратив</div>
+      </div>
+      <div class="pattern-card">
+        <div class="pattern-id">CX-2 · Цена без страховки — универсальный барьер</div>
+        <div class="pattern-n">n=12+, все три тира, EN + DE — устойчивый паттерн</div>
+        <div class="pattern-quote">"Mich stört, dass es eine Vorsorgemedizin für Reiche ist"<cite>Brigitte.de · DE</cite></div>
+        <div class="pattern-insight">→ Снимается не скидкой, а рамкой: «вы уже тратили деньги на неработающие добавки и разных специалистов по одному»</div>
+      </div>
+    </div>
+
+  </div><!-- /tier3 -->
+
+</div><!-- /page-wrap -->
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleProc(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>

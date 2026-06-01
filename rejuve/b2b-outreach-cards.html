@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B2B Outreach Cards — Zug Corporate Shortlist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #ffffff;
+      --text: #1a1a1a; --text-dim: #6b6b6b;
+      --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #5a8a5c;
+      --accent4: #8a5c2d;
+      --border: #e0ddd8;
+      --font-heading: 'Playfair Display','Georgia',serif;
+      --font-body: 'Inter','Helvetica Neue','Arial',sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.6; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 40px 80px; }
+    @media (max-width: 600px) { .page-wrap { padding: 24px 16px 60px; } }
+
+    .site-header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 0; }
+    .site-header h1 { font-family: var(--font-heading); font-size: 32px; font-weight: 700; line-height: 1.2; }
+    .site-header .meta { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+
+    .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 40px; margin-top: 0; overflow-x: auto; }
+    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 14px 24px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+    h2 { font-family: var(--font-heading); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    h4 { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 10px; }
+    .section-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+    .view-subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
+
+    .content-section { border-top: 1px solid var(--border); padding-top: 28px; margin-top: 36px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; border-bottom: 2px solid var(--border); background: var(--bg-light); }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-light); }
+    .table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; margin-bottom: 24px; }
+
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+    .badge-dach { background: #e8f0e8; color: var(--accent3); }
+    .badge-uk { background: #e8eef5; color: var(--accent2); }
+    .badge-g1 { background: #fde8e2; color: var(--accent); }
+    .badge-g2 { background: #f5f0e8; color: var(--accent4); }
+    .badge-g3 { background: #e8eef5; color: var(--accent2); }
+    .badge-high { background: #e8f0e8; color: #3a7a3a; }
+    .badge-med { background: #e8eef5; color: #2d5f8a; }
+    .badge-low { background: #f5f0e8; color: #8a6a2d; }
+    .badge-warn { background: #fff3e0; color: #c47a00; }
+    .badge-nf { background: #f0eeeb; color: var(--text-dim); }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 32px; }
+    @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+    .card-num { font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .card-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+    .card-loc { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+    .card-body { font-size: 12px; line-height: 1.55; }
+    .card-body p { margin-bottom: 6px; }
+    .card-tag { display: inline-block; font-size: 10px; color: var(--text-dim); background: var(--bg-light); border-radius: 3px; padding: 2px 7px; margin: 2px 2px 2px 0; }
+
+    .device-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
+    .device-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid transparent; background: var(--bg-light); cursor: pointer; flex-wrap: wrap; }
+    .device-header:hover { background: #e8e5e0; }
+    .device-header.open { border-bottom-color: var(--border); }
+    .device-num { font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; min-width: 36px; }
+    .device-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; flex: 1; min-width: 160px; }
+    .device-mech { font-size: 12px; color: var(--text-dim); }
+    .device-body { padding: 20px 18px; display: none; }
+    .device-body.open { display: block; }
+    .device-arrow { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; margin-left: auto; }
+    .device-header.open .device-arrow { transform: rotate(90deg); }
+
+    .device-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
+    @media (max-width: 700px) { .device-cols { grid-template-columns: 1fr; } }
+
+    blockquote { border-left: 3px solid var(--border); padding: 8px 14px; margin: 6px 0; font-style: italic; font-size: 12px; color: var(--text-dim); background: var(--bg-light); border-radius: 0 3px 3px 0; }
+    blockquote cite { display: block; margin-top: 4px; font-style: normal; font-size: 11px; color: var(--accent2); }
+
+    .insight-box { background: #fff8f5; border: 1px solid #f0c0a0; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
+    .insight-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 8px; }
+
+    .expert-box { background: #f5f0e8; border: 1px solid #e0d0b8; border-left: 3px solid var(--accent4); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
+    .expert-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 8px; }
+
+    .measure-box { background: #e8eef5; border: 1px solid #c8d8e8; border-left: 3px solid var(--accent2); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
+    .measure-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); margin-bottom: 8px; }
+
+    .ads-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 12px; margin-top: 8px; }
+    .ads-row .ads-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; min-width: 60px; }
+
+    .warn-note { font-size: 11px; color: #8a6a2d; background: #fff3e0; border-left: 2px solid #c47a00; padding: 6px 10px; border-radius: 0 3px 3px 0; margin-top: 8px; }
+
+    .pattern-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; margin-bottom: 14px; }
+    .pattern-card h3 { margin-bottom: 4px; }
+    .pattern-num { font-size: 22px; font-weight: 800; color: var(--accent); font-family: var(--font-heading); margin-right: 8px; }
+    .pattern-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
+    .pattern-quote { font-size: 14px; font-style: italic; color: var(--text); border-left: 3px solid var(--accent); padding-left: 12px; margin: 10px 0; line-height: 1.5; }
+    .pattern-adapt { font-size: 12px; color: var(--accent3); font-weight: 500; margin-top: 6px; }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 700px) { .col2 { grid-template-columns: 1fr; } }
+    .col3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .col3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .col3 { grid-template-columns: 1fr; } }
+
+    /* B2B outreach card specifics */
+    .outreach-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .outreach-card-header { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 2px; }
+    .outreach-card-header .company-name { font-family: var(--font-heading); font-size: 17px; font-weight: 700; line-height: 1.2; margin-bottom: 3px; }
+    .outreach-card-header .company-meta { font-size: 11px; color: var(--text-dim); }
+    .outreach-field-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 3px; }
+    .outreach-field-value { font-size: 12px; line-height: 1.55; color: var(--text); }
+    .outreach-field-value.angle { font-size: 12px; line-height: 1.6; color: var(--text); }
+    .contact-block { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .contact-info { font-size: 12px; line-height: 1.4; }
+    .contact-info .contact-name { font-weight: 600; }
+    .contact-info .contact-role { color: var(--text-dim); font-size: 11px; }
+    .btn-linkedin { display: inline-block; background: var(--accent2); color: #fff; font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 4px; text-decoration: none; white-space: nowrap; margin-top: 4px; }
+    .btn-linkedin:hover { background: #1e4a6e; text-decoration: none; }
+    .methodology-block { background: var(--bg-light); border: 1px solid var(--border); border-radius: 6px; padding: 18px 24px; margin-top: 28px; margin-bottom: 36px; }
+    .methodology-block h2 { font-size: 15px; margin-bottom: 12px; }
+    .methodology-filters { display: flex; gap: 16px; flex-wrap: wrap; }
+    .methodology-filter { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.5; }
+    .filter-num { font-size: 18px; font-weight: 800; color: var(--accent); font-family: var(--font-heading); line-height: 1; min-width: 20px; }
+    .filter-text strong { display: block; font-size: 11px; font-weight: 600; }
+    .tier-header { margin-bottom: 8px; margin-top: 4px; }
+    .tier-header h2 { font-size: 20px; }
+    .tier-header .tier-desc { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+    .reserve-note { background: #fff8f5; border: 1px solid #f0c0a0; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 10px 16px; font-size: 12px; margin-bottom: 20px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<nav style="background:#f0eeeb;border-bottom:1px solid #e0ddd8;padding:9px 40px;font-size:12px;font-family:'Inter','Helvetica Neue',sans-serif;">
+  <a href="index.html" style="color:#6b6b6b;text-decoration:none;">← REjuve Portal</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="site-header">
+    <div class="section-label">REjuve — внутренние материалы · <span class="badge badge-warn">Internal · status: reviewed</span></div>
+    <h1>B2B Outreach Cards — Zug Corporate Shortlist</h1>
+    <div class="meta">28 компаний кантона Цуг &nbsp;·&nbsp; 3 фильтра: геолокация + 200+ сотрудников + wellness-сигнал</div>
+  </div>
+
+  <!-- Методология -->
+  <div class="methodology-block">
+    <h2>Методология отбора</h2>
+    <div class="methodology-filters">
+      <div class="methodology-filter">
+        <span class="filter-num">1</span>
+        <div class="filter-text">
+          <strong>Геолокация</strong>
+          Офис подтверждён в Zug / Baar / Rotkreuz / Cham / Steinhausen
+        </div>
+      </div>
+      <div class="methodology-filter">
+        <span class="filter-num">2</span>
+        <div class="filter-text">
+          <strong>Размер</strong>
+          200+ сотрудников
+        </div>
+      </div>
+      <div class="methodology-filter">
+        <span class="filter-num">3</span>
+        <div class="filter-text">
+          <strong>Wellness-сигнал</strong>
+          Документально подтверждённое упоминание программ здоровья и благополучия
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Тиры отражают силу wellness-сигнала, ясность стресс-профиля и наличие identified decision maker.</p>
+  </div>
+
+  <div class="tab-nav" style="margin-top:0;">
+    <button class="tab-btn active" onclick="switchTab('tier-a', this)">Тир A — Первоочередной · 13</button>
+    <button class="tab-btn" onclick="switchTab('tier-b', this)">Тир B — Второй волны · 9</button>
+    <button class="tab-btn" onclick="switchTab('tier-c', this)">Тир C — Резерв · 6</button>
+    <button class="tab-btn" onclick="switchTab('tier-reserve', this)">Резерв без сигнала · 1</button>
+  </div>
+
+  <!-- ═══════════════════ ТИР A ═══════════════════ -->
+  <div id="tab-tier-a" class="view active">
+    <div class="tier-header">
+      <div class="tier-desc">Сильные wellness-программы + ясный стресс-профиль + confirmed decision maker.</div>
+    </div>
+    <div class="card-grid">
+
+      <!-- Glencore -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Glencore International AG</div>
+          <div class="company-meta">Oil, Gas, and Mining / Commodities Trading &nbsp;·&nbsp; 10 001+ глобально &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Трейдеры и топ-менеджеры HQ в Baar несут постоянное давление P&amp;L в условиях 24/7 рыночной волатильности глобального commodities бизнеса.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Компания публично декларирует комплексную поддержку физического, ментального и финансового благополучия сотрудников.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Derrick Crowley</div>
+            <div class="contact-role">Head of Group HR</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/derrick-crowley-4b9baba6/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Derrick Crowley отвечает за корпоративную HR-стратегию группы — для горнодобывающего и трейдингового сектора REjuve как локальный premium wellness-партнёр в Zug даёт прямой ROI через снижение sick days и удержание топ-специалистов в конкурентной среде Baar HQ.</div>
+        </div>
+      </div>
+
+      <!-- MET Group -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">MET Group</div>
+          <div class="company-meta">Energy / Commodities Trading &nbsp;·&nbsp; 1 001–5 000 глобально (~1 400) &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники energy trading HQ в Baar работают в условиях 24/7 рыночной волатильности, жёстких дедлайнов и высоких финансовых ставок — хронический стресс как профессиональная норма.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Платформа для измерения вовлечённости и благополучия сотрудников, Virgin Pulse Challenge, B2Run и корпоративный Sports Day — Top Employer Switzerland 2025, подтверждённый wellness-бюджет.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Tünde Tóth</div>
+            <div class="contact-role">Group HR Director</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/t%C3%BCnde-t%C3%B3th-a46a6723/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Tünde Tóth публично называет wellbeing приоритетом программы Mind the fYOUture — REjuve предлагает персональный функциональный health-протокол, которого нет в групповых форматах B2Run и Virgin Pulse, и который напрямую усиливает её повестку удержания talent в commodity trading.</div>
+        </div>
+      </div>
+
+      <!-- Biogen -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Biogen International GmbH</div>
+          <div class="company-meta">Biotech / Pharma &nbsp;·&nbsp; 470+, 70+ национальностей &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники International HQ управляют multi-regional координацией across time zones под регуляторными дедлайнами биотеха с высокими ставками для каждого решения.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Для всех сотрудников — бесплатный годовой абонемент в спортивный центр Indigo Fitness прямо в Baar, плюс платформа Spring Health для ментальной поддержки.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Ozlem Battal</div>
+            <div class="contact-role">Vice President Human Resources, Europe, Canada and Partner Markets</div>
+          </div>
+          <a class="btn-linkedin" href="https://ch.linkedin.com/in/ozlem-battal-1230841" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Ozlem Battal как VP HR для European/International региона уже владеет бюджетом on-site gym и Spring Health — REjuve предлагает следующий уровень: персональные нутрициональные и функциональные протоколы для топ-сотрудников IHQ в Baar, которые групповая инфраструктура не закрывает.</div>
+        </div>
+      </div>
+
+      <!-- Bristol-Myers Squibb -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Bristol-Myers Squibb SA</div>
+          <div class="company-meta">Pharma (Oncology / Immunology) &nbsp;·&nbsp; 200+ &nbsp;·&nbsp; Steinhausen, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Специалисты по market access и medical affairs в Steinhausen несут высокую когнитивную нагрузку в условиях глобальной pharma-матрицы и регуляторных дедлайнов.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Действует глобальная программа Living Life Better с широким набором инструментов для физического и ментального благополучия сотрудников.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Antonella Parpaglioni</div>
+            <div class="contact-role">EMEA Director, Benefit and Wellbeing</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/antonella-parpaglioni-479b6b3a/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Antonella Parpaglioni как EMEA Director Benefit and Wellbeing утверждает wellness-программы для 25 стран региона — REjuve предлагает локальный Zug-партнёр для швейцарского кластера BMS, который усиливает Living Life Better конкретными персональными протоколами нутриции и восстановления.</div>
+        </div>
+      </div>
+
+      <!-- AbbVie -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">AbbVie AG</div>
+          <div class="company-meta">Pharma (Immunology / Oncology) &nbsp;·&nbsp; 200–500 (~280 CH) &nbsp;·&nbsp; Cham, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Pharma-специалисты в Cham работают под compliance и launch pressure, но корпоративная wellness-культура развита — значит спрос на premium-расширение программы уже есть.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Победитель Kyan Wellbeing Award 2025 за комплексную стратегию ментального благополучия — наивысшая публичная оценка wellness-культуры среди компаний кантона.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Dirk Lammerer</div>
+            <div class="contact-role">Head Human Resources, AbbVie Switzerland &amp; Region South</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/dirklammerer/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Dirk Lammerer как автор Kyan Wellbeing Award-стратегии AbbVie Switzerland уже строит лучшую wellness-программу в сегменте — REjuve предлагает стать её локальным премиум-расширением в Zug, добавив персональные нутрициональные и функциональные протоколы к существующей программе AbbVie in Motion.</div>
+        </div>
+      </div>
+
+      <!-- V-ZUG -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">V-ZUG AG</div>
+          <div class="company-meta">Home appliances &nbsp;·&nbsp; 1 000–3 000 (~2 000) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Manufacturing и engineering workforce с SmartWork arrangements — корпоративная wellness-программа на уровне Friendly Work Space label, что означает структурированный запрос на расширение.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Сертификат Friendly Work Space — государственно признанная программа управления здоровьем персонала, охватывающая питание, движение, ментальную поддержку и гибкий график.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Sandra Forster-Bernacchia</div>
+            <div class="contact-role">Chief People &amp; Culture Officer (CPCO)</div>
+          </div>
+          <a class="btn-linkedin" href="https://ch.linkedin.com/in/sandra-forster-bernacchia-30a2203" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Sandra Forster-Bernacchia как CPCO с опытом в ISS, Hilti и Swiss Re строит Friendly Work Space-стандарт для 2000 сотрудников в Zug — REjuve как локальный premium-партнёр усиливает её People &amp; Culture стратегию персональными функциональными протоколами, которые идут поверх сертифицированной инфраструктуры.</div>
+        </div>
+      </div>
+
+      <!-- AstraZeneca -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">AstraZeneca AG</div>
+          <div class="company-meta">Pharma / Biopharmaceuticals &nbsp;·&nbsp; 450+ &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники фармы в Baar работают в regulated high-stakes среде с гибридным графиком — wellness-спрос подтверждён самими сотрудниками через 60%+ Wellhub adoption.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Wellhub внедрён по инициативе самих сотрудников — охват уже превысил 60% команды, что подтверждает реальный спрос на wellness, а не только HR-декларацию.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Mara Metzger</div>
+            <div class="contact-role">HR Business Partner</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/marametzger/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Mara Metzger как HR BP для Swiss site в Baar управляет wellness-программой, которую сами сотрудники AstraZeneca проголосовали за Wellhub — REjuve предлагает следующий уровень для тех 60%+ активных пользователей: персональный функциональный health-протокол от локальной Zug-студии.</div>
+        </div>
+      </div>
+
+      <!-- Johnson & Johnson -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Johnson &amp; Johnson</div>
+          <div class="company-meta">Pharma / MedTech &nbsp;·&nbsp; 1 000+ (Zug Campus); ~4 700 в Швейцарии &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Специалисты Zug Campus работают в глобальной pharma/medtech матрице под жёсткими KPI и compliance-требованиями с постоянной международной координацией.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Корпоративная программа компенсации расходов на здоровье — покрывает абонементы в залы, спортивное оборудование, наборы здорового питания и другие одобренные категории.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Gillian Gil</div>
+            <div class="contact-role">Cluster Lead Employee Health &amp; Wellbeing — Italy, Portugal, Spain and Switzerland</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/gillian-gil-31354714a/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Gillian Gil как Cluster Lead Employee Health &amp; Wellbeing для Швейцарии владеет бюджетом Global Well-Being Reimbursement program — REjuve как сертифицированный локальный партнёр в Zug может войти в список одобренных провайдеров программы, дав сотрудникам кампуса прямую компенсацию за персональные функциональные протоколы.</div>
+        </div>
+      </div>
+
+      <!-- Roche -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Roche Diagnostics International AG</div>
+          <div class="company-meta">MedTech / Diagnostics &nbsp;·&nbsp; 2 700–2 990 &nbsp;·&nbsp; Rotkreuz, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники работают в высококомплексной матричной R&amp;D-организации с регуляторными дедлайнами, частыми организационными изменениями и международным давлением KPI.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Собственная wellness-инфраструктура с ежегодной неделей здоровья, спортивным залом, клиникой и программами питания и ментального здоровья.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Sandra Hutter</div>
+            <div class="contact-role">Senior People &amp; Culture Business Partner</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/sandra-hutter-32370480/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Sandra Hutter как certified lean change manager и PCBP для Rotkreuz site — идеальный first contact: письмо позиционирует REjuve как дополнение к Live Well-программе Roche на уровне персонализированного функционального здоровья для сотрудников, которые хотят выйти за рамки корпоративного wellness.</div>
+        </div>
+      </div>
+
+      <!-- Smith+Nephew -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Smith+Nephew (Schweiz AG)</div>
+          <div class="company-meta">Medtech (orthopaedics / wound care) &nbsp;·&nbsp; 455 (Switzerland &amp; Liechtenstein) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Post-restructuring medtech-среда с высокими compliance-требованиями, давлением продаж и Glassdoor-отзывами о layoffs создаёт устойчивый стресс у сотрудников швейцарского офиса.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Программа Life Unlimited с платформой Spring Health и глобальной сетью специалистов по ментальному здоровью — wellness закреплён в корпоративной стратегии.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Pete Snelling</div>
+            <div class="contact-role">Employee Communications &amp; Engagement; Benefits; Wellbeing</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/pete-snelling-69b10374" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Pete Snelling как человек, отвечающий одновременно за Benefits и Wellbeing глобально — прямой pitch: REjuve в Zug как корпоративный доступ к биохакинг-протоколам (IR-сауна, PBM, PEMF) с измеримым влиянием на энергию и продуктивность команды в Swiss офисе.</div>
+        </div>
+      </div>
+
+      <!-- IQVIA -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">IQVIA AG</div>
+          <div class="company-meta">Healthcare IT / Contract Research / Pharmaceutical Consulting &nbsp;·&nbsp; 500+ &nbsp;·&nbsp; Rotkreuz, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники работают в project-driven режиме с жёсткими дедлайнами клинических исследований, кросс-часовой коллаборацией и давлением фармацевтических регуляторов — стресс-профиль признан самой компанией.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Программа Healthy You из пяти направлений: физическое здоровье, ментальная устойчивость, финансы, социальные связи, смысл в работе — с локальными wellness-амбассадорами в каждом офисе.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Walter Waleed Bahous</div>
+            <div class="contact-role">Senior Director &amp; Head HR, Switzerland &amp; Israel; Head HR IQVIA Technologies EMEA</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/walter-waleed-bahous-7a968823/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Walter Bahous как head HR для Швейцарии напрямую выбирает wellness-вендоров — письмо апеллирует к тому, что IQVIA Healthy You программа уже сформировала внутренний запрос, а REjuve в Zug закрывает gap между цифровыми платформами и реальным функциональным здоровьем для Rotkreuz-команды.</div>
+        </div>
+      </div>
+
+      <!-- Novartis -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Novartis Pharma Schweiz AG</div>
+          <div class="company-meta">Pharma &nbsp;·&nbsp; 200–500 (~230 в Rotkreuz) &nbsp;·&nbsp; Rotkreuz, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники работают в высококонкурентной фарма-матрице с давлением KPI и регуляторными требованиями — рейтинг 3.6/5 на Glassdoor по career opportunities свидетельствует об ограниченном балансе работы и жизни.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Страховая программа SWICA возмещает до CHF 1 300 в год на фитнес, нутрицию и здоровый образ жизни — бюджет уже выделен и ждёт конкретного провайдера.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Doga Ozgul Cevrim</div>
+            <div class="contact-role">Head of People and Organization, IM Switzerland &amp; Rotkreuz Site Lead</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/doga-ozgul-cevrim-a104a0/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Doga Ozgul Cevrim владеет P&amp;O функцией именно для Rotkreuz site и изучает психологическое консультирование — письмо позиционирует REjuve как evidence-based дополнение к SWICA-реимбурсируемым wellness-программам: сотрудники уже имеют CHF 1 300/год на здоровье, REjuve — конкретный куда направить эти деньги.</div>
+        </div>
+      </div>
+
+      <!-- AMAG -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">AMAG Group AG</div>
+          <div class="company-meta">Автомобильная торговля / Мобильность &nbsp;·&nbsp; 3 900–7 500 &nbsp;·&nbsp; Cham, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Офисный и операционный персонал HQ работает под постоянным давлением KPI автопродаж, многосменного сервиса и клиентского ритма — типичный corporate стресс усиленный высоким темпом автомобильной торговли.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Бесплатный фитнес-центр на территории штаб-квартиры в Cham — физическая инфраструктура есть, функционального здоровья (нутриция, биомаркеры) не хватает.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Danielle Mrasoraj-Staubli</div>
+            <div class="contact-role">HR Leiterin AMAG Retail</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Anja Bates, CHRO: <a href="https://ch.linkedin.com/in/anjabates" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/daniellemrasorajstaubli" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Danielle Mrasoraj-Staubli отвечает за HR крупнейшего розничного подразделения AMAG в Cham (5 мин от REjuve) — операционный entry point. Anja Bates как CHRO группы (7 300+ сотрудников) — стратегический вход через FT Best Employers аргументацию: REjuve усиливает существующий бесплатный gym до уровня персонализированного функционального здоровья.</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tier-a -->
+
+  <!-- ═══════════════════ ТИР B ═══════════════════ -->
+  <div id="tab-tier-b" class="view">
+    <div class="tier-header">
+      <div class="tier-desc">Хорошие сигналы, decision maker найден частично или только global-уровень.</div>
+    </div>
+    <div class="card-grid">
+
+      <!-- Partners Group -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Partners Group</div>
+          <div class="company-meta">Financial Services / Private Markets Asset Management &nbsp;·&nbsp; 1 001–5 000 (~1 900 глобально) &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Инвестиционные профессионалы управляют активами $150+ млрд при performance-driven культуре «owners act like owners» и среднем WLB 3.2/5 — хронический стресс ответственности за результат.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Wellbeing и инклюзивность зафиксированы как базовые принципы работы компании — новый кампус в Zug открыт в 2024 году.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Romina Furrer</div>
+            <div class="contact-role">Head of Human Resources Operations, Europe</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/romina-furrer-84080252" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Romina Furrer как руководитель HR-операций по Европе, базируется в Zug — отвечает за практическую имплементацию wellness-программ для Zug/Baar кампуса (открыт 2024). REjuve в шаговой доступности от офиса Partners Group как premium functional health-партнёр для asset management с performance-driven культурой — прямой retention и productivity ROI.</div>
+        </div>
+      </div>
+
+      <!-- Zuger Kantonalbank -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Zuger Kantonalbank</div>
+          <div class="company-meta">Banking / Financial Services &nbsp;·&nbsp; 501–1 000 (~545) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Финансовые консультанты и compliance-специалисты банка работают с постоянной ответственностью за активы клиентов, давлением KPI и ограниченным WLB — типичный профиль для premium wellness-предложения.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Корпоративная спортивная группа с регулярными мероприятиями плюс Swiss Arbeitgeber Award 2025 — подтверждённая готовность вкладывать в качество жизни сотрудников.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Patrizia Meier</div>
+            <div class="contact-role">HR-Managerin</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/patrizia-meier-a08678175" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Patrizia Meier как HR-менеджер банка в Zug — прямой контакт для корпоративных wellness-программ: REjuve предлагает групповые форматы (IR-сауна, PBM) для ~400 сотрудников ZKB как следующий шаг от Sportgruppe к персонализированному функциональному здоровью, усиливающему позицию Swiss Arbeitgeber Award.</div>
+        </div>
+      </div>
+
+      <!-- Capital Dynamics -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Capital Dynamics</div>
+          <div class="company-meta">Financial Services / Private Asset Management &nbsp;·&nbsp; 200–250 (~220 глобально) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Investment professionals управляют $15+ млрд в сжатых инвестиционных циклах с ненормированным графиком и высокими ожиданиями доходности — high-stakes финансовый стресс в компактной команде.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Программа здоровья включает фитнес-классы, нутрициологов и вебинары — компания ежегодно входит в рейтинг лучших работодателей в asset management.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Mandi Akali</div>
+            <div class="contact-role">Director, Head of Human Resources</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/mandi-akali-256473212/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Mandi Akali — победитель The Drawdown HR &amp; Talent Professional of the Year 2022, активно строящий people-first стратегию в private asset management — письмо позиционирует REjuve как апгрейд существующей wellness-программы Capital Dynamics: от онлайн-вебинаров и фитнес-классов к персонализированному функциональному здоровью для Zug HQ команды.</div>
+        </div>
+      </div>
+
+      <!-- Medela -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Medela AG</div>
+          <div class="company-meta">Medical Technology / Healthcare Devices &nbsp;·&nbsp; 420 (HQ Baar); 1 500+ globally &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Knowledge workers R&amp;D и маркетинга в medtech HQ: умеренно-высокая когнитивная нагрузка, стандартный корпоративный стресс без острых публичных индикаторов.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Баланс работы и жизни — официальная корпоративная ценность с гибкими условиями труда и 86% вовлечённостью по внутреннему опросу.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Martina Radzanowski</div>
+            <div class="contact-role">Chief People Officer</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/martina-radzanowski-b73b4318/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Martina как CPO транслирует «life balance» как корпоративную ценность — REjuve предлагает конкретный инструмент реализации этой ценности: персонализированные функциональные протоколы восстановления для 420 HQ-сотрудников в 5 минутах от Baar.</div>
+        </div>
+      </div>
+
+      <!-- GSK -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">GSK Oncology Hub (GlaxoSmithKline AG)</div>
+          <div class="company-meta">Pharma / Oncology &nbsp;·&nbsp; 200–500 &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Учёные и regulatory специалисты онкологического hub: дедлайны клинических исследований, compliance-давление, высокие ставки при выводе препаратов — хронический когнитивный стресс.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Цифровая платформа для ментальной устойчивости работает в 65 странах — компания инвестирует в wellbeing как системный приоритет, а не разовую программу.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Merve Macit</div>
+            <div class="contact-role">Country Head of HR for Switzerland &amp; Sweden</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/mervemacit/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Merve отвечает за всю HR-стратегию Swiss кластера — REjuve позиционируется как дополнение к существующей GSK digital resilience платформе: живые персонализированные протоколы восстановления рядом с офисом в Baar, которые цифровая платформа не заменяет.</div>
+        </div>
+      </div>
+
+      <!-- Siemens -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Siemens Smart Infrastructure</div>
+          <div class="company-meta">Building Automation, Energy Efficiency &nbsp;·&nbsp; 1 700+ (Zug campus); 28 000+ globally &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Инженеры и project managers на глобальных infrastructure проектах: deadline-давление, международные командировки, высококомплексная матричная организация.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Комплексная поддержка: программы здоровья, психологическое консультирование, корпоративный волонтёринг — декларируется как «целостная забота» о сотруднике.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Cornelia Krey</div>
+            <div class="contact-role">Head of HR Shared Services Switzerland</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/cornelia-krey-938329112" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Cornelia Krey как руководитель HR Shared Services по всей Швейцарии, Zurich — в позиции запустить корпоративный wellbeing-договор для локаций Zug/Baar/Rotkreuz через одного провайдера: REjuve (5 мин от Siemens Baar) — физически заземлённый wellness-компонент для 1 700+ сотрудников прямо в Zug.</div>
+        </div>
+      </div>
+
+      <!-- Veeam -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Veeam Software AG</div>
+          <div class="company-meta">Software / Data Backup and Recovery &nbsp;·&nbsp; 5 000–10 000 &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Sales и tech персонал в fast-growing enterprise software: unsustainable workloads по отзывам сотрудников, metric-driven культура с высоким давлением результата.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Ежеквартальные корпоративные выходные VeeaMe Days, финансовая надбавка на фитнес и программа психологической помощи — реакция на публично признанную проблему высокой нагрузки.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Adriana Aslam (Carrano)</div>
+            <div class="contact-role">Global Talent Programs Manager &amp; Office Manager Switzerland</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/adriana-aslam-carrano-5912a094" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Adriana управляет офисом в Baar и всеми talent-программами — главный узел между HR и физическим благополучием команды. REjuve в 5 минутах от офиса делает корпоративное членство максимально удобным; параллельно можно выйти на Lucy Hur (CPO, Kirkland WA) с ROI-аргументом на уровне EMEA wellbeing.</div>
+        </div>
+      </div>
+
+      <!-- Sandoz -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Sandoz AG</div>
+          <div class="company-meta">Generics / Pharmaceuticals &nbsp;·&nbsp; 10 000+ &nbsp;·&nbsp; Rotkreuz, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Knowledge workers pharma HQ в post-spinoff трансформации: regulatory deadlines, compliance нагрузка, организационная нестабильность после выделения из Novartis в 2023.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Компания публично заявила цель стать лидером рынка в программах здоровья и благополучия — амбиция подкреплена собственным спортивным залом и dedicated wellbeing страницей.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Aleksandra Klaic</div>
+            <div class="contact-role">Global Head of Benefits</div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/aleksandra-klaic-11636a35/" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Aleksandra с 2023 года строит систему льгот Sandoz с нуля как самостоятельной компании и хочет стать market leader в wellbeing — REjuve в Rotkreuz предлагает конкретный premium wellness-актив прямо рядом с HQ, который усиляет эту позицию.</div>
+        </div>
+      </div>
+
+      <!-- Landis+Gyr -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Landis+Gyr Group AG</div>
+          <div class="company-meta">Energy Technology (Smart Meters, Grid Solutions) &nbsp;·&nbsp; 6 000–7 000 &nbsp;·&nbsp; Cham, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Инженеры и корпоративный staff в среде с частыми реструктуризациями и высокой внутренней политикой — хронический стресс неопределённости плюс deadline-давление энергетического tech-производителя.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Физическое и ментальное здоровье сотрудников — KPI-цель с дашбордами отслеживания, закреплённая в ESG-отчётности за 2024 год.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Adriana Paun</div>
+            <div class="contact-role">Senior Vice President Human Resources EMEA and Group CHRO</div>
+          </div>
+          <a class="btn-linkedin" href="https://ch.linkedin.com/in/adriana-paun-88090817a" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Adriana несёт ответственность за Physical &amp; Mental Health как ESG KPI — REjuve предоставляет premium wellness-опцию прямо у нового Cham HQ, которая переводит dashboard-метрики в конкретный сервис для сотрудников.</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tier-b -->
+
+  <!-- ═══════════════════ ТИР C ═══════════════════ -->
+  <div id="tab-tier-c" class="view">
+    <div class="tier-header">
+      <div class="tier-desc">Прошли базовые критерии, но слабый сигнал или нет CH-специфики.</div>
+    </div>
+    <div class="card-grid">
+
+      <!-- Galderma -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Galderma SA</div>
+          <div class="company-meta">Pharmaceuticals / Dermatology &nbsp;·&nbsp; 5 000–10 000 &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Post-IPO pharma HQ в Zug: высокий темп изменений, новые публичные compliance требования, давление на performance — типичный стресс быстрорастущей публичной компании.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Базовый соцпакет (надбавка на медицинскую страховку, обеды, гибкий график) — сигнал слабый, но CHRO-вакансия создаёт окно для установления партнёрства до формирования нового вендорного списка.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Alexander Mueller</div>
+            <div class="contact-role">VP Human Resources</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Laurence Develey, Head HR Corporate Functions: <a href="https://www.linkedin.com/in/laurencedeveley/" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/muelleralexander" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Alexander Mueller как VP HR прямо в штаб-квартире Galderma в Цуге — главный decision maker по корпоративным wellness-бенефитам для HQ; Laurence Develey де-факто руководит HR-функцией при частично вакантном C-suite — тандем двух контактов при переходном периоде в Galderma повышает шанс ответа.</div>
+        </div>
+      </div>
+
+      <!-- Abbott -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Abbott AG / Abbott Medical (Schweiz) AG</div>
+          <div class="company-meta">Medtech / Pharma / Medical Diagnostics &nbsp;·&nbsp; ~500 (Швейцария) &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники medtech/pharma с регуляторными дедлайнами, sales targets и compliance-нагрузкой по нескольким медицинским подразделениям.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Глобальные семинары по управлению стрессом, медитации и здоровым привычкам — Top Employer Europe, но CH-специфичных программ публично не подтверждено.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Roma Trivedi</div>
+            <div class="contact-role">Director HR, Switzerland</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Adelina Solèr, HR Manager Switzerland: <a href="https://ch.linkedin.com/in/adelina-sol%C3%A8r-aa9a8550" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/roma-trivedi-962aa47" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Roma Trivedi как Director HR в Швейцарии — прямой decision maker по корпоративному здоровью сотрудников; REjuve закрывает разрыв между глобальными wellness-декларациями Abbott и реальным CH-пакетом, предлагая локальный партнёр в 10 минутах от Baar HQ.</div>
+        </div>
+      </div>
+
+      <!-- Sika -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Sika AG</div>
+          <div class="company-meta">Specialty Chemicals (Construction &amp; Automotive) &nbsp;·&nbsp; 33 000+ (глобально); HQ в Baar &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Инженеры и менеджеры глобального HQ под давлением performance-KPI в chemical manufacturing с международной координационной нагрузкой.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Wellbeing сотрудников закреплён в ESG-стратегии как цель отраслевого лидерства — сигнал на уровне декларации, CH-специфичных программ публично не подтверждено.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Mariela Lack</div>
+            <div class="contact-role">Head Compensation &amp; Benefits, Switzerland</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Raffaella Marzi, Head HR Legal &amp; Compliance: <a href="https://ch.linkedin.com/in/raffaella-marzi-b1791b103" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/mariela-lack-3555bb88" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Mariela Lack как руководитель C&amp;B напрямую отвечает за ценность пакета льгот — wellness-партнёрство с REjuve снижает sick-days и повышает retention без роста страховых взносов. Raffaella Marzi — стратегический вход на уровне Group Management через аргумент Strategy 2028 / ESG.</div>
+        </div>
+      </div>
+
+      <!-- Holcim -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Holcim Ltd</div>
+          <div class="company-meta">Building Materials (Cement, Aggregates, Concrete) &nbsp;·&nbsp; 45 000+ (глобально) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">C-suite и функциональные менеджеры глобального HQ под давлением корпоративной трансформации (spin-off Amrize) и международной KPI-нагрузки.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Корпоративная карта Multisport для сотрудников и членов семьи плюс ежегодная финансовая надбавка на занятия здоровьем — структурированный бюджет на wellness есть.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Andrés ARIAS</div>
+            <div class="contact-role">Group Head of People Operations &amp; Digital Services</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Carmen Díaz Canabal, CPO: <a href="https://www.linkedin.com/in/carmen-d%C3%ADaz-canabal-92abb52a/" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/andresariaszamora" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Andrés ARIAS базируется прямо в Цуге и отвечает за People Operations глобально — ближайший к REjuve decision maker в Holcim, удобный момент запустить локальный wellbeing-пилот без логистических барьеров. Carmen Díaz Canabal как новый CPO (октябрь 2024) активно строит People Agenda — стратегический вход сверху.</div>
+        </div>
+      </div>
+
+      <!-- SHL Medical -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">SHL Medical AG</div>
+          <div class="company-meta">Medtech — drug delivery devices / autoinjectors &nbsp;·&nbsp; 280–350 (Zug facility); 5 000–10 000 (глобально) &nbsp;·&nbsp; Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Engineering и production персонал в high-growth medtech под давлением открытия нового 21 000 sqm объекта в Zug в 2026 году.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Программы здоровья и коучинг упоминаются в корпоративном пакете — сигнал слабый, но открытие нового HQ в Zug в 2026 году создаёт уникальное окно для установления партнёрства с первого дня.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Satbir Bains</div>
+            <div class="contact-role">Chief Human Resources Officer (CHRO)</div>
+          </div>
+          <a class="btn-linkedin" href="https://ch.linkedin.com/in/satbir-bains-5b4b1a35" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Satbir Bains как бывший SVP HR Hilti Group понимает корпоративный wellness в швейцарском контексте — аргумент через открытие нового Zug HQ в 2026: REjuve как wellness-партнёр для сотрудников нового кампуса с первого дня, пока формируется корпоративная культура объекта.</div>
+        </div>
+      </div>
+
+      <!-- Alcon -->
+      <div class="outreach-card">
+        <div class="outreach-card-header">
+          <div class="company-name">Alcon Switzerland SA</div>
+          <div class="company-meta">Ophthalmology / Medical Devices &nbsp;·&nbsp; 25 000+ (глобально); Swiss HQ &nbsp;·&nbsp; Rotkreuz, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Сотрудники глобального medtech HQ с повторяющимися restructuring cycles и задокументированным burnout в условиях высоких регуляторных и операционных требований.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Компания заявляет о программах wellness и поддержки для сотрудников, сертификат Top Employer — глобальная декларация без CH-специфичных деталей.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Widad Zine</div>
+            <div class="contact-role">International HR Director, Switzerland</div>
+            <div style="margin-top:4px;font-size:11px;color:var(--text-dim);">+ Gisela Albanese, Regional Head HR: <a href="https://ch.linkedin.com/in/gisela-albanese-219b954" target="_blank" style="font-size:11px;">LinkedIn ↗</a></div>
+          </div>
+          <a class="btn-linkedin" href="https://www.linkedin.com/in/widad-zine-28599a6" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Widad Zine как International HR Director напрямую инициирует корпоративные велнес-программы для сотрудников Alcon Switzerland — REjuve предлагает усилить benefits-пакет для Rotkreuz именно сейчас, когда Swiss entity проходит организационную переориентацию после переноса глобального HQ в Geneva.</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tier-c -->
+
+  <!-- ═══════════════════ РЕЗЕРВ БЕЗ СИГНАЛА ═══════════════════ -->
+  <div id="tab-tier-reserve" class="view">
+    <div class="tier-header">
+      <div class="tier-desc">Соответствует критериям размера и геолокации, подтверждённый контакт, но публичных wellness-программ не найдено. Подход: discovery-разговор, не продажа.</div>
+    </div>
+    <div class="reserve-note">Подход к этой группе: discovery-разговор («Есть ли у вас программа?»), не питч конкретного пакета. Проверить потребность прежде чем предлагать решение.</div>
+    <div class="card-grid" style="grid-template-columns: 1fr;">
+
+      <!-- Schiller -->
+      <div class="outreach-card" style="max-width: 480px;">
+        <div class="outreach-card-header">
+          <div class="company-name">Schiller AG</div>
+          <div class="company-meta">Medtech — cardiology / diagnostics devices &nbsp;·&nbsp; ~1 400 &nbsp;·&nbsp; Baar, Zug</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Стресс-профиль</div>
+          <div class="outreach-field-value">Medtech-производитель кардиологического оборудования: regulatory pressure, engineering deadlines, production cycles — типичный стресс-профиль без публичных индикаторов.</div>
+        </div>
+        <div>
+          <div class="outreach-field-label">Wellness-сигнал</div>
+          <div class="outreach-field-value">Публичных данных о wellness-программах нет.</div>
+        </div>
+        <div class="contact-block">
+          <div class="contact-info">
+            <div class="contact-name">Patricia Luzi-Rupper</div>
+            <div class="contact-role">Head of Human Resources &amp; Personal Executive Assistant to CEO</div>
+          </div>
+          <a class="btn-linkedin" href="https://ch.linkedin.com/in/patricia-luzi-rupper-09b2ba6a" target="_blank">LinkedIn →</a>
+        </div>
+        <div>
+          <div class="outreach-field-label">Угол входа</div>
+          <div class="outreach-field-value angle">Discovery-разговор: «Есть ли у вас программа для 1 400 сотрудников в Baar, или мы можем предложить первое решение?» — не продажа конкретного пакета, а проверка потребности.</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tier-reserve -->
+
+</div><!-- /page-wrap -->
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
