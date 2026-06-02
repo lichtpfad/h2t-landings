@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REjuve — Гид по интервью с клиентом</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap">
+  <style>
+/* h2t-editorial deck — base tokens (form-v2). System B canonical.
+ *
+ * Source: rejuve-pitch-deck.html `:root` block, lifted verbatim per the
+ * 2026-05-07 source arbitration reset (luxury-print editorial: gold accent
+ * + Playfair Display headings + Georgia serif body). The earlier System A
+ * token shape (sans body, terracotta accent, hyphen-separated font-token
+ * names) was tied to pos-sprint editorial and is demoted to secondary; do
+ * NOT re-introduce those token names here.
+ *
+ * Token-name convention: System B uses `--fh` (heading) / `--fb` (body
+ * serif) / `--fu` (utility sans). Bare colour-token names (`--bg / --text
+ * / --accent / ...`) match the R2a deck precedent. Profile-root
+ * landing-form tokens.css keeps the R1 `--color-*` prefix; the two
+ * namespaces never overlap and are guarded by tests in
+ * test_r2b_legacy_fidelity_deck.py.
+ */
+
+:root {
+  /* Typography — Playfair Display headings + Georgia body serif +
+     system-ui utility sans (rejuve-pitch-deck canonical). */
+  --fh: 'Playfair Display', Georgia, serif;
+  --fb: Georgia, 'Times New Roman', serif;
+  --fu: system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Desktop slide content inset — infrastructure handle (R2a T17.6 pattern).
+     Vertical defaults match rejuve-pitch-deck `.slide { padding: 44px 80px
+     58px; }` (top 44 / bottom 58). Horizontal sides use `clamp` so wider
+     viewports get proportionally larger gutters: 80px floor (pitch-deck
+     literal) → 8vw at standard 1440 (≈115px) → 160px ceiling at 2000+.
+     Combined with `.slide { align-items: center }` and the slide-inner
+     max-width 1100px cap, this matches pitch-deck visual centering on
+     1440 and gracefully widens on 1920+. Mobile @media in frame.css
+     overrides all four sides for the 480px breakpoint. */
+  --deck-slide-padding-top:    44px;
+  --deck-slide-padding-right:  clamp(80px, 8vw, 160px);
+  --deck-slide-padding-bottom: 58px;
+  --deck-slide-padding-left:   clamp(80px, 8vw, 160px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--fb);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Slide container */
+#deck {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;       /* System B canonical (rejuve-pitch-deck) —
+                                 slide-inner is horizontally centered; its
+                                 own max-width 1100px caps the editorial
+                                 column width. Internal alignment of text
+                                 stays left (browser default) unless the
+                                 recipe sets `align: center` (cover). */
+  padding: var(--deck-slide-padding-top)
+           var(--deck-slide-padding-right)
+           var(--deck-slide-padding-bottom)
+           var(--deck-slide-padding-left);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.slide.center {
+  align-items: center;
+  text-align: center;
+}
+
+.slide-inner {
+  width: 100%;
+  max-width: 1100px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Slide entry animation — System B (rejuve-pitch-deck): 14px translate,
+   0.38s ease-out, 0.06s stagger. Restrained vs the earlier pos-sprint
+   16px / 0.6s rhythm. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.slide.active .slide-inner > * {
+  animation: fadeUp 0.38s ease-out both;
+}
+.slide.active .slide-inner > *:nth-child(2) { animation-delay: 0.06s; }
+.slide.active .slide-inner > *:nth-child(3) { animation-delay: 0.12s; }
+.slide.active .slide-inner > *:nth-child(4) { animation-delay: 0.18s; }
+.slide.active .slide-inner > *:nth-child(5) { animation-delay: 0.24s; }
+.slide.active .slide-inner > *:nth-child(6) { animation-delay: 0.30s; }
+.slide.active .slide-inner > *:nth-child(7) { animation-delay: 0.36s; }
+.slide.active .slide-inner > *:nth-child(8) { animation-delay: 0.42s; }
+
+/* Typography baseline — System B canonical sizes. Headlines Playfair,
+   body Georgia (serif), utility sans for chrome/labels. */
+h1 {
+  font-family: var(--fh);
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+h2 {
+  font-family: var(--fh);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+h3 {
+  font-family: var(--fu);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+p, li {
+  font-family: var(--fb);
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; color: var(--accent-text); }
+
+/* Em-dash bullet — pitch-deck signature for plain <ul> lists. */
+ul { list-style: none; }
+ul li { padding: 4px 0; }
+ul li::before {
+  content: '—';
+  color: var(--accent);
+  margin-right: 9px;
+}
+
+/* warm palette — System B variant (warmer cream paper, same gold accent).
+ * Adds the same auxiliary semantic-colour token set as default.css so
+ * table colour-row variants render with palette-consistent tints.
+ */
+:root {
+  --bg:           #fbf5ea;
+  --bg-light:     #f1ead9;
+  --bg-card:      #fffdf9;
+  --text:         #1c1813;
+  --text-dim:     #7a6e5e;
+  --accent:       #c9a96e;
+  --accent-text:  #8a6520;
+  --copper:       #7d4e2d;
+  --border:       #e6dec9;
+
+  --accent-soft:  rgba(201, 169, 110, 0.12);
+  --copper-soft:  rgba(125,  78,  45, 0.10);
+  --danger:       #cc2222;
+  --danger-soft:  rgba(204,  34,  34, 0.10);
+  --auto:         #3a3a3a;
+  --auto-soft:    rgba( 45,  45,  45, 0.06);
+  --green:        #3d6b4a;
+  --green-soft:   rgba( 61, 107,  74, 0.10);
+}
+
+/* h2t-editorial deck — frame chrome + shared editorial primitives.
+ * System B canonical (rejuve-pitch-deck post-arbitration). Declares the
+ * shared kicker primitive (.label — replaces the demoted System A kicker
+ * class), the decorative rectangle (.rule — 40x2 gold reused as cover
+ * separator and per-slide divider), and frame chrome (#progress-bar,
+ * #slide-counter, #nav-hint). All colour values come from token vars
+ * (palette swap works across default / warm / night without re-touching
+ * this file).
+ *
+ * Layout-specific CSS (per-slide-type tweaks) lives in
+ * deck/slides/<layout>/<layout>.css. This file is profile-wide.
+ */
+
+/* ─── Frame chrome ────────────────────────────────────────────── */
+
+#progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+  z-index: 100;
+}
+
+#slide-counter {
+  position: fixed;
+  top: 22px;
+  right: 30px;
+  font-family: var(--fu);
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.45;
+  z-index: 100;
+}
+
+#nav-hint {
+  position: fixed;
+  bottom: 13px;
+  right: 30px;
+  font-family: var(--fu);
+  font-size: 10px;
+  color: var(--text-dim);
+  opacity: 0.3;
+  z-index: 100;
+}
+
+/* Optional prev/next nav buttons — quiet text affordance. */
+.nav-btn {
+  position: fixed;
+  bottom: 30px;
+  font-family: var(--fu);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 7px 13px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  z-index: 100;
+}
+.nav-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.nav-btn.prev { left: 30px; }
+.nav-btn.next { right: 30px; }
+.nav-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ─── Shared editorial primitives ──────────────────────────────── */
+
+/* Label — kicker above each slide headline. System B canonical: small
+   uppercase utility-sans, gold, 2.5px letter-spacing. Rejuve-pitch-deck
+   format: "NN — Section text" (numbered). */
+.label {
+  font-family: var(--fu);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.label:empty { display: none; }
+
+/* Rule — 40×2 gold rectangle. Cover separator (between subhead and meta)
+   and per-slide divider (between h2 and body). Reused across layouts. */
+.rule {
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  margin: 12px 0 18px;
+}
+
+/* Color utility classes — used inline via <span class="..."> emphasis
+   inside headlines and body HTML. */
+.dim       { color: var(--text-dim); }
+.accent    { color: var(--accent); }
+.text      { color: var(--text); }
+.bold      { font-weight: 700; }
+.italic    { font-style: italic; }
+
+/* Browser default reset for blockquote (used by quote layout). Keep margins
+   collapsed; layout-specific styling lives in slides/quote/quote.css. */
+blockquote { margin: 0; padding: 0; quotes: none; }
+blockquote::before, blockquote::after { content: none; }
+
+/* Base figure reset (used by image-text layout). */
+figure { margin: 0; }
+
+/* ─── Baseline table styling (System B canonical, used by `table` layout)
+ * Lifted verbatim from rejuve-pitch-deck. Tables use utility-sans (--fu)
+ * for compactness, not the body Georgia serif. Colour-row variants
+ * (.ra / .rc / .rcu / .rat / .rg) live in slides/table/table.css. */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-family: var(--fu);
+}
+th {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  padding: 7px 10px;
+  text-align: left;
+}
+td {
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 7px 10px;
+  color: var(--text);
+  border-bottom: 1px solid rgba(226, 223, 216, 0.4);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+
+/* ─── Mobile adaptation (R2b plan §6 — Gate B) ─────────────────────────
+   CSS-only — JS does not branch on viewport. Per-layout typography
+   overrides live in the layout CSS files; this block owns the shared
+   primitives: token-driven slide padding, default h2 sizing, frame
+   chrome, .label kicker, and .rule decorator. No primitive is hidden. */
+@media (max-width: 480px) {
+  :root {
+    /* Token override — preserves the desktop handle (R2a T17.6 pattern):
+       only the values change inside mobile, not the `.slide { padding: ... }`
+       rule. System B mobile inset: 24 / 20 / 40 / 20 (rejuve-pitch-deck
+       responsive block uses 24px 20px 40px). */
+    --deck-slide-padding-top:    24px;
+    --deck-slide-padding-right:  20px;
+    --deck-slide-padding-bottom: 40px;
+    --deck-slide-padding-left:   20px;
+  }
+
+  /* Default h2 size (Playfair stays — only size & leading shrink). */
+  h2 {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+
+  /* Body sizes — pitch-deck mobile uses 15px for p/li. */
+  p, li {
+    font-size: 15px;
+  }
+
+  /* Frame chrome: tighter inset + smaller type. */
+  #slide-counter {
+    top: 14px;
+    right: 16px;
+    font-size: 10px;
+  }
+  #nav-hint {
+    bottom: 12px;
+    right: 16px;
+    font-size: 9px;
+  }
+
+  /* Optional prev/next nav buttons. */
+  .nav-btn {
+    bottom: 18px;
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+  .nav-btn.prev { left: 16px; }
+  .nav-btn.next { right: 16px; }
+
+  /* Label kicker: tighten letter-spacing + bottom margin to recover
+     vertical room. */
+  .label {
+    font-size: 9.5px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  /* Decorative rule — slightly smaller on mobile. */
+  .rule {
+    width: 32px;
+    margin: 10px 0 14px;
+  }
+}
+
+/* title — opening cover slide. System B canonical (rejuve-pitch-deck).
+ *
+ * Composition: Playfair brand wordmark (with optional <em> accent
+ * fragment) + uppercase utility-sans cover-sub + 40×2 gold .rule +
+ * dim utility-sans cover-meta. Centered via the slide-level `align:
+ * center` recipe flag (`.slide.center`).
+ *
+ * No <h1> here — the brand wordmark is the visual anchor and uses its
+ * own `.brand` class for the larger 58px display weight.
+ */
+
+.title-block {
+  gap: 0;
+  align-items: center;
+  text-align: center;
+}
+
+.title-block .brand {
+  font-family: var(--fh);
+  font-size: 58px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 2px;
+  color: var(--text);
+}
+.title-block .brand em {
+  font-style: normal;       /* System B: em is COLOR-only, not italic */
+  color: var(--accent);
+}
+
+.title-block .cover-sub {
+  font-family: var(--fu);
+  font-size: 13px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+.title-block .cover-sub:empty { display: none; }
+
+/* Cover-specific .rule — centered + larger margin than per-slide rule. */
+.title-block .rule {
+  margin: 26px auto;
+}
+
+.title-block .cover-meta {
+  font-family: var(--fu);
+  font-size: 12px;
+  color: var(--text-dim);
+  opacity: 0.55;
+  letter-spacing: 1px;
+}
+.title-block .cover-meta:empty { display: none; }
+
+/* Mobile (R2b plan §6 — Gate B). Brand stays the visual anchor; sizes
+   shrink proportionally for 390px viewport while preserving the wordmark
+   + rule + meta rhythm. */
+@media (max-width: 480px) {
+  .title-block .brand {
+    font-size: 36px;
+    letter-spacing: 1.5px;
+  }
+  .title-block .cover-sub {
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    margin-top: 8px;
+  }
+  .title-block .rule {
+    margin: 18px auto;
+  }
+  .title-block .cover-meta {
+    font-size: 11px;
+  }
+}
+
+/* two-column — h2 over two-column body. System B canonical
+ * (rejuve-pitch-deck `.split`): grid 1fr 1fr, gap 28px, mt 8px.
+ * Per-column h3 kicker = utility-sans uppercase letter-spaced (defined
+ * in tokens.css h3 baseline rule).
+ */
+
+.two-column-block .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+  row-gap: 24px;
+  margin-top: 8px;
+}
+.two-col-side {
+  max-width: 100%;
+}
+.two-col-side > * + * { margin-top: 10px; }
+.two-col-side h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/* Mobile (R2b plan §6 — Gate B): collapse to single column. */
+@media (max-width: 480px) {
+  .two-column-block .two-col {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 18px;
+    margin-top: 12px;
+  }
+  .two-col-side {
+    max-width: 100%;
+  }
+}
+
+/* title-body — default content slide (System B canonical).
+ * Composition: .label kicker + h2 (Playfair 27px) + .rule + body prose
+ * (Georgia 16.5px line-height 1.65). All sizes flow from tokens.css
+ * baseline rules; this file owns intra-block spacing only.
+ */
+
+.title-body-block .body { margin-top: 6px; max-width: 60ch; }
+.title-body-block .body > * + * { margin-top: 12px; }
+
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div id="slide-counter">
+    <span class="current" id="cnt-current">01</span>
+    <span class="dim"> / </span>
+    <span id="cnt-total">12</span>
+  </div>
+  <div id="nav-hint">arrows / space / swipe</div>
+  <div id="deck">
+<section class="slide" data-index="0"><div class="slide-inner title-block">
+  <div class="brand">REjuve</div>
+  <div class="cover-sub">Гид по интервью с клиентом</div>
+  <div class="rule"></div>
+  <div class="cover-meta"><style>
+.two-column-block .two-col{align-items:start}
+ul.q li,.listen li{padding:6px 0;line-height:1.5}
+.must::before{content:"\2605" !important;color:var(--copper) !important;font-size:13px;margin-right:9px}
+.must{font-weight:700}
+.q li small{display:block;font-weight:400;font-size:12.5px;color:var(--text-dim);margin-top:1px;line-height:1.4}
+.q li.note{font-style:italic;color:var(--text-dim);font-size:13.5px}
+.q li.note::before{content:"" !important;margin:0}
+.q li.cue{font-style:italic;color:var(--text-dim)}
+.goal{font-style:italic;color:var(--text-dim);font-size:14px;margin-bottom:12px;line-height:1.5}
+.listen{background:var(--bg-card);border-left:3px solid var(--copper);border-radius:10px;padding:14px 22px 16px}
+.listen h3{color:var(--accent-text);margin-bottom:6px}
+.listen li{font-size:14px;color:var(--text-dim);line-height:1.5}
+.listen li::before{color:var(--copper) !important}
+.listen .sub{font-family:var(--fu);font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin:13px 0 4px}
+.legend{font-family:var(--fu);font-size:13px;color:var(--text-dim);margin-top:18px;line-height:1.6}
+.legend b{color:var(--copper)}
+.greet p{margin-bottom:10px;font-size:16.5px;line-height:1.6}
+.cap{display:grid;grid-template-columns:1fr 1fr;gap:7px 34px;margin-top:4px}
+.cap div{padding:5px 0 5px 16px;position:relative;font-size:15px;line-height:1.4}
+.cap div::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.cap div b{font-weight:700}
+</style>
+20–25 минут · слушаем историю клиента его словами · <span class="accent">★</span> нельзя пропустить
+</div>
+</div>
+</section>
+<section class="slide" data-index="1"><div class="slide-inner two-column-block">
+  <div class="label">Перед началом · 1 мин</div>
+  <h2>Вступление</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><div class="greet">
+  <p>Привет! Спасибо, что согласились поговорить.</p>
+  <p>Мне важно лучше понять ваш реальный опыт: почему вы пришли, что для вас оказалось ценным, что изменилось и почему вы продолжаете или перестали приходить.</p>
+  <p>Здесь нет правильных или неправильных ответов. Интересна именно ваша история и ваши слова.</p>
+  <p>Можно я запишу разговор для внутреннего анализа?</p>
+</div>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Профиль</h3>
+  <ul>
+    <li>Кто ходит регулярно / на membership / пакетах</li>
+    <li>Кто перестал ходить</li>
+    <li>Кто пришёл по рекомендации</li>
+    <li>Разные запросы: энергия, восстановление, стресс, здоровье, профилактика, performance, anti-age</li>
+  </ul>
+  <div class="sub">Формат</div>
+  <ul>
+    <li>10–15 интервью · 20–25 минут</li>
+    <li>Звонок / видео / лично</li>
+    <li>Проводит собственница, спокойный разговор без подсказок</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="2"><div class="slide-inner two-column-block">
+  <div class="label">Блок 1 · Warm-up / Context · 2 мин</div>
+  <h2>Контекст жизни</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять контекст жизни и что уже встроено в его рутину.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li>Как сейчас обычно выглядит ваша неделя? Работа, график</li>
+  <li class="must">Как вы обычно заботитесь о себе и своём состоянии?</li>
+  <li>Что из заботы о себе у вас реально получается делать регулярно, а что обычно выпадает?</li>
+  <li>Вы как-то отслеживаете своё состояние — через ощущения, анализы, гаджеты, спорт, врача, чекапы?</li>
+  <li>Эти наблюдения или данные как-то влияют на ваши решения о восстановлении, процедурах, профилактике или здоровье?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>темп жизни и рабочий график</li>
+    <li>насколько человек осознанно занимается здоровьем</li>
+    <li>какие слова он сам использует: «энергия», «стресс», «восстановление», «тело», «здоровье», «возраст»</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="3"><div class="slide-inner two-column-block">
+  <div class="label">Блок 2 · Trigger &amp; Context · 5 мин</div>
+  <h2>Триггер и контекст</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять, что «сломалось», как справлялись с этим до нас и что послужило мотивацией / триггером к поиску нового решения.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li>Вспомните период до первого визита в REjuve. Что тогда происходило в вашей жизни?</li>
+  <li class="must">С какой конкретной проблемой, задачей или ощущением вы столкнулись?</li>
+  <li>Это было одно конкретное событие или состояние накапливалось постепенно?</li>
+  <li>В какой момент вы поняли, что нужно что-то делать?</li>
+  <li class="note">Если говорят, что пришли по рекомендации — разворачиваем: что именно вас зацепило в этой рекомендации? Почему вам показалось ценным именно сейчас?</li>
+  <li class="must">Что вы уже пробовали до REjuve?</li>
+  <li>Что в этих вариантах помогало, а что не сработало или не подошло?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>состояние «до» в словах клиента</li>
+    <li>конкретный триггер: событие, симптом, рекомендация, усталость, возраст, стресс, боль, восстановление</li>
+    <li>решение было спонтанным или осознанным</li>
+    <li>как человек справлялся с этим до нас</li>
+    <li>почему предыдущие решения были недостаточны</li>
+    <li>что именно сделало REjuve актуальным сейчас</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="4"><div class="slide-inner two-column-block">
+  <div class="label">Блок 3 · Decision Journey · 5 мин</div>
+  <h2>Путь к решению</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять критерии выбора, что останавливало и что убедило.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li>Как вы впервые узнали о REjuve?</li>
+  <li>Что вы подумали в первый момент? Был интерес или сомнение? Какие?</li>
+  <li class="must">Что убедило вас записаться на первый визит?</li>
+  <li>В какой момент вы почувствовали: «да, это может быть для меня»?</li>
+  <li>Если были сомнения — что помогло их преодолеть?</li>
+  <li class="must">Когда вы думали о стоимости, с чем вы её сравнивали?<small>(фокус не на цене, а на категории, с которой нас сравнивают)</small></li>
+  <li>Что было важнее в решении (цена, результат, доверие, рекомендация, пр.)?</li>
+  <li>Когда вы решили попробовать REjuve, какую задачу вы хотели решить для себя?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>источник: рекомендация, Instagram, сайт, знакомый, врач, партнёр, случайный контакт</li>
+    <li>первое впечатление</li>
+    <li>главное сомнение</li>
+    <li>что стало решающим</li>
+    <li>была ли понятна услуга до визита</li>
+    <li>категория сравнения: медицина, spa, wellness, прочее</li>
+    <li>что перевело клиента от интереса к действию</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="5"><div class="slide-inner two-column-block">
+  <div class="label">Блок 3 · продолжение</div>
+  <h2>Путь к решению — уточняющие</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><h3>Уточняющие вопросы</h3>
+<ul class="q">
+  <li>Что вы хотели понять перед первой записью?</li>
+  <li>Искали ли вы дополнительную информацию?</li>
+  <li>Смотрели ли Instagram, сайт, отзывы, процедуры, объяснения?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Если клиент сомневался</h3>
+  <ul>
+    <li>В чём было главное сомнение?</li>
+    <li>Что помогло его преодолеть?</li>
+    <li>Это сомнение исчезло до визита или только после опыта?</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="6"><div class="slide-inner two-column-block">
+  <div class="label">Блок 4 · Value &amp; Outcomes · 5 мин</div>
+  <h2>Ценность и результат</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять, что изменилось после REjuve и как клиент сам описывает ценность.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li>Что вы запомнили после первого визита?</li>
+  <li>Был ли момент, когда вы почувствовали: «мне это что-то даёт»?</li>
+  <li>Это ощущение появилось сразу или после нескольких визитов?</li>
+  <li class="must">Что изменилось для вас после визитов — даже если это небольшое изменение?</li>
+  <li>Что вы заметили в теле, энергии, сне, настроении или восстановлении?</li>
+  <li class="must">Что для вас сейчас самое ценное в REjuve?</li>
+  <li>Когда вы думаете о стоимости сейчас — за что именно вы платите?</li>
+  <li>Как бы вы объяснили ценность человеку, который никогда здесь не был?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>конкретные изменения</li>
+    <li>физический результат</li>
+    <li>эмоциональный результат</li>
+    <li>неочевидную ценность: атмосфера, внимание, безопасность, персональный подход, ритуал</li>
+    <li>как клиент оправдывает стоимость</li>
+    <li>какие слова можно использовать в коммуникации</li>
+  </ul>
+  <div class="sub">Не спрашиваем прямо, но замечаем</div>
+  <ul>
+    <li>говорит ли человек про данные, анализы, biomarkers, tracking</li>
+    <li>или ценность строится только на ощущениях и личном опыте</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="7"><div class="slide-inner two-column-block">
+  <div class="label">Блок 5A · Для тех, кто продолжает ходить · 4 мин</div>
+  <h2>Удержание и привычка</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять, почему человек остаётся и как REjuve встроился в его жизнь.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li>Как REjuve стало для вас регулярной частью жизни?</li>
+  <li>Это было сознательное решение или постепенно вошло в привычку?</li>
+  <li class="must">Что бы изменилось, если бы вы перестали?</li>
+  <li>Есть ли что-то, что вы сейчас можете или чувствуете, чего раньше не было?<small>(актуально для тех, кто ходит от 2–3 месяцев)</small></li>
+  <li>Какую частоту посещений вы считаете для себя оптимальной?</li>
+  <li>Что происходит, если вы пропускаете 2–3 недели?</li>
+  <li class="cue">Ожидания</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>привычка или осознанная стратегия</li>
+    <li>что удерживает человека</li>
+    <li>что он боится потерять</li>
+    <li>как REjuve встроен в ритм жизни</li>
+    <li>есть ли связь с семьёй, партнёром, работой, возрастом, образом жизни</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="8"><div class="slide-inner two-column-block">
+  <div class="label">Блок 5B · Для тех, кто перестал ходить · 4 мин</div>
+  <h2>Пауза и уход</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять, почему человек остановился и что может вернуть его обратно.</p>
+<h3>Вопросы</h3>
+<ul class="q">
+  <li class="must">Что стало причиной, почему вы перестали приходить? Что изменилось: график, приоритеты, цена, самочувствие, мотивация?</li>
+  <li>Это было резкое решение или постепенно так получилось?</li>
+  <li>Был ли момент, когда вы сомневались: продолжать или остановиться?</li>
+  <li class="must">При каких условиях вы могли бы рассмотреть возвращение?</li>
+  <li>Рекомендовали ли вы кому-то студию или девайс? Кому вы думаете студия подошла бы лучше всего для каких задач</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>реальную причину остановки</li>
+    <li>была ли ценность, но не хватило условий</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="9"><div class="slide-inner two-column-block">
+  <div class="label">Блок 6 · Wrap-up / Recommendation · 2 мин</div>
+  <h2>Рекомендация и финал</h2>
+  <div class="two-col">
+    <div class="two-col-side two-col-left"><p class="goal">Цель: понять, как клиент сам рекомендует REjuve и кому считает это полезным.</p>
+<h3>Для всех клиентов</h3>
+<ul class="q">
+  <li class="must">Если бы близкий друг спросил вас о REjuve, что бы вы ему сказали?</li>
+  <li class="must">Кому, по вашему ощущению, REjuve особенно подходит?</li>
+  <li>Почему именно такому человеку?</li>
+  <li>Что человеку важно знать до первого визита?</li>
+  <li>Что можно улучшить сделать более удобным для вас в сервисе?</li>
+</ul>
+</div>
+    <div class="two-col-side two-col-right"><div class="listen">
+  <h3>Слушаем</h3>
+  <ul>
+    <li>естественную формулировку рекомендации</li>
+    <li>кому клиент сам видит REjuve полезным</li>
+    <li>какие ожидания нужно сформировать до первого визита</li>
+    <li>финальные инсайты</li>
+  </ul>
+</div>
+</div>
+  </div>
+</div>
+</section>
+<section class="slide" data-index="10"><div class="slide-inner title-body-block">
+  <div class="label">Блок 6 · продолжение</div>
+  <h2>Если клиент уже рекомендовал REjuve</h2>
+  <div class="rule"></div>
+  <div class="body"><ul class="q">
+  <li>Вспомните последний раз, когда вы кому-то рассказывали о REjuve. Кому это было?</li>
+  <li>Почему вы решили рассказать именно этому человеку?</li>
+  <li>Что вы заметили в его ситуации, что подумали: «ему/ей это может быть полезно»?</li>
+  <li>Что именно вы сказали?</li>
+  <li>Вы рекомендовали конкретную процедуру или REjuve в целом?</li>
+  <li>Какая была реакция?</li>
+  <li>Что человек спросил в ответ?</li>
+  <li>Помните ли вы конкретные слова, которые использовали?</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="slide" data-index="11"><div class="slide-inner title-body-block">
+  <div class="label">После интервью</div>
+  <h2>Что зафиксировать</h2>
+  <div class="rule"></div>
+  <div class="body"><div class="cap">
+  <div><b>Триггер:</b> почему человек пришёл именно тогда</div>
+  <div><b>Состояние «до»:</b> как клиент описывает проблему</div>
+  <div><b>Что пробовал раньше:</b> альтернативы и прошлый опыт</div>
+  <div><b>Что зацепило:</b> рекомендация, идея, ощущение, обещание</div>
+  <div><b>Сомнение:</b> что останавливало</div>
+  <div><b>Что убедило:</b> почему всё-таки пришёл</div>
+  <div><b>Цена:</b> с чем сравнивает стоимость</div>
+  <div><b>Результат:</b> что изменилось</div>
+  <div><b>Главная ценность:</b> за что человек реально платит</div>
+  <div><b>Retention / churn:</b> почему продолжает или почему ушёл</div>
+  <div><b>Рекомендация:</b> кому бы советовал и как объяснил бы</div>
+  <div><b>Цитаты:</b> 3–5 дословных фраз клиента</div>
+</div>
+</div>
+</div>
+</section>
+  </div>
+  <script>
+/* h2t-editorial deck navigation.
+ * Per R2b plan §10.1. Inlined verbatim into the inline script tag by the
+ * assembler (single-file output contract); never loaded externally.
+ *
+ * Behavior is identical to R2a terminal deck nav (the contract is
+ * profile-agnostic): keyboard / touch / hash sync / counter+progress
+ * update / window.showSlide handle for deterministic screenshot tooling.
+ * Mobile is CSS-only — viewport branching of any kind is forbidden by
+ * the R2b mobile contract; the script does no media-query reads.
+ */
+(function () {
+  var slides      = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total       = slides.length;
+  var progressBar = document.getElementById('progress-bar');
+  var cntCurrent  = document.getElementById('cnt-current');
+  var cntTotal    = document.getElementById('cnt-total');
+  var btnPrev     = document.getElementById('btn-prev');
+  var btnNext     = document.getElementById('btn-next');
+
+  var current     = 0;
+  var touching    = false;
+  var touchStartX = 0;
+  var touchStartY = 0;
+
+  if (cntTotal) {
+    // System B (rejuve-pitch-deck canonical): no zero-pad. Counter renders
+    // "1 / 15", not "01 / 15". The `__SLOT_TOTAL_PADDED__` SSR value is
+    // overwritten here at init.
+    cntTotal.textContent = String(total);
+  }
+
+  function fmt(n) {
+    return String(n + 1);
+  }
+
+  function clamp(idx) {
+    if (idx < 0) return 0;
+    if (idx >= total) return total - 1;
+    return idx;
+  }
+
+  function showSlide(idx) {
+    if (total === 0) return;
+    idx = clamp(idx);
+    if (slides[current]) slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+
+    // Progress: merkazim formula — first slide already shows >0% (more
+    // intuitive than the pos-sprint normalized 0..100 over (total-1)).
+    if (progressBar) {
+      var pct = total === 0 ? 0 : ((current + 1) / total) * 100;
+      progressBar.style.width = pct + '%';
+    }
+    if (cntCurrent) cntCurrent.textContent = fmt(current);
+
+    // Optional nav button disabled state at edges.
+    if (btnPrev) btnPrev.classList.toggle('disabled', current === 0);
+    if (btnNext) btnNext.classList.toggle('disabled', current === total - 1);
+
+    // Hash sync — deep-link to slide index (1-based, #1..#N).
+    try {
+      history.replaceState(null, '', '#' + (current + 1));
+    } catch (err) { /* file:// or sandboxed contexts: ignore */ }
+  }
+
+  function next() { showSlide(current + 1); }
+  function prev() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', function (e) {
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+      case ' ':
+      case 'Enter':
+        e.preventDefault();
+        next();
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+      case 'Backspace':
+        e.preventDefault();
+        prev();
+        break;
+      case 'Home':
+        e.preventDefault();
+        showSlide(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        showSlide(total - 1);
+        break;
+    }
+  });
+
+  document.addEventListener('touchstart', function (e) {
+    touching    = true;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function (e) {
+    if (!touching) return;
+    touching = false;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    // Horizontal swipe threshold: >40px AND dominant over vertical motion.
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) next();
+      else        prev();
+    }
+  }, { passive: true });
+
+  if (btnPrev) {
+    btnPrev.addEventListener('click', function (e) { e.preventDefault(); prev(); });
+  }
+  if (btnNext) {
+    btnNext.addEventListener('click', function (e) { e.preventDefault(); next(); });
+  }
+
+  // Init: honour incoming hash (#1..#N), else start at slide 0.
+  var startIdx = 0;
+  if (location.hash) {
+    var parsed = parseInt(location.hash.replace('#', ''), 10);
+    if (!isNaN(parsed)) startIdx = clamp(parsed - 1);
+  }
+  showSlide(startIdx);
+
+  // Expose for deterministic tooling (deck-screenshot-all.py).
+  window.showSlide = showSlide;
+})();
+
+  </script>
+</body>
+</html>
