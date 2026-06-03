@@ -1,1209 +1,2370 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REjuve — Wellness Studios Reference</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #ffffff;
-      --text: #1a1a1a; --text-dim: #6b6b6b;
-      --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #5a8a5c;
-      --accent4: #8a5c2d;
-      --border: #e0ddd8;
-      --font-heading: 'Playfair Display','Georgia',serif;
-      --font-body: 'Inter','Helvetica Neue','Arial',sans-serif;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.6; }
-    .view { display: none; }
-    .view.active { display: block; }
-    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 40px 80px; }
-    @media (max-width: 600px) { .page-wrap { padding: 24px 16px 60px; } }
-
-    .site-header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 0; }
-    .site-header h1 { font-family: var(--font-heading); font-size: 32px; font-weight: 700; line-height: 1.2; }
-    .site-header .meta { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
-
-    .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 40px; margin-top: 0; overflow-x: auto; }
-    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 14px 24px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-
-    h2 { font-family: var(--font-heading); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-    h4 { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 10px; }
-    .section-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-    .view-subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; line-height: 1.5; }
-
-    .content-section { border-top: 1px solid var(--border); padding-top: 28px; margin-top: 36px; }
-
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; border-bottom: 2px solid var(--border); background: var(--bg-light); }
-    td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 13px; line-height: 1.55; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--bg-light); }
-    .table-wrap { border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; margin-bottom: 24px; }
-
-    .badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
-    .badge-dach { background: #e8f0e8; color: var(--accent3); }
-    .badge-uk { background: #e8eef5; color: var(--accent2); }
-    .badge-g1 { background: #fde8e2; color: var(--accent); }
-    .badge-g2 { background: #f5f0e8; color: var(--accent4); }
-    .badge-g3 { background: #e8eef5; color: var(--accent2); }
-    .badge-high { background: #e8f0e8; color: #3a7a3a; }
-    .badge-med { background: #e8eef5; color: #2d5f8a; }
-    .badge-low { background: #f5f0e8; color: #8a6a2d; }
-    .badge-warn { background: #fff3e0; color: #c47a00; }
-    .badge-nf { background: #f0eeeb; color: var(--text-dim); }
-
-    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 32px; }
-    @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; }
-    .card-num { font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-    .card-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-    .card-loc { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
-    .card-body { font-size: 12px; line-height: 1.55; }
-    .card-body p { margin-bottom: 6px; }
-    .card-tag { display: inline-block; font-size: 10px; color: var(--text-dim); background: var(--bg-light); border-radius: 3px; padding: 2px 7px; margin: 2px 2px 2px 0; }
-
-    .device-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
-    .device-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid transparent; background: var(--bg-light); cursor: pointer; flex-wrap: wrap; }
-    .device-header:hover { background: #e8e5e0; }
-    .device-header.open { border-bottom-color: var(--border); }
-    .device-num { font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; min-width: 36px; }
-    .device-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; flex: 1; min-width: 160px; }
-    .device-mech { font-size: 12px; color: var(--text-dim); }
-    .device-body { padding: 20px 18px; display: none; }
-    .device-body.open { display: block; }
-    .device-arrow { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; margin-left: auto; }
-    .device-header.open .device-arrow { transform: rotate(90deg); }
-
-    .device-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
-    @media (max-width: 700px) { .device-cols { grid-template-columns: 1fr; } }
-
-    blockquote { border-left: 3px solid var(--border); padding: 8px 14px; margin: 6px 0; font-style: italic; font-size: 12px; color: var(--text-dim); background: var(--bg-light); border-radius: 0 3px 3px 0; }
-    blockquote cite { display: block; margin-top: 4px; font-style: normal; font-size: 11px; color: var(--accent2); }
-
-    .insight-box { background: #fff8f5; border: 1px solid #f0c0a0; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
-    .insight-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 8px; }
-
-    .expert-box { background: #f5f0e8; border: 1px solid #e0d0b8; border-left: 3px solid var(--accent4); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
-    .expert-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 8px; }
-
-    .measure-box { background: #e8eef5; border: 1px solid #c8d8e8; border-left: 3px solid var(--accent2); border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; }
-    .measure-box strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); margin-bottom: 8px; }
-
-    .ads-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 12px; margin-top: 8px; }
-    .ads-row .ads-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; min-width: 60px; }
-
-    .warn-note { font-size: 11px; color: #8a6a2d; background: #fff3e0; border-left: 2px solid #c47a00; padding: 6px 10px; border-radius: 0 3px 3px 0; margin-top: 8px; }
-
-    .pattern-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; margin-bottom: 14px; }
-    .pattern-card h3 { margin-bottom: 4px; }
-    .pattern-num { font-size: 22px; font-weight: 800; color: var(--accent); font-family: var(--font-heading); margin-right: 8px; }
-    .pattern-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
-    .pattern-quote { font-size: 14px; font-style: italic; color: var(--text); border-left: 3px solid var(--accent); padding-left: 12px; margin: 10px 0; line-height: 1.5; }
-    .pattern-adapt { font-size: 12px; color: var(--accent3); font-weight: 500; margin-top: 6px; }
-
-    a { color: var(--accent2); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 700px) { .col2 { grid-template-columns: 1fr; } }
-    .col3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    @media (max-width: 900px) { .col3 { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 600px) { .col3 { grid-template-columns: 1fr; } }
-  </style>
-</head>
-<body>
-<nav style="background:#f0eeeb;border-bottom:1px solid #e0ddd8;padding:9px 40px;font-size:12px;font-family:'Inter','Helvetica Neue',sans-serif;">
-  <a href="index.html" style="color:#6b6b6b;text-decoration:none;">← REjuve Portal</a>
-</nav>
-
-<div class="page-wrap">
-
-  <div class="site-header">
-    <div class="section-label">REjuve — внутренние материалы · #47 &nbsp;<span class="badge badge-warn">Internal · status: reviewed</span></div>
-    <h1>Wellness &amp; Recovery Studios — Reference Research</h1>
-    <div class="meta">13 студий DACH + UK · standalone, не при отеле/gym · верификация 2026-06-01 &nbsp;·&nbsp; <span class="badge badge-dach">🟢 DACH small city</span> &nbsp;<span class="badge badge-uk">🔵 UK reference</span></div>
-  </div>
-
-  <div class="tab-nav" style="margin-top:28px;">
-    <button class="tab-btn active" onclick="switchTab('g1', this)">Multi-modality · G1 · 7</button>
-    <button class="tab-btn" onclick="switchTab('g2', this)">Expert-led · G2 · 3</button>
-    <button class="tab-btn" onclick="switchTab('g3', this)">Measurement · G3 · 3</button>
-    <button class="tab-btn" onclick="switchTab('patterns', this)">Сводные паттерны</button>
-    <button class="tab-btn" onclick="switchTab('metaads', this)">Meta Ads</button>
-  </div>
-
-  <!-- ═══════════════════ TAB G1 ═══════════════════ -->
-  <div id="tab-g1" class="view active">
-    <div class="view-subtitle">Студии с широким стеком (IR sauna / cryo / red light / IV / биомаркеры), standalone, не при отеле/gym.</div>
-
-    <!-- WOO -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·01</span>
-        <span class="device-name"><a href="https://www.woolongevity.ch/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">WOO Longevity Studio</a></span>
-        <span class="device-mech">Rotkreuz, CH &nbsp;·&nbsp; Kanton Zug</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Географический сосед REjuve — тот же кантон. Multi-modality recovery: HBOT, H₂-терапия, IHHT, Stoffwechselanalyse.</p>
-
-        <h4>Позиционирование</h4>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Параметр</th><th>Цитата с сайта</th></tr></thead>
-            <tbody>
-              <tr><td>Tagline</td><td><em>"Regeneration, Performance &amp; Healthy Aging in der Zentralschweiz"</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>Sub-headline</td><td><em>"Mehr Energie im Alltag, schnellere Erholung nach Belastung und nachhaltige Gesundheitsroutine."</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>Акцент в текстах</td><td><em>"Müdigkeit reduzieren, mentale Leistungsfähigkeit steigern"</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>Тон бренда</td><td>scientific / lifestyle</td><td><span class="badge badge-med">Med</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <blockquote>"Healthy Aging, präventiv gegen Zellalterung und oxidativen Stress"<cite>— <a href="https://www.woolongevity.ch/longevity-hbo-circle" target="_blank">Longevity HBO Circle</a></cite></blockquote>
-        <blockquote>"Der Cell Circle kombiniert Wasserstofftherapie, Rotlicht und IHHT. Je nach Ziel entspannt oder aktiv."<cite>— <a href="https://www.woolongevity.ch/cell-circle" target="_blank">Cell Circle</a></cite></blockquote>
-
-        <div class="device-cols" style="margin-top:16px;">
-          <div>
-            <h4>Оффер</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Entry: <strong>Stoffwechselanalyse</strong> (60–90 мин) — диагностика обмена веществ</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">4 фирменных Circle: Cell / Detox / Longevity HBO / Lymphdrainage</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Диагностика: InBody 970, HRV (mobee Stress Pilot), EVA 3000</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">B2B: аренда HBOT-камеры <strong>от 450 CHF/мес</strong></li>
-              <li style="padding:4px 0;">Цены: <span class="badge badge-nf">не опубликованы</span></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Каналы</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Instagram: <span class="badge badge-nf">data_not_found</span></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">TikTok: <span class="badge badge-nf">нет</span></li>
-              <li style="padding:4px 0;">Blog: <span class="badge badge-nf">нет</span></li>
-            </ul>
-            <div class="ads-row" style="margin-top:12px;">
-              <span class="ads-label">Meta Ads</span><span class="badge badge-high">Active · 7 ads</span>
-              <span style="font-size:11px;color:var(--text-dim);margin-left:6px;">HBOT + Stoffwechselanalyse · немецкий · <a href="https://www.facebook.com/ads/library/?q=WOO+Longevity&type=all" target="_blank">Ad Library ↗</a></span>
-            </div>
-            <div class="ads-row">
-              <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>Триада "Energie / Erholung / nachhaltige Routine" — конкретные результаты без медицинских заявлений</td><td>Структура: конкретный результат + временной горизонт</td></tr>
-                <tr><td>Воронка</td><td>Нет цен, вход через диагностику (Stoffwechselanalyse)</td><td>Диагностика как low-friction первый шаг</td></tr>
-                <tr><td>Оффер</td><td>Фирменные Circle-названия = brandable journey, не список процедур</td><td>Создать фирменные названия программ REjuve</td></tr>
-                <tr><td>❌ Не делать</td><td>Нулевое социальное присутствие</td><td>REjuve нужна минимальная контентная стратегия</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NEXTGEN -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·02</span>
-        <span class="device-name"><a href="https://www.nextgenlongevity.ch/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">NextGen Longevity</a></span>
-        <span class="device-mech">Baar, CH &nbsp;·&nbsp; 5 км от Zug</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Прямой географический конкурент REjuve. Самый точный ICP-язык в выборке. Публичный прайс.</p>
-
-        <h4>Позиционирование</h4>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Параметр</th><th>Цитата с сайта</th></tr></thead>
-            <tbody>
-              <tr><td>H1</td><td><em>"NextGen Longevity | Enhance Performance Today"</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>Tagline</td><td><em>"Longevity training centre in Baar combining clinical diagnostics + elite coaching to increase energy, strength, and healthspan."</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>ICP (явный)</td><td><em>"for people over 40 with energy decline, stubborn fat, low fitness, stress, aches and sleep problems"</em></td><td><span class="badge badge-high">High</span></td></tr>
-              <tr><td>Тон бренда</td><td>scientific / performance</td><td><span class="badge badge-high">High</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <blockquote>"Recover faster. Sleep deeply. Train consistently."<cite>— <a href="https://www.nextgenlongevity.ch/recovery" target="_blank">/recovery</a></cite></blockquote>
-        <blockquote>"busy professionals, former and current athletes, and beginners who want structure"<cite>— <a href="https://www.nextgenlongevity.ch/performance" target="_blank">/performance</a></cite></blockquote>
-
-        <div class="device-cols" style="margin-top:16px;">
-          <div>
-            <h4>Оффер (публичный прайс)</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Entry: <strong>Initial Assessment — 280 CHF</strong> / 2 ч</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Open Gym: 260/мес · 1270/6 мес · 2290/год</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Programmed 5×/нед: <strong>610 CHF/мес</strong></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">1:1 Coaching: 180 CHF/ч</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Диагностика: Body comp, VO2max, кровь (HbA1c, липиды, гормоны, Vit D)</li>
-              <li style="padding:4px 0;">Recovery (sauna/cold plunge) — <strong>бесплатно</strong> к сессии</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Каналы</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);"><a href="https://www.instagram.com/nextgenlongevity_/" target="_blank">@nextgenlongevity_</a> — есть; метрики JS</li>
-              <li style="padding:4px 0;">Blog: <span class="badge badge-nf">нет</span></li>
-            </ul>
-            <div class="ads-row" style="margin-top:12px;">
-              <span class="ads-label">Meta Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-            <div class="ads-row">
-              <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>Symptom-based ICP без медицинских заявлений — лучший язык в выборке</td><td>Использовать: "низкая энергия / медленное восстановление / стресс / плохой сон"</td></tr>
-                <tr><td>Воронка</td><td>Initial Assessment 280 CHF = paid entry point</td><td>Рассмотреть первичную диагностику как paid entry</td></tr>
-                <tr><td>Оффер</td><td>Recovery (sauna/cold plunge) — бесплатно к сессии</td><td>Bundling recovery как бонус = воспринимаемая ценность выше</td></tr>
-                <tr><td>❌ Не делать</td><td>Сайт на английском в немецкоязычном Baar — языковой барьер</td><td>REjuve правильно ставит на русский/немецкий</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BIOHACKING LAB -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·03</span>
-        <span class="device-name"><a href="https://biohackinglab.ch/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Biohacking Lab Luzern</a></span>
-        <span class="device-mech">Luzern, CH</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">1:1 coaching + equipment memberships. Бесплатный CHECK-IN → платный CHECK-UP → equipment packages. Операционная модель близка к REjuve.</p>
-
-        <blockquote>"Lade deine Batterien auf"<cite>— <a href="https://biohackinglab.ch/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"minimaler Aufwand — maximaler Effekt"<cite>— <a href="https://biohackinglab.ch/biohacking-coaching/" target="_blank">/biohacking-coaching</a></cite></blockquote>
-        <blockquote>"NATUR BEGREIFEN – NATUR KOPIEREN"<cite>— <a href="https://biohackinglab.ch/eliane_roux/" target="_blank">/eliane_roux</a></cite></blockquote>
-
-        <div class="device-cols" style="margin-top:16px;">
-          <div>
-            <h4>Оффер</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Entry: <strong>CHECK-IN бесплатный</strong> (90 мин, non-binding)</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Hack ME (HOCATT+PEMF): <strong>1800 CHF / 10 сессий</strong></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Train ME (IHHT): <strong>900 CHF / 10</strong></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Energy (Red light+IR): <strong>800 CHF / 10</strong></li>
-              <li style="padding:4px 0;">Диагностика: gut/food sensitivity, upcoming: BioAge, Hormone</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Каналы &amp; Реклама</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;">Instagram, TikTok, Blog: <span class="badge badge-nf">нет данных</span></li>
-            </ul>
-            <div class="ads-row" style="margin-top:12px;">
-              <span class="ads-label">Meta Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-            <div class="ads-row">
-              <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>"Lade deine Batterien auf" — просто, без жаргона</td><td>"Зарядиться / восстановиться" на русском</td></tr>
-                <tr><td>Воронка</td><td>Бесплатный CHECK-IN → CHECK-UP → equipment membership</td><td>Добавить структурированный CHECK-IN протокол</td></tr>
-                <tr><td>Оффер</td><td>10-сессионные пакеты 800–1800 CHF — простая upsell-лестница</td><td>Аналогичная лестница, первый уровень ~800 CHF</td></tr>
-                <tr><td>❌ Не делать</td><td>Духовное измерение рядом с HOCATT — смешение регистров</td><td>REjuve: физическое + нутриция, без spiritual framing</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RELEASE -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·04</span>
-        <span class="device-name"><a href="https://release-biohacking.com/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Release Biohacking</a></span>
-        <span class="device-mech">Sindelfingen, DE &nbsp;·&nbsp; ~65k чел.</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Единственный в DACH-группе с полностью опубликованным прайсом. IV-терапия + кислородная камера + эстетика.</p>
-        <div class="warn-note">⚠ Инфузии требуют врача-партнёра. Compliance-риск: IV без врача в CH = HMG-нарушение.</div>
-
-        <blockquote style="margin-top:12px;">"Deine Oase für gesundes Altern und echtes Wohlbefinden"<cite>— <a href="https://release-biohacking.com/" target="_blank">homepage</a></cite></blockquote>
-
-        <h4 style="margin-top:16px;">Ценовой бенчмарк (€)</h4>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Услуга</th><th>Длит.</th><th>Цена €</th></tr></thead>
-            <tbody>
-              <tr><td>Vitamin C инфузия 15г</td><td>—</td><td><strong>99</strong></td></tr>
-              <tr><td>Vitamin C инфузия 30г</td><td>—</td><td><strong>119</strong></td></tr>
-              <tr><td>NAD+ инфузия 500мг</td><td>—</td><td><strong>600</strong></td></tr>
-              <tr><td>Curcumin инфузия</td><td>—</td><td><strong>259</strong></td></tr>
-              <tr><td>CoQ10 инфузия</td><td>—</td><td><strong>179</strong></td></tr>
-              <tr><td>Кислородная камера разовая</td><td>60 мин</td><td><strong>79</strong></td></tr>
-              <tr><td>Кислородная камера 10×</td><td>60 мин</td><td><strong>700</strong></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>"Oase für gesundes Altern" — sanctuary framing для 40+ без медицины</td><td>"Твоё пространство для..." вместо перечня процедур</td></tr>
-                <tr><td>Цены</td><td>Единственный с опубликованными ценами в DACH</td><td>Прозрачность цен = дифференциатор REjuve</td></tr>
-                <tr><td>❌ Не делать</td><td>IV без "durch erfahrene Ärzte begleitet" = HMG-риск в CH</td><td>Кристина — нутрициолог, не MD. IV-терапия требует врача</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAISON INFRARED -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·05</span>
-        <span class="device-name"><a href="https://maisoninfrared.com/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Maison Infrared</a></span>
-        <span class="device-mech">London (+ Barcelona, Paris), UK</span>
-        <span class="badge badge-uk">🔵 UK</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Эталон anti-hype, science-backed позиционирования. Editorial + curation platform. Собственные студии — Rebase Recovery.<br>Философский тон высокого уровня.</p>
-
-        <blockquote>"No trends. No wellness noise."<cite>— <a href="https://maisoninfrared.com/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief."<cite>— <a href="https://maisoninfrared.com/pages/london-infrared-recovery" target="_blank">London guide</a></cite></blockquote>
-        <blockquote>"We weren't designed for modern environments. Artificial light. Stable temperatures. Constant comfort."<cite>— <a href="https://maisoninfrared.com/" target="_blank">homepage</a></cite></blockquote>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>"No trends. No wellness noise" — anti-hype завоёвывает trust образованной аудитории</td><td>"Не программа похудения — восстановление системы"</td></tr>
-                <tr><td>Контент</td><td>Editorial content → партнёрские студии. Образование через контент</td><td>Кристина: образовательный блог/Reels с similar philosophy</td></tr>
-                <tr><td>❌ Не делать</td><td>Нет прямого booking — чистый brand play без конверсии</td><td>Взять язык, добавить транзакционность + CTA</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- REBASE -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·06</span>
-        <span class="device-name"><a href="https://rebaserecovery.com/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Rebase Recovery</a></span>
-        <span class="device-mech">London (Marylebone), UK</span>
-        <span class="badge badge-uk">🔵 UK</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Social wellness + full-stack modalities. <span class="badge badge-warn">JS SPA</span> — данные получены через editorial описание Maison Infrared.</p>
-
-        <blockquote>"Those who seek recovery as both reset and routine — communal when desired, structured when needed."<cite>— <a href="https://maisoninfrared.com/pages/london-infrared-recovery" target="_blank">Maison Infrared London guide</a></cite></blockquote>
-
-        <p style="font-size:12px;margin-top:12px;"><strong>Модальности:</strong> Finnish sauna + IR + ice baths + breathwork + cryotherapy + hyperbaric oxygen + specialist bodywork</p>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>"Social wellness space" + "communal energy" — продают социальный опыт</td><td>REjuve может добавить communal элемент (групповые сессии)</td></tr>
-                <tr><td>❌ Не делать</td><td>JS SPA без SEO-контента — потеря органики и прозрачности</td><td>REjuve: статический контент с явными ценами</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RITUAL HAUS -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G1·07</span>
-        <span class="device-name"><a href="https://ritualhaus.co.uk/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Ritual Haus</a></span>
-        <span class="device-mech">London, UK &nbsp;·&nbsp; pre-launch</span>
-        <span class="badge badge-uk">🔵 UK</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Сильнейший copywriting в выборке. Pre-launch waitlist — FOMO-механика до открытия.</p>
-
-        <blockquote>"Step out of the city and into a ritual."<cite>— <a href="https://ritualhaus.co.uk/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"Drop in, recharge, and return to your day with focus and energy."<cite>— <a href="https://ritualhaus.co.uk/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"contrast, calm, and clarity"<cite>— <a href="https://ritualhaus.co.uk/" target="_blank">homepage</a> — alliteration triad</cite></blockquote>
-
-        <div class="device-cols" style="margin-top:12px;">
-          <div>
-            <h4>Оффер</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Entry: <strong>First-Timer Special</strong> — discounted combo + orientation</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Membership tier 1: <strong>Unlimited</strong> monthly + priority booking + guest passes</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Membership tier 2: <strong>Flex</strong> (5 или 10 сессий)</li>
-              <li style="padding:4px 0;">Цены: <span class="badge badge-nf">нет (pre-launch)</span></li>
-            </ul>
-          </div>
-          <div>
-            <h4>H1 → tagline</h4>
-            <p style="font-size:12px;">"Welcome to Ritual Haus: London's Infrared Sauna &amp; Cold Plunge Sanctuary"</p>
-            <p style="font-size:12px;margin-top:8px;color:var(--text-dim);">ICP: городской профессионал, спортсмен, wellness enthusiast</p>
-          </div>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Копи</td><td>"Step out of the city and into a ritual" + triad "contrast, calm, clarity"</td><td>REjuve: собственный triad как якорная фраза</td></tr>
-                <tr><td>Воронка</td><td>Founders Waitlist = FOMO + community до открытия</td><td>При rebrand/relaunch — waitlist с ранним доступом</td></tr>
-                <tr><td>Оффер</td><td>First-Timer с orientation — ориентационный первый визит</td><td>Добавить ориентационный first-visit как entry-оффер</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-g1 -->
-
-  <!-- ═══════════════════ TAB G2 ═══════════════════ -->
-  <div id="tab-g2" class="view">
-    <div class="view-subtitle">Продвижение через личность сертифицированного специалиста (нутрициолог, Heilpraktiker, functional medicine practitioner). Не врач-клиника. Актуально: Кристина — сертифицированный нутрициолог.</div>
-
-    <!-- BRANDAUVITAL -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G2·01</span>
-        <span class="device-name"><a href="https://www.brandauvital.de/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">BrandauVital</a></span>
-        <span class="device-mech">Schönaich bei Stuttgart, DE &nbsp;·&nbsp; ~12k чел.</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Heilpraktikerin + ex-Olympian (18× Deutsche Meisterin). Фирменный метод NeuroPerform°. Академия VitalPerform® для терапевтов = масштабирование без медицинских лицензий.</p>
-
-        <blockquote>"In contrast to many conventional treatment methods that only temporarily suppress symptoms, I focus on where the true causes lie."<cite>— <a href="https://www.brandauvital.de/Heilpraktikerpraxis" target="_blank">Heilpraktikerpraxis</a></cite></blockquote>
-        <blockquote>"We have only one body to live our life in."<cite>— <a href="https://www.brandauvital.de/Heilpraktikerpraxis" target="_blank">Heilpraktikerpraxis</a></cite></blockquote>
-
-        <div class="expert-box">
-          <strong>⭐ Экспертное позиционирование</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Квалификация</td><td>Heilpraktikerin, 18× Deutsche Meisterin MTB, Olympionikin 2021, метод NeuroPerform°</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Главный credential</td><td>Спортивные достижения + личный путь через болезни (Essstörungen, Kinderwunsch, Übertraining)</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Личный бренд vs студия</td><td><strong>@brandau_elisabeth: 9,351 подп. (active)</strong> vs @brandauvital: 187 подп. (мёртв)</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Контент</td><td>YouTube, IG Reels, гостевые подкасты (Handwerk-Erleben #88, Pottcast #147)</td><td><span class="badge badge-med">Med</span></td></tr>
-                <tr><td>Claim без медицины</td><td>"unterstützen / ermöglichen / wiederherstellen" — никогда "heilen"</td><td><span class="badge badge-high">High</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="insight-box" style="margin-top:12px;">
-          <strong>Инсайты для REjuve (Кристина)</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Позиционирование</td><td>Авторитет через достижения, не степени. "ich habe es selbst erlebt" = credibility</td><td>Кристина: сертификат + личная история = credibility без MD</td></tr>
-                <tr><td>Личный бренд</td><td>Личный IG в <strong>50× больше</strong> студийного — весь контент через Elisabeth-персону</td><td>Личный IG Кристины &gt; студийный аккаунт REjuve</td></tr>
-                <tr><td>Claim без медицины</td><td>"unterstützen / ermöglichen / wiederherstellen"</td><td>Кристина: "помогаю достичь ваших целей в здоровье"</td></tr>
-                <tr><td>❌ Не делать</td><td>@brandauvital почти мёртв при живом личном бренде</td><td>Не делить бюджет поровну. Ставить на личный бренд</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RE::VITAL -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G2·02</span>
-        <span class="device-name"><a href="https://www.revital-studio.de/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Re::Vital</a></span>
-        <span class="device-mech">Zeiskam, DE &nbsp;·&nbsp; ~3k чел.</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Founder: Dipl.-Informatiker (0 health certifications) — позиционирование только через личный опыт. Показывает минимальный порог для запуска expert-led студии.</p>
-
-        <blockquote>"Ich weiß, wie belastend es ist, wenn der Körper nicht mehr mitspielt — denn ich habe es selbst erlebt."<cite>— <a href="https://www.revital-studio.de/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"Ich helfe Menschen, ihre Gesundheit zu stärken"<cite>— <a href="https://www.revital-studio.de/" target="_blank">homepage</a></cite></blockquote>
-
-        <div class="expert-box">
-          <strong>⭐ Экспертное позиционирование</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Квалификация</td><td>Dipl.-Informatiker — формальных health certifications не обнаружено</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Главный credential</td><td>Личный опыт преодоления хронического истощения и Burnout</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Claim без медицины</td><td>"Ich helfe Menschen, ihre Gesundheit zu stärken" / "Ich stehe Dir beratend zur Seite"</td><td><span class="badge badge-high">High</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="device-cols" style="margin-top:12px;">
-          <div>
-            <h4>Оффер (опубликован)</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Entry: <strong>Kennenlern-Paket — 80 €</strong> (консультация + 1× IHHT + 1× mHBOT)</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">IHHT 50 мин / <strong>40 €</strong></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">mHBOT 90 мин / <strong>60 €</strong></li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">PEMF 30 мин / <strong>20 €</strong></li>
-              <li style="padding:4px 0;">Ceragem 40 мин / <strong>10 €</strong></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Каналы &amp; Реклама</h4>
-            <p style="font-size:12px;color:var(--text-dim);">Социальные сети: нет данных</p>
-            <div class="ads-row" style="margin-top:12px;">
-              <span class="ads-label">Meta Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-            <div class="ads-row">
-              <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="insight-box" style="margin-top:12px;">
-          <strong>Инсайты для REjuve (Кристина)</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Порог эксперта</td><td>0 certifications — только личный опыт, и это работает. Кристина с нутриц. сертификатом позиционно сильнее</td><td>Кристина ДОЛЖНА называть квалификацию первой строкой</td></tr>
-                <tr><td>Claim</td><td>"Ich helfe Menschen, ihre Gesundheit zu stärken" — предельно простая формула</td><td>"Я помогаю улучшить самочувствие и восстановить энергию"</td></tr>
-                <tr><td>❌ Не делать</td><td>Полный прайс без entry-structure — нет нарративной лестницы</td><td>Сначала вход (звонок/консультация), потом предложение</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- GOODE HEALTH -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G2·03</span>
-        <span class="device-name"><a href="https://www.nicolegoodehealth.com/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Goode Health (Nicole Goode)</a></span>
-        <span class="device-mech">London, UK</span>
-        <span class="badge badge-uk">🔵 UK</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">BANT Nutritional Therapist + Functional Medicine Practitioner — <strong>ближайший credential-аналог Кристины</strong> с развитой экосистемой личного бренда: книга → подкаст → клиника.</p>
-
-        <blockquote>"Functional Medicine Expert. Leading the Future of Personalised Healthcare."<cite>— <a href="https://www.nicolegoodehealth.com/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"Named Functional Medicine Specialist of the Year 2025"<cite>— <a href="https://www.nicolegoodehealth.com/" target="_blank">homepage</a></cite></blockquote>
-        <blockquote>"The Art of Science. Wellness Redefined."<cite>— <a href="https://www.goodehealth.uk/clinic" target="_blank">goodehealth.uk/clinic</a></cite></blockquote>
-
-        <div class="expert-box">
-          <strong>⭐ Экспертное позиционирование</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Квалификация</td><td>LLB Hons, CFMHC, AFMCP, BANT, CNHC, mRSM, mIFM. Специализации: аутоиммунные, щитовидная, неврология, нутригеномика</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Как представлено</td><td>Имя = H1. Все credentials сразу под именем. Награда = credibility anchor</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Экосистема</td><td>Книга "Optimal YOU" (#1 bestseller), подкаст 123+ эп., Tatler-Approved, Women's Health, Marie Claire</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>IG</td><td>@goode_health ~4,596 подп.; @nicolegoodehealth ~3,143 (два аккаунта)</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Claim без медицины</td><td>"optimise / supercharge / strengthen / empower" — никогда "treat" или "cure"</td><td><span class="badge badge-high">High</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="device-cols" style="margin-top:12px;">
-          <div>
-            <h4>Оффер</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Authority anchor: книга "Optimal YOU" как lead magnet</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Программы от <strong>£399/мес</strong>: Optimal Thyroid / Immune / Gut / You</li>
-              <li style="padding:4px 0;">Luxury day retreats + онлайн-программы</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Контент-экосистема</h4>
-            <ul style="font-size:12px;list-style:none;padding:0;">
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Подкаст "The Goode Health Podcast" — 123+ эп.</li>
-              <li style="padding:4px 0;border-bottom:1px solid var(--border);">Книга #1 bestseller, ноябрь 2024</li>
-              <li style="padding:4px 0;">Статьи: Women's Health, Marie Claire, Thrive Global</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="insight-box" style="margin-top:12px;">
-          <strong>Инсайты для REjuve (Кристина)</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Позиционирование</td><td>Имя = бренд. Credentials первой строкой. Награда = credibility бейдж</td><td>Кристина: имя + "сертифицированный нутрициолог" на всех носителях первой строкой</td></tr>
-                <tr><td>Экосистема</td><td>Книга → подкаст → IG → клиника. Книга = authority anchor + PR</td><td>Аналог: PDF-гид / мини-курс + серия Reels</td></tr>
-                <tr><td>Claim</td><td>"optimise / supercharge" + outcome ("energy / immunity")</td><td>"Помогаю оптимизировать питание и восстановить энергию"</td></tr>
-                <tr><td>❌ Не делать</td><td>Два IG-аккаунта — рассеивание аудитории</td><td>Один основной аккаунт Кристины</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="ads-row" style="margin-top:16px;">
-          <span class="ads-label">Meta Ads</span><span class="badge badge-warn">Коллизия имён</span>
-          <span style="font-size:11px;color:var(--text-dim);margin-left:6px;">"Goode Health" в Ad Library = американский supplement бренд (не Nicole Goode). Требует ручной поиск по "Nicole Goode" · <a href="https://www.facebook.com/ads/library/?q=Nicole+Goode&type=all" target="_blank">Ad Library ↗</a></span>
-        </div>
-        <div class="ads-row">
-          <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-g2 -->
-
-  <!-- ═══════════════════ TAB G3 ═══════════════════ -->
-  <div id="tab-g3" class="view">
-    <div class="view-subtitle">Центры где ценность строится вокруг данных (биомаркеры, body composition, OligoScan-тип). Без врачебной лицензии. Как объясняют ценность измерений без врачебного языка.</div>
-
-    <!-- 121.life -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G3·01</span>
-        <span class="device-name"><a href="https://121.life/en/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">121.000 Longevity</a></span>
-        <span class="device-mech">Baar, CH &nbsp;·&nbsp; Kanton Zug</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Ближайший geographic сосед REjuve — тот же кантон. Premium диагностический оффер на базе 500+ биомаркеров. <span class="badge badge-warn">HTTP 403</span> на прямые запросы — данные из SEO snippets.</p>
-
-        <blockquote>"121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location."<cite>— <a href="https://121.life/en/news-articles/launch/" target="_blank">launch article</a></cite></blockquote>
-        <blockquote>"Ihre individuelle Longevity-Journey beginnt hier"<cite>— <a href="https://121.life/en/services/" target="_blank">/services</a></cite></blockquote>
-
-        <div class="measure-box">
-          <strong>⭐ Measurement-оффер</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Что измеряют</td><td>500+ биомаркеров: кровь, эпигенетика, теломеры, состав тела, биологический возраст</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Маркетинговый язык</td><td>"Longevity-Journey" / "diagnostic health assessment" — не "Analyse" или "Diagnose"</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Ценность без медицины</td><td>"unique insights into your health and biological age" / "turn back your biological clock"</td><td><span class="badge badge-med">Med</span></td></tr>
-                <tr><td>Entry логика</td><td>Longevity Assessment от <strong>CHF 2'350</strong> → персональный план</td><td><span class="badge badge-med">Med</span></td></tr>
-                <tr><td>Данные → действие</td><td>Алгоритм → персональные добавки → ретест через 6–9 мес.</td><td><span class="badge badge-med">Med</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="insight-box" style="margin-top:12px;">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Язык измерений</td><td>"Journey" + "insights into biological age" — уходят от слова "Analyse"</td><td>Tanita: "понять свой биологический профиль". OligoScan: "узнать что стоит за усталостью"</td></tr>
-                <tr><td>Entry-логика</td><td>Диагностика = вход в долгосрочный цикл, не разовая услуга</td><td>OligoScan + Tanita = вход в персональный цикл. Первый результат = план</td></tr>
-                <tr><td>❌ Не делать</td><td>"500+ биомаркеров" как USP — REjuve не конкурирует объёмом</td><td>Не перечислять количество биомаркеров. REjuve = личный контакт с Кристиной</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BIOKINETICS -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G3·02</span>
-        <span class="device-name"><a href="https://biokinetics.ch/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">Biokinetics</a></span>
-        <span class="device-mech">St. Gallen, CH &nbsp;·&nbsp; ~80k чел.</span>
-        <span class="badge badge-dach">🟢 DACH</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Первый holistic longevity центр в St. Gallen. InBody (как Tanita у REjuve) + анализ крови + EMS. Диагностика = апселл, не вход — REjuve инвертирует это.</p>
-
-        <blockquote>"Auf Basis umfassender Diagnostik, inklusive eines schmerzfreien Bluttest-Systems, Körperanalyse und Stresstests, entwickeln wir individuelle Supplementierungen."<cite>— <a href="https://biokinetics.ch/" target="_blank">homepage</a></cite></blockquote>
-
-        <div class="measure-box">
-          <strong>⭐ Measurement-оффер</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Что измеряют</td><td>InBody (состав тела), анализ крови (безболезненная система), стресс-тесты, осанка</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Маркетинговый язык</td><td>"Körperanalyse" (не "medizinische Diagnose") / "umfangreiche Diagnostik"</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Данные → действие</td><td>Диагностика → "individuelle Supplementierungen, die genau auf Ihre Bedürfnisse abgestimmt sind"</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Реферальная программа</td><td><strong>110 CHF</strong> за реферала; 4 сессии = 1 month unit</td><td><span class="badge badge-high">High</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="insight-box" style="margin-top:12px;">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Язык измерений</td><td>"Körperanalyse" не "Messung". Связка: диагностика → персональное решение</td><td>Tanita: "анализ состава тела" → "индивидуальная рекомендация"</td></tr>
-                <tr><td>Конкурентное преимущество</td><td>У Biokinetics диагностика — апселл, не вход. REjuve = наоборот</td><td>"Сначала понять, потом действовать" — подчеркнуть как дифференциатор</td></tr>
-                <tr><td>❌ Не делать</td><td>Нет explicit data → action bridge — клиент получает добавки без "плана"</td><td>REjuve: завершать диагностику конкретными шагами с временными рамками</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="ads-row" style="margin-top:16px;">
-          <span class="ads-label">Meta Ads</span><span class="badge badge-warn">Inactive · 12 ads</span>
-          <span style="font-size:11px;color:var(--text-dim);margin-left:6px;">Кампания событие сент. 2025 · сейчас неактивны · <a href="https://www.facebook.com/ads/library/?q=Biokinetics&type=all" target="_blank">Ad Library ↗</a></span>
-        </div>
-        <div class="ads-row">
-          <span class="ads-label">TikTok Ads</span><span class="badge badge-nf">Not found</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- MY VITAL METRICS -->
-    <div class="device-block">
-      <div class="device-header open" onclick="toggleDevice(this)">
-        <span class="device-num">G3·03</span>
-        <span class="device-name"><a href="https://myvitalmetrics.com/" target="_blank" onclick="event.stopPropagation()" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--accent2);">My Vital Metrics</a></span>
-        <span class="device-mech">London + Manchester, UK</span>
-        <span class="badge badge-uk">🔵 UK</span>
-        <span class="device-arrow">▶</span>
-      </div>
-      <div class="device-body open">
-        <p style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Наиболее зрелая measurement-lab модель в выборке. Детальный data → action язык. Named deliverable "Personal Action Blueprint". Лучший референс для формулировки оффера REjuve.</p>
-
-        <blockquote>"Reconnect with yourself and the metrics that matter."<cite>— <a href="https://myvitalmetrics.com/about-us/" target="_blank">about-us</a></cite></blockquote>
-        <blockquote>"We focus on tests which will produce a real outcome and action plan for our customers. Data for data's sake is pointless."<cite>— <a href="https://myvitalmetrics.com/about-us/" target="_blank">about-us</a></cite></blockquote>
-        <blockquote>"Expert contextualisation and analysis is absolutely critical in the process."<cite>— <a href="https://myvitalmetrics.com/about-us/" target="_blank">about-us</a></cite></blockquote>
-
-        <div class="measure-box">
-          <strong>⭐ Measurement-оффер</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Параметр</th><th>Данные</th></tr></thead>
-              <tbody>
-                <tr><td>Что измеряют</td><td>DEXA, VO2max, RMR, FatMAX, Hydration, Strength &amp; Balance, DNA, Blood panels</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Маркетинговый язык</td><td>"Gold Standard" (DEXA) / "research-grade insights" — не "clinical diagnosis"</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Ценность без медицины</td><td>"Often people look at the scales... they aren't the full picture"</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Named deliverable</td><td><strong>"Personal Action Blueprint"</strong> — named output после каждого теста</td><td><span class="badge badge-high">High</span></td></tr>
-                <tr><td>Entry</td><td>DEXA Express £99 или bundle от £355</td><td><span class="badge badge-high">High</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <h4 style="margin-top:16px;">Ценовой бенчмарк (£)</h4>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Пакет</th><th>Что включает</th><th>Цена £</th></tr></thead>
-            <tbody>
-              <tr><td>Composition Lite</td><td>3D + bioimpedance</td><td><strong>75</strong></td></tr>
-              <tr><td>DEXA Express</td><td>ретест</td><td><strong>99</strong></td></tr>
-              <tr><td>Full DEXA</td><td>—</td><td><strong>159–189</strong></td></tr>
-              <tr><td>Get Lean bundle</td><td>DEXA + VO2max + консультация</td><td><strong>355–445</strong></td></tr>
-              <tr><td>Total Health bundle</td><td>комплексный</td><td><strong>505–585</strong></td></tr>
-              <tr><td>B2B mobile DEXA</td><td>спортклубы</td><td>custom</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="insight-box">
-          <strong>Инсайты для REjuve</strong>
-          <div class="table-wrap" style="margin:0;">
-            <table>
-              <thead><tr><th>Область</th><th>Наблюдение</th><th>Что адаптировать</th></tr></thead>
-              <tbody>
-                <tr><td>Язык</td><td>"vital metrics that matter" / "весы — не полная картина"</td><td>Tanita: "не весы — полная картина тела". OligoScan: "то, что весы не покажут"</td></tr>
-                <tr><td>Named deliverable</td><td>"Personal Action Blueprint" + "Data for data's sake is pointless"</td><td>REjuve: named deliverable после OligoScan/Tanita. Кристина = интерпретация + следующие шаги</td></tr>
-                <tr><td>Лестница</td><td>£75 → £189 → £585. Bundles = апселл. "Для двоих" = social hook</td><td>Аналог Composition Lite (Tanita = доступный старт). Апселл: OligoScan + нутрициологическая сессия</td></tr>
-                <tr><td>❌ Не делать</td><td>MVM — лаб без коуча. Blueprint есть, но нет человека</td><td>REjuve: личный контакт с Кристиной = дифференциатор. "Эксперт, не только данные"</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-g3 -->
-
-  <!-- ═══════════════════ TAB PATTERNS ═══════════════════ -->
-  <div id="tab-patterns" class="view">
-    <div class="view-subtitle">Агрегированные паттерны по всем 13 студиям. Прямые применения для REjuve.</div>
-
-    <!-- TOP-5 FORMULATIONS -->
-    <div class="section-label">Топ-5 формулировок для адаптации REjuve</div>
-    <div class="col2" style="margin-bottom:32px;">
-
-      <div class="pattern-card">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <span class="pattern-num">1</span>
-          <div>
-            <div class="pattern-quote">"No trends. No wellness noise."</div>
-            <div class="pattern-meta">Maison Infrared &nbsp;·&nbsp; <a href="https://maisoninfrared.com/" target="_blank">maisoninfrared.com</a></div>
-            <div class="pattern-adapt">→ REjuve: "Никаких трендов. Только то, что работает."</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <span class="pattern-num">2</span>
-          <div>
-            <div class="pattern-quote">"Step out of the city and into a ritual."</div>
-            <div class="pattern-meta">Ritual Haus &nbsp;·&nbsp; <a href="https://ritualhaus.co.uk/" target="_blank">ritualhaus.co.uk</a></div>
-            <div class="pattern-adapt">→ REjuve: "Выйди из повседневного темпа. Войди в ритм восстановления."</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <span class="pattern-num">3</span>
-          <div>
-            <div class="pattern-quote">"Data for data's sake is pointless."</div>
-            <div class="pattern-meta">My Vital Metrics &nbsp;·&nbsp; <a href="https://myvitalmetrics.com/about-us/" target="_blank">about-us</a></div>
-            <div class="pattern-adapt">→ REjuve: "Измерения без плана — просто цифры. Мы даём план."</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <span class="pattern-num">4</span>
-          <div>
-            <div class="pattern-quote">"energy decline, stubborn fat, low fitness, stress, aches and sleep problems"</div>
-            <div class="pattern-meta">NextGen Longevity &nbsp;·&nbsp; <a href="https://www.nextgenlongevity.ch/longevity" target="_blank">/longevity</a></div>
-            <div class="pattern-adapt">→ REjuve ICP-копи: "низкая энергия / медленное восстановление / стресс / плохой сон"</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pattern-card" style="grid-column: 1 / -1;">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <span class="pattern-num">5</span>
-          <div>
-            <div class="pattern-quote">"Reconnect with yourself and the metrics that matter."</div>
-            <div class="pattern-meta">My Vital Metrics &nbsp;·&nbsp; <a href="https://myvitalmetrics.com/about-us/" target="_blank">about-us</a></div>
-            <div class="pattern-adapt">→ REjuve: "Узнай, что происходит внутри — и что с этим делать."</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- TOP-3 MECHANICS -->
-    <div class="section-label">Топ-3 механики органического продвижения</div>
-    <div class="col3" style="margin-bottom:32px;">
-
-      <div class="pattern-card">
-        <h3>Контент-воронка через образование</h3>
-        <div class="pattern-meta">Встречается у 5 из 13 студий</div>
-        <p style="font-size:12px;margin-top:8px;">Edu-контент (блог, подкаст, Reels) → доверие → конверсия.</p>
-        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px;">
-          <span class="card-tag">Maison Infrared</span>
-          <span class="card-tag">My Vital Metrics</span>
-          <span class="card-tag">Nicole Goode</span>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <h3>Личный бренд &gt;&gt; студийный аккаунт</h3>
-        <div class="pattern-meta">BrandauVital: 9,351 vs 187 подп.</div>
-        <p style="font-size:12px;margin-top:8px;">Личный IG основателя в 10–50× больше студийного. Весь контент через персону.</p>
-        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px;">
-          <span class="card-tag">BrandauVital</span>
-          <span class="card-tag">Nicole Goode</span>
-        </div>
-      </div>
-
-      <div class="pattern-card">
-        <h3>Named deliverable как anchor</h3>
-        <div class="pattern-meta">Конкретный продукт снижает барьер входа</div>
-        <p style="font-size:12px;margin-top:8px;">"Personal Action Blueprint" / "Initial Assessment" / "CHECK-IN" — не абстрактный "сеанс".</p>
-        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px;">
-          <span class="card-tag">My Vital Metrics</span>
-          <span class="card-tag">NextGen</span>
-          <span class="card-tag">Biohacking Lab</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- EXPERT MODELS -->
-    <div class="section-label">Expert-led: модели позиционирования через эксперта</div>
-    <div class="table-wrap" style="margin-bottom:32px;">
-      <table>
-        <thead>
-          <tr><th>Модель</th><th>Описание</th><th>Пример</th><th>Применимость для Кристины</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Credentials-first</strong></td>
-            <td>Аббревиатуры + award + медиа сразу под именем</td>
-            <td><a href="https://www.nicolegoodehealth.com/" target="_blank">Nicole Goode</a> (BANT, mRSM, Tatler)</td>
-            <td><span class="badge badge-high">High</span> — прямой аналог для Кристины</td>
-          </tr>
-          <tr>
-            <td><strong>Lived experience</strong></td>
-            <td>"Я через это прошла сама" — личная трансформация</td>
-            <td><a href="https://www.revital-studio.de/" target="_blank">Re::Vital</a> (Burnout recovery)</td>
-            <td><span class="badge badge-high">High</span> — если у Кристины есть личная история</td>
-          </tr>
-          <tr>
-            <td><strong>Achievement-based</strong></td>
-            <td>Credential через достижения (спорт, награды)</td>
-            <td><a href="https://www.brandauvital.de/" target="_blank">BrandauVital</a> (Olympic)</td>
-            <td><span class="badge badge-med">Med</span> — у Кристины нет спортивного фона, но есть сертификат</td>
-          </tr>
-          <tr>
-            <td><strong>Protocol author</strong></td>
-            <td>Именной фирменный метод / протокол</td>
-            <td><a href="https://www.brandauvital.de/" target="_blank">BrandauVital</a> (NeuroPerform°)</td>
-            <td><span class="badge badge-med">Med</span> — возможно создать "метод Кристины" по нутрициологии</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ICP AGGREGATE -->
-    <div class="section-label">ICP-портрет (агрегат по всем 13 студиям)</div>
-    <div class="col2" style="margin-bottom:32px;">
-      <div class="pattern-card">
-        <h3>Демография</h3>
-        <ul style="font-size:12px;list-style:none;padding:0;margin-top:8px;">
-          <li style="padding:4px 0;border-bottom:1px solid var(--border);">35–55 лет, преимущественно профессионалы</li>
-          <li style="padding:4px 0;border-bottom:1px solid var(--border);">Busy lifestyle, time-poor</li>
-          <li style="padding:4px 0;border-bottom:1px solid var(--border);">Активные или бывшие спортсмены <em>или</em> осознанные health-enthusiasts</li>
-          <li style="padding:4px 0;">Доход выше среднего; покупают результат, не время</li>
-        </ul>
-      </div>
-      <div class="pattern-card">
-        <h3>Как бренды описывают боли клиента</h3>
-        <ul style="font-size:12px;list-style:none;padding:0;margin-top:8px;">
-          <li style="padding:5px 0;border-bottom:1px solid var(--border);font-style:italic;">"energy decline, stubborn fat, aches and sleep problems" — <a href="https://www.nextgenlongevity.ch/longevity" target="_blank">NextGen</a></li>
-          <li style="padding:5px 0;border-bottom:1px solid var(--border);font-style:italic;">"Müdigkeit reduzieren, mentale Leistungsfähigkeit steigern" — <a href="https://www.woolongevity.ch/" target="_blank">WOO</a></li>
-          <li style="padding:5px 0;border-bottom:1px solid var(--border);font-style:italic;">"wenn der Körper nicht mehr mitspielt" — <a href="https://www.revital-studio.de/" target="_blank">Re::Vital</a></li>
-          <li style="padding:5px 0;font-style:italic;">"scales aren't the full picture" — <a href="https://myvitalmetrics.com/about-us/" target="_blank">MVM</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- ADS NOTE -->
-    <div style="background:#e8f0e8;border:1px solid #b0d0b0;border-left:3px solid var(--accent3);border-radius:0 6px 6px 0;padding:14px 18px;font-size:12px;margin-bottom:16px;">
-      <strong style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--accent3);margin-bottom:8px;">Meta Ads Library</strong>
-      <table style="width:100%;border-collapse:collapse;">
-        <thead><tr>
-          <th style="text-align:left;font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:4px 8px;border-bottom:1px solid #b0d0b0;">Студия</th>
-          <th style="text-align:left;font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:4px 8px;border-bottom:1px solid #b0d0b0;">Статус</th>
-          <th style="text-align:left;font-size:10px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:4px 8px;border-bottom:1px solid #b0d0b0;">Примечание</th>
-        </tr></thead>
-        <tbody>
-          <tr><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:12px;"><strong>WOO Longevity</strong></td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;"><span class="badge badge-high">Active · 7 ads</span></td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:11px;">HBOT + Stoffwechselanalyse · немецкий</td></tr>
-          <tr><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:12px;">Biokinetics</td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;"><span class="badge badge-warn">Inactive · 12 ads</span></td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:11px;">Кампания сент. 2025, сейчас неактивна</td></tr>
-          <tr><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:12px;">Goode Health</td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;"><span class="badge badge-warn">Коллизия</span></td><td style="padding:4px 8px;border-bottom:1px solid #d0e8d0;font-size:11px;">13+ ads = американский supplement бренд, не Nicole Goode</td></tr>
-          <tr><td style="padding:4px 8px;font-size:12px;color:var(--text-dim);">Остальные 10 студий</td><td style="padding:4px 8px;"><span class="badge badge-nf">No ads found</span></td><td style="padding:4px 8px;font-size:11px;color:var(--text-dim);">NextGen, Biohacking Lab, Release, Maison Infrared, Rebase, Ritual Haus, BrandauVital, Re::Vital, 121 Longevity, My Vital Metrics</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="background:#fde8e2;border:1px solid #f0b090;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 18px;font-size:12px;margin-bottom:32px;">
-      <strong style="color:var(--accent);">→ Стратегический вывод:</strong> WOO Longevity (прямой сосед REjuve, Kanton Zug) — единственная активная студия в Meta. 10 из 13 студий не используют платную рекламу. REjuve с запущенными Meta Ads сразу получает монополию на paid channel в сегменте.
-    </div>
-
-  </div><!-- /tab-patterns -->
-
-  <!-- ═══════════════════ TAB META ADS ═══════════════════ -->
-  <div id="tab-metaads" class="view">
-    <div class="view-subtitle">Статус рекламы по всем 13 студиям.</div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Студия</th>
-            <th>Группа</th>
-            <th>Статус Meta Ads</th>
-            <th>Кол-во объявлений</th>
-            <th>Тематика</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><a href="https://www.woolongevity.ch/" target="_blank">WOO Longevity</a> · Rotkreuz CH</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-high">Active</span></td>
-            <td><strong>7</strong></td>
-            <td>HBOT + Stoffwechselanalyse · немецкий</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://biokinetics.ch/" target="_blank">Biokinetics</a> · St. Gallen CH</td>
-            <td><span class="badge badge-g3">G3</span></td>
-            <td><span class="badge badge-warn">Inactive</span></td>
-            <td>12 (архив)</td>
-            <td>Кампания сент. 2025 — сейчас неактивна</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nicolegoodehealth.com/" target="_blank">Goode Health</a> · London UK</td>
-            <td><span class="badge badge-g2">G2</span></td>
-            <td><span class="badge badge-warn">Коллизия имён</span></td>
-            <td>13+ (не Nicole Goode)</td>
-            <td>"Goode Health" в Ad Library = американский supplement бренд. Искать "Nicole Goode" отдельно</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nextgenlongevity.ch/" target="_blank">NextGen Longevity</a> · Baar CH</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://biohackinglab.ch/" target="_blank">Biohacking Lab Luzern</a> · Luzern CH</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://release-biohacking.com/" target="_blank">Release Biohacking</a> · Sindelfingen DE</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://maisoninfrared.com/" target="_blank">Maison Infrared</a> · London UK</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://rebaserecovery.com/" target="_blank">Rebase Recovery</a> · London UK</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://ritualhaus.co.uk/" target="_blank">Ritual Haus</a> · London UK</td>
-            <td><span class="badge badge-g1">G1</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://www.brandauvital.de/" target="_blank">BrandauVital</a> · Schönaich DE</td>
-            <td><span class="badge badge-g2">G2</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://www.revital-studio.de/" target="_blank">Re::Vital</a> · Zeiskam DE</td>
-            <td><span class="badge badge-g2">G2</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://121.life/en/" target="_blank">121.000 Longevity</a> · Baar CH</td>
-            <td><span class="badge badge-g3">G3</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-          <tr>
-            <td><a href="https://myvitalmetrics.com/" target="_blank">My Vital Metrics</a> · London + Manchester UK</td>
-            <td><span class="badge badge-g3">G3</span></td>
-            <td><span class="badge badge-nf">No ads found</span></td>
-            <td>—</td>
-            <td>—</td>
-            <td><span class="badge badge-high">High</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="background:#fde8e2;border:1px solid #f0b090;border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 18px;font-size:12px;margin-top:8px;">
-      <strong style="color:var(--accent);">→ Стратегический вывод:</strong> WOO Longevity — единственная активно рекламирующаяся студия в Meta (Kanton Zug, прямой сосед REjuve). 10 из 13 студий не используют платную рекламу. REjuve с запущенными Meta Ads получает монополию на paid channel в сегменте. TikTok Ads не проверялся (JS-блокировка, scope out).
-    </div>
-  </div><!-- /tab-metaads -->
-
-</div><!-- /page-wrap -->
-
-<script>
-  function switchTab(id, btn) {
-    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
-    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById('tab-' + id).classList.add('active');
-    btn.classList.add('active');
-  }
-  function toggleDevice(el) {
-    var body = el.nextElementSibling;
-    body.classList.toggle('open');
-    el.classList.toggle('open');
-  }
-</script>
-</body>
-</html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wellness & Recovery студии — референс для REjuve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf9f6;--bg-light:#f0eeeb;--bg-card:#fff;--text:#1a1a1a;--text-dim:#6b6b6b;--accent:#c45a3c;--accent2:#2d5f8a;--border:#e0ddd8;--font-heading:'Playfair Display','Georgia',serif;--font-body:'Inter','Helvetica Neue','Arial',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.page-wrap{max-width:1180px;margin:0 auto;padding:48px 40px 80px;}
+@media(max-width:600px){.page-wrap{padding:24px 16px 60px;}}
+.site-header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:28px;}
+.site-header h1{font-family:var(--font-heading);font-size:30px;font-weight:700;line-height:1.2;}
+.site-header .meta{color:var(--text-dim);font-size:12px;margin-top:6px;}
+.intro{font-size:13px;margin-bottom:24px;}
+.intro h2{font-family:var(--font-heading);font-size:18px;font-weight:700;margin:20px 0 8px;}
+.intro ol,.intro ul{margin:0 0 8px 20px;}.intro li{margin-bottom:4px;}
+.disclaimer{font-size:12px;color:var(--text-dim);background:var(--bg-light);border-left:3px solid var(--border);padding:10px 14px;border-radius:0 4px 4px 0;margin:14px 0;}
+.group-header{font-family:var(--font-heading);font-size:22px;font-weight:700;margin:38px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--accent);}
+.synthesis{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:22px 26px;margin-bottom:14px;}
+.card-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+.studio-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:20px 24px;}
+.studio-card h1,.synthesis h1{display:none;}
+.studio-card>h2:first-of-type{margin-top:0;}
+.card-title{font-family:var(--font-heading);font-size:18px;font-weight:700;line-height:1.25;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:6px;}
+.card-sub{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.content h2{font-family:var(--font-heading);font-size:15px;font-weight:700;color:var(--accent);margin:16px 0 6px;}
+.content h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-dim);margin:12px 0 4px;}
+.content p{margin:6px 0;font-size:13px;}
+.content ul,.content ol{margin:6px 0 6px 20px;}.content li{margin-bottom:3px;font-size:13px;}
+.content strong{font-weight:600;}
+blockquote{border-left:3px solid var(--accent);padding:7px 12px;margin:8px 0;font-size:12.5px;background:var(--bg-light);border-radius:0 3px 3px 0;color:var(--text);}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px;}
+th,td{border:1px solid var(--border);padding:5px 8px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;}
+th{background:var(--bg-light);font-weight:600;}
+.content{overflow-wrap:anywhere;}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+a{color:var(--accent2);text-decoration:none;word-break:break-word;}a:hover{text-decoration:underline;}
+@media(max-width:600px){table{table-layout:fixed;}.studio-card,.synthesis{padding:16px 15px;}.content h2{font-size:14px;}}
+.footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);}
+</style></head>
+<body><div class="page-wrap">
+<div class="site-header"><h1>Wellness &amp; Recovery студии — референс для REjuve</h1><div class="meta">13 студий · DACH + UK · цитаты с источниками · сводный синтез</div></div>
+<div class="intro">
+<p>Успешные standalone wellness/recovery-студии (DACH + UK) как референс позиционирования, оффера и каналов для REjuve. Каждая формулировка — дословная цитата со ссылкой на источник; сводка паттернов вверху.</p>
+<div class="disclaimer">Цитаты и числа выверены против корпуса (подстановка по источнику скриптом). Существование цитат принято по сбору. Счётчики — объём выборки 13 студий, не рыночные доли. Гипотезы для REjuve помечены как требующие проверки.</div>
+</div><section class="synthesis"><div class="card-title">Сводный синтез паттернов</div><div class="content"><blockquote>
+<p>Цитаты и числа выверены против корпуса (подстановка по id, счёт скриптом). Существование цитат принято по сбору исследования #47 (не перепроверялось выкачкой). <strong>Счётчики = объём выборки 13 курируемых студий, не рыночные пропорции.</strong> Гипотезы для REjuve помечены как требующие проверки.</p>
+</blockquote>
+<hr />
+<h2>ICP — голос клиента</h2>
+<p>Кто изображается целевым клиентом в коммуникации студий.</p>
+<p><strong>40+ с функциональными проблемами</strong> — повторяющийся мотив (явный возрастной таргетинг только у NextGen; у других выражен через симптомы без указания возраста):</p>
+<p>"Longevity training is for people over 40 with energy decline, stubborn fat, low fitness, stress, aches and sleep problems." — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a> (NextGen Longevity)</p>
+<p>"energy decline, stubborn fat, low fitness, stress, aches and sleep problems" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a> (NextGen Longevity)</p>
+<p>"Lack of energy and poor regeneration" — <a href="https://biohackinglab.ch/">homepage</a> (Biohacking Lab Luzern)</p>
+<p><strong>Занятые профессионалы и спортсмены:</strong></p>
+<p>"busy professionals, former and current athletes, and beginners who want structure" — <a href="https://www.nextgenlongevity.ch/performance">/performance</a> (NextGen Longevity)</p>
+<p><strong>Ориентированные на данные / health-conscious:</strong></p>
+<p>"from health-conscious individuals to competitive athletes wanting scientific insights into performance" — <a href="https://myvitalmetrics.com/">homepage</a> (My Vital Metrics)</p>
+<p><strong>Запрос на осознанное восстановление (UK-сегмент):</strong></p>
+<p>"For those who value recovery as an intentional practice within everyday life — clear, measured, and repeatable." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a> (Maison Infrared)</p>
+<p>"For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a> (Maison Infrared)</p>
+<hr />
+<h2>Топ-формулировки для REjuve</h2>
+<p>Дословные формулировки из коммуникации студий, резонирующие с ICP REjuve (без founder_narrative источников).</p>
+<p><strong>Энергия как выход, не процесс:</strong></p>
+<p>"Mehr Energie im Alltag, schnellere Erholung nach Belastung und nachhaltige Gesundheitsroutine." — <a href="https://www.woolongevity.ch/">homepage</a> (WOO)</p>
+<p>"Müdigkeit reduzieren, mentale Leistungsfähigkeit steigern" — <a href="https://www.woolongevity.ch/">homepage</a> (WOO)</p>
+<p>"Recover faster. Sleep deeply. Train consistently." — <a href="https://www.nextgenlongevity.ch/recovery">/recovery</a> (NextGen Longevity)</p>
+<p>"Lade deine Batterien auf" — <a href="https://biohackinglab.ch/">homepage</a> (Biohacking Lab Luzern)</p>
+<p>"Drop in, recharge, and return to your day with focus and energy." — <a href="https://ritualhaus.co.uk/">homepage</a> (Ritual Haus)</p>
+<p><strong>Здоровое старение / longevity:</strong></p>
+<p>"Healthy Aging, präventiv gegen Zellalterung und oxidativen Stress" — <a href="https://www.woolongevity.ch/longevity-hbo-circle">Longevity HBO Circle</a> (WOO)</p>
+<p>"Deine Oase für gesundes Altern und echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a> (Release Biohacking)</p>
+<p>"ein längeres, gesünderes Leben voller Vitalität" — <a href="https://biokinetics.ch/">homepage</a> (Biokinetics)</p>
+<p><strong>Данные → действие (anti-hype):</strong></p>
+<p>"Often people look at the scales and assume their weight is the only indicator of good health... they aren't the full picture" — <a href="https://myvitalmetrics.com/about-us/">about-us</a> (My Vital Metrics)</p>
+<p>"We focus on tests which will produce a real outcome and action plan for our customers. Data for data's sake is pointless." — <a href="https://myvitalmetrics.com/about-us/">about-us</a> (My Vital Metrics)</p>
+<p>"No trends. No wellness noise." — <a href="https://maisoninfrared.com/">homepage</a> (Maison Infrared)</p>
+<hr />
+<h2>Позиционные рычаги</h2>
+<p>Паттерны позиционирования по брендам (agreed==true, reference-популяция = 12 брендов).</p>
+<h3>Рычаг: transparent-pricing</h3>
+<p>Упоминание цены/ценового ориентира в копи (лексический рычаг) — 9 из 12.</p>
+<p>Бренды: WOO, NextGen Longevity, Biohacking Lab Luzern, Maison Infrared, Re::Vital, Goode Health, 121.000 Longevity, Biokinetics, My Vital Metrics.</p>
+<p>⚠ Лексический рычаг ≠ полная публикация прайса. По фактам (price_published): полностью публикуют цены — 4 из 11 студий; частично — 3. WOO и Biokinetics попадают в рычаг через ценовой якорь (B2B-аренда HBOT / реферальный купон), их сервисный прайс не опубликован — не путать с прозрачностью.</p>
+<p>Несопоставимые напрямую ценовые модели (разные типы оффера и валюты): вводный пакет — "Kennenlern-Paket Beratung + 1× IHHT + 1× mHBOT — 80 €" — <a href="https://www.revital-studio.de/">homepage</a>; стартовая цена программы — "Our longevity offers start at CHF 2'350. All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a>; месячное членство — "Pricing starts at £399 a month" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a>.</p>
+<p>Опора: W01-012, W02-007, W09-009, W11-007, W10-010, W13-010 · 9 · сильный сигнал</p>
+<h3>Рычаг: energy-metaphor</h3>
+<p>Энергия/заряд/витальность как обещание результата — 7 из 12.</p>
+<p>Бренды: WOO, Biohacking Lab Luzern, Release Biohacking, Ritual Haus, BrandauVital, Re::Vital, Goode Health.</p>
+<p>Опора: W01-003, W08-002, W03-002, W04-003, W07-006, W09-002, W10-003 · 7 · средний сигнал</p>
+<h3>Рычаг: symptom-portrait</h3>
+<p>ICP через симптомы («у меня это») — 4 из 12.</p>
+<p>Бренды: WOO, NextGen Longevity, Biohacking Lab Luzern, BrandauVital.</p>
+<p>Опора: W01-002, W02-002, W02-003, W03-005, W08-003 · 4 · средний сигнал</p>
+<h3>Рычаг: expert-credential</h3>
+<p>Экспертные регалии / профессиональный авторитет как якорь доверия — 4 из 12.</p>
+<p>Бренды: BrandauVital, Goode Health, 121.000 Longevity, My Vital Metrics.</p>
+<p>Опора: W08-007, W10-002, W10-004, W11-004, W13-001 · 4 · средний сигнал</p>
+<h3>Рычаг: anti-hype</h3>
+<p>«Без хайпа / без шума / только реальные результаты» — 4 из 12.</p>
+<p>Бренды: Maison Infrared, BrandauVital, Goode Health, My Vital Metrics.</p>
+<p>Опора: W05-002, W05-005, W08-005, W10-005, W13-003, W13-008 · 4 · средний сигнал</p>
+<h3>Рычаг: sanctuary</h3>
+<p>Пространство-убежище / «оазис от города» — 3 из 12.</p>
+<p>Бренды: Release Biohacking, Maison Infrared, Ritual Haus.</p>
+<p>Опора: W04-002, W04-004, W05-008, W07-001, W07-002 · 3 · средний сигнал</p>
+<h3>Рычаг: data-to-action</h3>
+<p>Диагностика → персональный план действий — 3 из 12.</p>
+<p>Бренды: 121.000 Longevity, Biokinetics, My Vital Metrics.</p>
+<p>Опора: W11-008, W12-005, W12-008, W13-011 · 3 · средний сигнал</p>
+<h3>Рычаг: branded-program</h3>
+<p>Фирменная программа / авторский формат как продукт — 1 из 12.</p>
+<p>Бренды: WOO (WOO Circles, Cell Circle).</p>
+<p>Опора: W01-008, W01-010 · 1 · слабый сигнал</p>
+<h3>Рычаг: lived-experience</h3>
+<p>Основатель прошёл путь клиента («я сам через это прошёл») — 1 из 12.</p>
+<p>Бренды: Re::Vital.</p>
+<p>Опора: W09-003, W09-006, W09-007 · 1 · слабый сигнал</p>
+<hr />
+<h2>Механики органического продвижения</h2>
+<p>Наблюдаемые паттерны по корпусу сайтов (11 студий, ads/social данные из facts.json).</p>
+<p><strong>Бесплатная точка входа</strong> — снижение барьера через первую процедуру или консультацию:</p>
+<p>"free and non-binding initial consultation" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a> (Biohacking Lab Luzern)</p>
+<p>"Experience your first combo session at a discounted rate. Includes personalized orientation" — <a href="https://ritualhaus.co.uk/">homepage</a> (Ritual Haus)</p>
+<p><strong>Членство и сообщество:</strong></p>
+<p>"Join our community of wellness enthusiasts and experience the life-changing benefits of contrast therapy." — <a href="https://ritualhaus.co.uk/">homepage</a> (Ritual Haus)</p>
+<p>"Unlimited monthly access with priority booking, guest passes, and exclusive wellness workshops" — <a href="https://ritualhaus.co.uk/">homepage</a> (Ritual Haus)</p>
+<p><strong>Рефёральная механика (программа рекомендаций):</strong></p>
+<p>"110 CHF Gutschein" — <a href="https://biokinetics.ch/empfehlungs-programm">/empfehlungs-programm</a> (Biokinetics, программа рекомендаций)</p>
+<p><strong>Гипотеза для REjuve</strong> (требует проверки): ни одна студия в выборке не показывает развитой публичной контент-стратегии (блог, гайды, SEO-материалы) как основного органического канала. Это потенциальное белое пятно.</p>
+<p>Примеры точек входа (механики, не счётный паттерн): W03-009, W07-008, W12-009.</p>
+<hr />
+<h2>Платная реклама</h2>
+<p>Meta Ads активность среди студий (studio-популяция, 11 брендов).</p>
+<p><strong>1 из 11 студий активны в Meta</strong> (WOO Longevity Studio).</p>
+<p>Из остальных: 1 студия с исторической активностью (Biokinetics — объявления неактивны), 1 c name-collision (Goode Health — совпадение имени не позволяет чисто верифицировать показы), 8 студий без следов рекламы.</p>
+<p><strong>Наблюдение:</strong> реклама REjuve в Meta — не в конкурентном поле. WOO как единственный активный игрок делает ставку на платный трафик; остальные — органика или офлайн-каналы.</p>
+<p><strong>Гипотеза для REjuve</strong> (требует проверки): широкая органическая ниша доступна при минимальной рекламной конкуренции в DACH-сегменте.</p>
+<p>Основание: данные Meta Ad Library (facts.json), не корпус цитат — 1 из 11 студий активны.</p>
+<hr />
+<h2>Экспертные модели позиционирования</h2>
+<p>Паттерны построения экспертного авторитета (founder_narrative допустим в этой секции — это анализ позиционирования экспертов, не «голос клиента»).</p>
+<h3>Группа: expert-led</h3>
+<p>Бренд = персона эксперта. Certifications + awards + credentials вынесены в hero-блок:</p>
+<p>"Functional Medicine Expert. Leading the Future of Personalised Healthcare." — <a href="https://www.nicolegoodehealth.com/">homepage</a> (Goode Health, Nicole Goode)</p>
+<p>"An award winning certified functional medicine practitioner &amp; registered nutritional therapist with special interest in neuroscience &amp; immunology" — <a href="https://www.nicolegoodehealth.com/">homepage</a> (Goode Health)</p>
+<p>"LLB Hons, CFMHC, AFMCP, BANT, CNHC, mRSM, mIFM" — <a href="https://www.nicolegoodehealth.com/">homepage</a> (Goode Health)</p>
+<p>"Named Functional Medicine Specialist of the Year 2025" — <a href="https://www.nicolegoodehealth.com/">homepage</a> (Goode Health)</p>
+<p>"Award winning &amp; #1 Bestselling Author. Podcast Host." — <a href="https://www.nicolegoodehealth.com/">homepage</a> (Goode Health)</p>
+<h3>Группа: multi-modality</h3>
+<p>Экспертность подтверждается через глубину протокола (количество биомаркеров, список модальностей):</p>
+<p>"121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location." — <a href="https://121.life/en/news-articles/launch/">launch article</a> (121.000 Longevity)</p>
+<p>"over 500 biomarkers such as blood, genetic and epigenetic markers, telomere lengths, body composition, and assessments of current biological age and pace of aging" — <a href="https://121.life/en/news-articles/launch/">launch article</a> (121.000 Longevity)</p>
+<p>"The UK's Most Advanced HEALTH &amp; HUMAN PERFORMANCE LAB" — <a href="https://myvitalmetrics.com/">homepage</a> (My Vital Metrics)</p>
+<p>"Expert contextualisation and analysis is absolutely critical in the process." — <a href="https://myvitalmetrics.com/about-us/">about-us</a> (My Vital Metrics)</p>
+<h3>Группа: measurement</h3>
+<p>Доверие через инструментальный измерительный стек:</p>
+<p>"Auf Basis umfassender Diagnostik, inklusive eines schmerzfreien Bluttest-Systems, Körperanalyse und Stresstests, entwickeln wir individuelle Supplementierungen." — <a href="https://biokinetics.ch/">homepage</a> (Biokinetics)</p>
+<p>"Using a specially developed algorithm, precise supplements are recommended" — <a href="https://121.life/en/news-articles/launch/">launch article</a> (121.000 Longevity)</p>
+<p>"Body composition analysis (muscle, fat, bone density)" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a> (NextGen Longevity)</p>
+<h3>Lived-experience модель (founder-as-patient)</h3>
+<p>Экспертность через личный путь — основатель сам был клиентом:</p>
+<p>"Ich weiß, wie belastend es ist, wenn der Körper nicht mehr mitspielt — denn ich habe es selbst erlebt." — <a href="https://www.revital-studio.de/">homepage</a> (Re::Vital, founder_narrative)</p>
+<p>"Dipl.-Informatiker und Software-Berater zum Gesundheits-Berater" — <a href="https://www.revital-studio.de/">homepage</a> (Re::Vital, founder_narrative — путь смены карьеры)</p>
+<p>Опора: W10-002, W10-004, W11-004, W13-001, W09-003 · 4 · средний сигнал</p></div></section><h2 class="group-header">Recovery-студии — широкий стек процедур</h2><div class="card-grid"><article class="studio-card"><div class="card-title">WOO Longevity Studio — Rotkreuz, CH</div><div class="card-sub">🟢 DACH · Rotkreuz, CH</div><div class="content"><p><strong>Сайт:</strong> <a href="https://www.woolongevity.ch">woolongevity.ch</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> Локальная DACH-студия с брендированными программами (WOO Circles), прозрачным порогом входа и активной рекламой — прямой референс для REjuve по структуре оффера и копи.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Regeneration, Performance &amp; Healthy Aging in der Zentralschweiz" — <a href="https://www.woolongevity.ch/">homepage</a>  </p>
+<p>"Mehr Energie im Alltag, schnellere Erholung nach Belastung und nachhaltige Gesundheitsroutine." — <a href="https://www.woolongevity.ch/">homepage</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / lifestyle / expert-led</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>WOO Circles — брендированные комбинированные сессии "WOO Circles" — <a href="https://www.woolongevity.ch/">homepage</a></td>
+<td><a href="https://www.woolongevity.ch/">homepage</a></td>
+</tr>
+<tr>
+<td>Cell Circle (стек)</td>
+<td>"Der Cell Circle kombiniert Wasserstofftherapie, Rotlicht und IHHT. Je nach Ziel entspannt oder aktiv." — <a href="https://www.woolongevity.ch/cell-circle">Cell Circle</a></td>
+<td><a href="https://www.woolongevity.ch/cell-circle">cell-circle</a></td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>No — порог входа "Ab 450 CHF pro Monat" — <a href="https://www.woohbot.ch/">woohbot.ch</a></td>
+<td><a href="https://www.woohbot.ch/">woohbot.ch</a></td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>"InBody 970 Körperzusammensetzungsmessung" — <a href="https://www.woolongevity.ch/woo-stoffwechselanalyse">Stoffwechselanalyse</a></td>
+<td><a href="https://www.woolongevity.ch/woo-stoffwechselanalyse">stoffwechselanalyse</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>No (данных о B2B-программе не найдено публично)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>No</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram: — подписчиков · Meta Ads: Active · 7 объявл. (7 объявлений активно)</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>— подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Active · 7 объявл.</td>
+<td>7 объявлений; данные не найдены публично (темы)</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+- данные не найдены публично (дословный текст объявлений не извлечён)</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Студия сегментирует аудиторию по трём профилям: "сегменты: офис / спорт / общий wellness" — <a href="https://www.woolongevity.ch/woo-stoffwechselanalyse">Stoffwechselanalyse</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указано публично</li>
+<li><strong>Боль / запрос:</strong> "Müdigkeit reduzieren, mentale Leistungsfähigkeit steigern" — <a href="https://www.woolongevity.ch/">homepage</a> — <a href="https://www.woolongevity.ch/">homepage</a></li>
+<li><strong>Желание:</strong> "Mehr Energie im Alltag, schnellere Erholung nach Belastung und nachhaltige Gesundheitsroutine." — <a href="https://www.woolongevity.ch/">homepage</a> — <a href="https://www.woolongevity.ch/">homepage</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Брендированные программы: "WOO Circles" — <a href="https://www.woolongevity.ch/">homepage</a> — комбинированные протоколы под одним названием "WOO Circles" — <a href="https://www.woolongevity.ch/">homepage</a>
+- Cell Circle: "Der Cell Circle kombiniert Wasserstofftherapie, Rotlicht und IHHT. Je nach Ziel entspannt oder aktiv." — <a href="https://www.woolongevity.ch/cell-circle">Cell Circle</a> — <a href="https://www.woolongevity.ch/cell-circle">cell-circle</a>
+- Longevity HBO Circle направлен на: "Healthy Aging, präventiv gegen Zellalterung und oxidativen Stress" — <a href="https://www.woolongevity.ch/longevity-hbo-circle">Longevity HBO Circle</a> — <a href="https://www.woolongevity.ch/longevity-hbo-circle">longevity-hbo-circle</a>
+- Метаболический анализ: "Optimiert den individuellen Stoffwechsel und unterstützt Energie, Gewicht und Wohlbefinden" — <a href="https://www.woolongevity.ch/woo-stoffwechselanalyse">Stoffwechselanalyse</a> — <a href="https://www.woolongevity.ch/woo-stoffwechselanalyse">stoffwechselanalyse</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично (имя основателя / эксперта, квалификации)</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Symptom-first: "Müdigkeit reduzieren, mentale Leistungsfähigkeit steigern" — <a href="https://www.woolongevity.ch/">homepage</a> — конкретные симптомы (усталость, концентрация) "Regeneration, Performance &amp; Healthy Aging in der Zentralschweiz" — <a href="https://www.woolongevity.ch/">homepage</a></td>
+<td>REjuve: называть симптомы клиента явно в первой строке лендинга; не "омоложение" — а "усталость уходит"</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Энергетическая метафора: "Mehr Energie im Alltag, schnellere Erholung nach Belastung und nachhaltige Gesundheitsroutine." — <a href="https://www.woolongevity.ch/">homepage</a> — обещание практического ежедневного результата</td>
+<td>Тест: пост "что изменится в понедельник" вместо "что такое longevity"</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Брендированные программы "WOO Circles" — <a href="https://www.woolongevity.ch/">homepage</a> — вход через названный продукт, не через меню процедур</td>
+<td>REjuve: дать первому офферу имя (не "сессия", а "Круг восстановления" или аналог)</td>
+</tr>
+<tr>
+<td>Ценообразование</td>
+<td>Порог входа виден "Ab 450 CHF pro Monat" — <a href="https://www.woohbot.ch/">woohbot.ch</a> при общей закрытости прайса — снижает барьер первого контакта</td>
+<td>REjuve: публиковать хотя бы нижнюю границу пакета; точный прайс — по запросу</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Нет данных о бренде эксперта публично; нет отзывов в открытом доступе</td>
+<td>REjuve: не прятать Кристину — её нутрициологическое образование = дифференциатор; собирать и публиковать отзывы активно</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Instagram подписчики студии: данные не найдены публично. Проверено: woolongevity.ch</li>
+<li>Instagram подписчики основателя: данные не найдены публично</li>
+<li>Имя / квалификация основателя/эксперта: данные не найдены публично. Проверено: woolongevity.ch, woohbot.ch</li>
+<li>Google Business рейтинг: данные не найдены публично</li>
+<li>Treatwell / Fresha: данные не найдены публично</li>
+<li>Дословные рекламные копи (Meta Ads): данные не найдены публично (факт активных объявлений подтверждён)</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email-рассылка: данные не найдены публично</li>
+<li>Партнёрства: данные не найдены публично</li>
+<li>Корпоративный оффер: данные не найдены публично</li>
+</ul></div></article><article class="studio-card"><div class="card-title">NextGen Longevity — Baar, CH</div><div class="card-sub">🟢 DACH · Baar, CH</div><div class="content"><p><strong>Сайт:</strong> <a href="https://www.nextgenlongevity.ch">https://www.nextgenlongevity.ch</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> ближайший прямой конкурент REjuve по гео (Baar vs Zug) — longevity-студия с клинической диагностикой и коучингом для аудитории 40+.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Longevity training centre in Baar combining clinical diagnostics + elite coaching to increase energy, strength, and healthspan." — <a href="https://www.nextgenlongevity.ch/">homepage</a>  </p>
+<p>"Longevity training is for people over 40 with energy decline, stubborn fat, low fitness, stress, aches and sleep problems." — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a>  </p>
+<p>"Recover faster. Sleep deeply. Train consistently." — <a href="https://www.nextgenlongevity.ch/recovery">/recovery</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> medical / expert-led / scientific</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>"280 / 2 hours" — <a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+<td><a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>"5 × week / Monthly = 610" — <a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+<td><a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>"Body composition analysis (muscle, fat, bone density)" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a></td>
+<td><a href="https://www.nextgenlongevity.ch/longevity">/longevity</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Yes</td>
+<td><a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично (отзывы на сайте не обнаружены)</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично (Instagram — 0 подписчиков, активность не установлена)</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> 0 подписчиков Instagram · активность не установлена · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>0 подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>Не найдено объявлений найдено</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong><br />
+данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"Longevity training is for people over 40 with energy decline, stubborn fat, low fitness, stress, aches and sleep problems." — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> "busy professionals, former and current athletes, and beginners who want structure" — <a href="https://www.nextgenlongevity.ch/performance">/performance</a></li>
+<li><strong>Боль / запрос:</strong> "energy decline, stubborn fat, low fitness, stress, aches and sleep problems" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a> (<a href="https://www.nextgenlongevity.ch/longevity">/longevity</a>)</li>
+<li><strong>Желание:</strong> "Recover faster. Sleep deeply. Train consistently." — <a href="https://www.nextgenlongevity.ch/recovery">/recovery</a> (<a href="https://www.nextgenlongevity.ch/recovery">/recovery</a>)</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- "Longevity training centre in Baar combining clinical diagnostics + elite coaching to increase energy, strength, and healthspan." — <a href="https://www.nextgenlongevity.ch/">homepage</a> — комбинация клинической диагностики и элитного коучинга; брендированных программ не обнаружено публично
+- диагностика включает: "Body composition analysis (muscle, fat, bone density)" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично (имя основателя/эксперта не представлено на сайте публично)</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>"energy decline, stubborn fat, low fitness, stress, aches and sleep problems" — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a> — конкретные симптомы в позиционировании</td>
+<td>REjuve может использовать аналогичный symptom-first язык; опора: "Longevity training is for people over 40 with energy decline, stubborn fat, low fitness, stress, aches and sleep problems." — <a href="https://www.nextgenlongevity.ch/longevity">/longevity</a></td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>"Recover faster. Sleep deeply. Train consistently." — <a href="https://www.nextgenlongevity.ch/recovery">/recovery</a> — короткие глагольные призывы ("Recover. Sleep. Train.")</td>
+<td>Тестировать трёхчастные micro-copy формулы в постах и рекламе</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>"280 / 2 hours" — <a href="https://www.nextgenlongevity.ch/pricing">/pricing</a> + "5 × week / Monthly = 610" — <a href="https://www.nextgenlongevity.ch/pricing">/pricing</a> — прозрачное ценообразование опубликовано</td>
+<td>Если REjuve публикует цены — это снижает барьер входа; опора: "280 / 2 hours" — <a href="https://www.nextgenlongevity.ch/pricing">/pricing</a></td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>"busy professionals, former and current athletes, and beginners who want structure" — <a href="https://www.nextgenlongevity.ch/performance">/performance</a> — три сегмента аудитории названы явно</td>
+<td>REjuve может сегментировать лендинг/копи по профилям: профессионал / экс-спортсмен / новичок</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Meta Ads: Не найдено — отсутствие платного трафика</td>
+<td>REjuve не должна опираться на органику в Zug; платный канал — незанятое поле рядом</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Instagram аккаунт: данные не найдены публично. Проверено: nextgenlongevity.ch, ig_followers=0</li>
+<li>Основатель / эксперт: данные не найдены публично. Проверено: /about, homepage</li>
+<li>Отзывы (Google Business, Treatwell, Fresha): данные не найдены публично</li>
+<li>Meta Ads рекламные тексты: данные не найдены публично (Не найдено — активных объявлений нет)</li>
+<li>Блог / email-рассылка: данные не найдены публично</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Корпоративный оффер (b2b=No): подтверждено отсутствие</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Biohacking Lab Luzern — Luzern, CH</div><div class="card-sub">🟢 DACH · Luzern, CH</div><div class="content"><p><strong>Сайт:</strong> <a href="https://biohackinglab.ch">biohackinglab.ch</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> немецкоязычный конкурент в Швейцарии с явным "biohacking" позиционированием, коучинговой моделью и частично опубликованными ценами — близкий референс по сегменту и рынку для REjuve.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Lade deine Batterien auf" — <a href="https://biohackinglab.ch/">homepage</a>  </p>
+<p>"RESET DEINER GENE!" — <a href="https://biohackinglab.ch/">homepage</a>  </p>
+<p>"minimaler Aufwand - maximaler Effekt" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / expert-led</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>"free and non-binding initial consultation" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a></td>
+<td><a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>"CHF 1,800 for 10-session package" — <a href="https://biohackinglab.ch/biohacking-labor-luzern/">/biohacking-labor-luzern</a></td>
+<td><a href="https://biohackinglab.ch/biohacking-labor-luzern/">/biohacking-labor-luzern</a></td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>"Gut and food sensitivity testing" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a></td>
+<td><a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Partial</td>
+<td><a href="https://biohackinglab.ch/biohacking-labor-luzern/">/biohacking-labor-luzern</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> 7 подписчиков Instagram · активность не определена · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>Active</td>
+<td>7 подписчиков; форматы не определены</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>объявлений не найдено</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+- данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Студия сама формулирует запрос клиента как "Lack of energy and poor regeneration" — <a href="https://biohackinglab.ch/">homepage</a>.</p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указано публично</li>
+<li><strong>Боль / запрос:</strong> "Lack of energy and poor regeneration" — <a href="https://biohackinglab.ch/">homepage</a> — <a href="https://biohackinglab.ch/">homepage</a></li>
+<li><strong>Желание:</strong> "Best Version of me" — <a href="https://biohackinglab.ch/">homepage</a> — <a href="https://biohackinglab.ch/">homepage</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- "Biohacking Labor Luzern" — <a href="https://biohackinglab.ch/">homepage</a> — единый бренд-неймин вокруг "biohacking labor" подчёркивает лабораторную, процедурную природу оффера
+- "Gut and food sensitivity testing" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a> — диагностика интегрирована в коучинговый пакет</p>
+<p><strong>Бренд эксперта:</strong>
+- Основатель Eliane Roux; страница <code>/eliane_roux</code> — отдельный раздел на сайте
+- Философия эксперта сформулирована через "NATUR BEGREIFEN – NATUR KOPIEREN" — <a href="https://biohackinglab.ch/eliane_roux/">/eliane_roux</a>
+- "NATUR BEGREIFEN – NATUR KOPIEREN" — <a href="https://biohackinglab.ch/eliane_roux/">/eliane_roux</a> — <a href="https://biohackinglab.ch/eliane_roux/">/eliane_roux</a>
+- "die kleinste Veränderung macht auf Dauer den grössten Unterschied" — <a href="https://biohackinglab.ch/eliane_roux/">/eliane_roux</a> — <a href="https://biohackinglab.ch/eliane_roux/">/eliane_roux</a></p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Энергетическая метафора "Lade deine Batterien auf" — <a href="https://biohackinglab.ch/">homepage</a> — краткая, физически ощутимая</td>
+<td>REjuve может использовать аналогичные энергетические образы на немецкоязычной аудитории DACH</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Бесплатная первичная консультация как входная точка "free and non-binding initial consultation" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a> снижает барьер</td>
+<td>REjuve: low-friction первый шаг (онлайн-диагностика / бесплатная консультация) снижает CAC</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>"Минимум усилий — максимум эффекта" "minimaler Aufwand - maximaler Effekt" — <a href="https://biohackinglab.ch/biohacking-coaching/">/biohacking-coaching</a> — прямое обращение к занятой аудитории</td>
+<td>REjuve может явно называть занятость клиента (работающая женщина 35–55) как признанный барьер</td>
+</tr>
+<tr>
+<td>Ценообразование</td>
+<td>Пакет 10 сессий с опубликованной ценой "CHF 1,800 for 10-session package" — <a href="https://biohackinglab.ch/biohacking-labor-luzern/">/biohacking-labor-luzern</a> даёт ценовой якорь без консультации</td>
+<td>REjuve: хотя бы один ценовой якорь на сайте снижает тревогу и фильтрует нецелевых</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Крайне низкое присутствие в соцсетях (7 подписчиков), нет Meta Ads</td>
+<td>REjuve не должна воспроизводить эту digital-невидимость — контент и таргет реклама обязательны</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Отзывы (Google Business, Treatwell, Fresha): данные не найдены публично. Проверено: biohackinglab.ch</li>
+<li>TikTok: данные не найдены публично. Проверено: biohackinglab.ch</li>
+<li>Блог / email-рассылка: данные не найдены публично. Проверено: biohackinglab.ch</li>
+<li>Партнёрства: данные не найдены публично. Проверено: biohackinglab.ch</li>
+<li>Рекламные формулировки Meta Ads: данные не найдены публично. Проверено: Не найдено (0 объявлений)</li>
+<li>Членство / подписка: данные не найдены публично. Проверено: biohackinglab.ch</li>
+<li>Instagram основателя: —</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Release Biohacking — Sindelfingen, DE</div><div class="card-sub">🟢 DACH · Sindelfingen, DE</div><div class="content"><p><strong>Сайт:</strong> <a href="https://release-biohacking.com">release-biohacking.com</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> Биохакинг-студия в Германии с медицинским оффером (инфузии + регенерация + эстетика) — прямой референс для REjuve по позиционированию и прайс-транспарентности.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Deine Oase für gesundes Altern und echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a></p>
+<p>"Moderne Infusionstherapien, Regenerationsanwendungen und ästhetische Behandlungen – für mehr Energie, Balance und Vitalität." — <a href="https://release-biohacking.com/">homepage</a></p>
+<p>"Die Wirkstoffe gelangen direkt über die Blutbahn in den Organismus und stehen dem Körper unmittelbar zur Verfügung." — <a href="https://release-biohacking.com/infusionen-sindelfingen/">/infusionen-sindelfingen</a></p>
+</blockquote>
+<p><strong>Тон бренда:</strong> medical / lifestyle</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Yes</td>
+<td><a href="https://release-biohacking.com">release-biohacking.com</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — данные не найдены публично · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>—</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+- данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Студия явно описывает своего клиента через запрос на «здоровое старение» и «настоящее благополучие» — "Deine Oase für gesundes Altern und echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a>.</p>
+<ul>
+<li><strong>Возраст / профиль:</strong> данные не найдены публично</li>
+<li><strong>Боль / запрос:</strong> "gesundes Altern &amp; echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a></li>
+<li><strong>Желание:</strong> данные не найдены публично</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Три направления в одном месте: инфузии, регенерация, эстетика — "Moderne Infusionstherapien, Regenerationsanwendungen und ästhetische Behandlungen – für mehr Energie, Balance und Vitalität." — <a href="https://release-biohacking.com/">homepage</a>
+- "Moderne Infusionstherapien, Regenerationsanwendungen und ästhetische Behandlungen – für mehr Energie, Balance und Vitalität." — <a href="https://release-biohacking.com/">homepage</a>
+- Прямое обоснование биодоступности: "Die Wirkstoffe gelangen direkt über die Blutbahn in den Organismus und stehen dem Körper unmittelbar zur Verfügung." — <a href="https://release-biohacking.com/infusionen-sindelfingen/">/infusionen-sindelfingen</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>«Оазис» как метафора места — "Deine Oase für gesundes Altern und echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a></td>
+<td>REjuve может использовать пространственную метафору (место восстановления), если локация позволяет</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Цены опубликованы (Yes) — снижает барьер входа</td>
+<td>Открытый прайс = доверие; проверить, работает ли это в Цуге так же</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>«Здоровое старение» + «настоящее благополучие» — двойной акцент: и тело, и ощущение — "gesundes Altern &amp; echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a></td>
+<td>REjuve уже работает с этим framing'ом, референс подтверждает спрос в DACH</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Слабое отличие: tagline «оазис» — распространённая метафора в wellness, не уникальна — "Deine Oase für gesundes Altern und echtes Wohlbefinden" — <a href="https://release-biohacking.com/">homepage</a></td>
+<td>REjuve избегать общих sanctuary-клише без подкрепления конкретными процедурами или результатами</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Instagram followers: данные не найдены публично. Проверено: https://release-biohacking.com</li>
+<li>Instagram followers основателя: данные не найдены публично</li>
+<li>Корпоративный оффер (B2B): данные не найдены публично. Проверено: https://release-biohacking.com</li>
+<li>Отзывы (Google Business): данные не найдены публично</li>
+<li>Отзывы (Treatwell / Fresha): данные не найдены публично</li>
+<li>Рекламные формулировки (Meta Ads): данные не найдены публично (Не найдено)</li>
+<li>Бренд эксперта / основателя: данные не найдены публично</li>
+<li>Входные продукты и пакеты с ценами: данные не найдены публично (цены опубликованы на сайте, но не извлечены в корпус)</li>
+<li>Каналы контента (TikTok, блог, email): данные не найдены публично</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Maison Infrared — London, UK</div><div class="card-sub">🔵 UK · London, UK</div><div class="content"><p><strong>Сайт:</strong> <a href="https://maisoninfrared.com">maisoninfrared.com</a> · <strong>Гео:</strong> UK<br />
+<strong>Почему в списке:</strong> editorial-агрегатор инфракрасных процедур (не студия, а кураторский ресурс + гид по рынку Лондона) — интересен как образец anti-hype языка и позиционирования через science-backed recovery.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Infrared Saunas, Red Light Therapy &amp; Modern Recovery" — <a href="https://maisoninfrared.com/">homepage</a>  </p>
+<p>"We weren't designed for modern environments. Artificial light. Stable temperatures. Constant comfort." — <a href="https://maisoninfrared.com/">homepage</a>  </p>
+<p>"No trends. No wellness noise." — <a href="https://maisoninfrared.com/">homepage</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / anti-hype / lifestyle</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>данные не найдены публично (агрегатор, не студия)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Partial</td>
+<td><a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рыночный ориентир по ценам (агрегатор):</strong></p>
+<blockquote>
+<p>"Prices for infrared sauna sessions in London typically range between £40 and £100 per session" — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a>  </p>
+</blockquote>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично (отзывы клиентов на сайте не обнаружены — формат агрегатора)</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- Editorial-гид по рынку Лондона — позиционирует ресурс как авторитетный источник, не рекламу
+- Anti-hype язык: "No trends. No wellness noise." — <a href="https://maisoninfrared.com/">homepage</a> — краткая декларация без обещаний</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично (формат агрегатора — не применимо)</p>
+<p><strong>Метрики присутствия:</strong> 41 подписчиков Instagram · активность не установлена · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>41 подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>0 активных объявлений найдено</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong><br />
+данные не найдены публично (Meta Ads отсутствуют)</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"For those who value recovery as an intentional practice within everyday life — clear, measured, and repeatable." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указано публично</li>
+<li><strong>Боль / запрос:</strong> "Modern life drastically reduced our exposure to natural red and infrared light" — <a href="https://maisoninfrared.com/">homepage</a> (<a href="https://maisoninfrared.com/">homepage</a>)</li>
+<li><strong>Желание:</strong> "For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a> (<a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a>)</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- "Infrared Saunas, Red Light Therapy &amp; Modern Recovery" — <a href="https://maisoninfrared.com/">homepage</a> — агрегатор фокусируется на инфракрасном спектре как комплексе (сауна + красный свет + recovery); брендированных программ нет
+- Философская опора: "Modern life drastically reduced our exposure to natural red and infrared light" — <a href="https://maisoninfrared.com/">homepage</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично (имя основателя/редактора не представлено на сайте публично)
+- Экспертиза передаётся через язык и editorial-позицию, не через личность</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>"We weren't designed for modern environments. Artificial light. Stable temperatures. Constant comfort." — <a href="https://maisoninfrared.com/">homepage</a> — проблема современной среды как точка входа, не болезнь</td>
+<td>REjuve может использовать environmental framing: "тело не создано для офисного света / постоянного комфорта"; опора: "Modern life drastically reduced our exposure to natural red and infrared light" — <a href="https://maisoninfrared.com/">homepage</a></td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>"No trends. No wellness noise." — <a href="https://maisoninfrared.com/">homepage</a> — три слова как антипозиция к инфо-шуму</td>
+<td>Тестировать ультракороткие декларации в Stories/рекламе — без объяснений, только заявление</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>"For those who value recovery as an intentional practice within everyday life — clear, measured, and repeatable." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a> — клиент описан через практику ("intentional recovery"), не через симптом</td>
+<td>REjuve может сегментировать аудиторию через ритуал/практику, не только через боль; опора: "For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">London guide</a></td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>"Not everything needs to be optimized. But the environment you live in matters." — <a href="https://maisoninfrared.com/pages/about">about</a> — вопрос о среде как крючок для размышления</td>
+<td>REjuve может открывать контент риторическим вопросом; опора: "Why do certain places make you feel better, clearer, more grounded?" — <a href="https://maisoninfrared.com/pages/about">about</a></td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Meta Ads: 0 — нет платного трафика; Instagram: 41 — минимальный охват</td>
+<td>Маленький органический канал без рекламы = сигнал что одного бренда недостаточно; REjuve нужен платный трафик с первого дня</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Цены и оффер собственных услуг: данные не найдены публично (Maison Infrared — агрегатор, не студия; прямых услуг не продаёт)</li>
+<li>Основатель / редактор: данные не найдены публично. Проверено: maisoninfrared.com/pages/about, homepage</li>
+<li>Отзывы клиентов (Google Business, Treatwell, Fresha): данные не найдены публично</li>
+<li>Meta Ads рекламные тексты: данные не найдены публично (0 активных объявлений)</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email-рассылка: данные не найдены публично</li>
+<li>Instagram активность (посты/мес): данные не найдены публично</li>
+<li>Корпоративный оффер (b2b=No): подтверждено отсутствие</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Rebase Recovery — London, UK</div><div class="card-sub">🔵 UK · London, UK</div><div class="content"><p><strong>Сайт:</strong> https://rebaserecovery.com · <strong>Гео:</strong> UK<br />
+<strong>Почему в списке:</strong> Стек премиум-восстановления (криотерапия + гипербарический кислород + бодиворк) в Лондоне — потенциальный референс для позиционирования REjuve как комплексного recovery-центра.</p>
+<blockquote>
+<p>⚠ Данные по этому бренду получены из вторичного источника (редакционное описание Maison Infrared). Сайт-SPA не извлекался. Большинство полей не верифицированы.</p>
+</blockquote>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Premium Wellness &amp; Recovery Studio" — <a href="https://rebaserecovery.com/">homepage title</a>  </p>
+<p>"Those who seek recovery as both reset and routine — communal when desired, structured when needed." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">Maison Infrared London guide</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> данные не найдены публично (по вторичному источнику — premium / lifestyle / sport)</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong> данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong> данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — подписчиков · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>— подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>—</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong> данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"Those who seek recovery as both reset and routine — communal when desired, structured when needed." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">Maison Infrared London guide</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> данные не найдены публично</li>
+<li><strong>Боль / запрос:</strong> данные не найдены публично</li>
+<li><strong>Желание:</strong> данные не найдены публично</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- "integrates cryotherapy, hyperbaric oxygen, and specialist bodywork" — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">Maison Infrared</a> — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">Maison Infrared</a></p>
+<p><strong>Бренд эксперта:</strong> данные не найдены публично</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Стек premium recovery + аудитория «сброс и рутина» "Those who seek recovery as both reset and routine — communal when desired, structured when needed." — <a href="https://maisoninfrared.com/pages/london-infrared-recovery">Maison Infrared London guide</a></td>
+<td>REjuve может использовать аналогичный фрейм: восстановление как регулярная практика, не разовая процедура</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Закрытый SPA без публичных цен — барьер входа для новых клиентов</td>
+<td>REjuve: открытые цены на входной продукт снижают порог</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Цены и пакеты: данные не найдены публично. Проверено: https://rebaserecovery.com/ (SPA не извлекался)</li>
+<li>Instagram (подписчики, активность): данные не найдены публично</li>
+<li>Meta Ads (объявления, формулировки): данные не найдены публично. Meta Ads Library: 0 активных объявлений</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email: данные не найдены публично</li>
+<li>Отзывы Google / Treatwell: данные не найдены публично</li>
+<li>Корпоративный оффер (B2B): данные не найдены публично</li>
+<li>Бренд эксперта / основатель: данные не найдены публично</li>
+<li>Диагностика / измерения: данные не найдены публично</li>
+<li>Тон бренда (точный): данные не найдены публично. Первичный источник — сайт студии не проанализирован</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Ritual Haus — London, UK</div><div class="card-sub">🔵 UK · London, UK</div><div class="content"><p><strong>Сайт:</strong> <a href="https://ritualhaus.co.uk">ritualhaus.co.uk</a> · <strong>Гео:</strong> UK<br />
+<strong>Почему в списке:</strong> лондонский recovery lounge на контрастной терапии (ИК-сауна + холодное погружение) — минимальный ценовой барьер, lifestyle-позиционирование через ритуал и «выход из города».</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>""Welcome to Ritual Haus: London's Infrared Sauna &amp; Cold Plunge Sanctuary" — <a href="https://ritualhaus.co.uk/">homepage</a>"  </p>
+<p>""London's newest recovery lounge for contrast, calm, and clarity." — <a href="https://ritualhaus.co.uk/">homepage</a>"  </p>
+<p>""Step out of the city and into a ritual." — <a href="https://ritualhaus.co.uk/">homepage</a>"  </p>
+<p>""Drop in, recharge, and return to your day with focus and energy." — <a href="https://ritualhaus.co.uk/">homepage</a>"  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> lifestyle / sanctuary — городской escape, акцент на ощущение и ритм, без медицинской риторики.</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>Первая комбо-сессия по сниженной цене; включает персональный инструктаж — "Experience your first combo session at a discounted rate. Includes personalized orientation" — <a href="https://ritualhaus.co.uk/">homepage</a></td>
+<td><a href="https://ritualhaus.co.uk/">homepage</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>Неограниченный месячный доступ с приоритетным бронированием, гостевыми пропусками и воркшопами — "Unlimited monthly access with priority booking, guest passes, and exclusive wellness workshops" — <a href="https://ritualhaus.co.uk/">homepage</a></td>
+<td><a href="https://ritualhaus.co.uk/">homepage</a></td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>No</td>
+<td><a href="https://ritualhaus.co.uk/">homepage</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично (IG-аккаунт не верифицирован / статистика недоступна)</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — — · Meta Ads — Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>подписчики: —</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>объявлений: Не найдено</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong> данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Бренд описывает своего клиента через призму городского ритма:</p>
+<ul>
+<li><strong>Профиль:</strong> городской житель, ищущий паузу между рабочими блоками — "Drop in, recharge, and return to your day with focus and energy." — <a href="https://ritualhaus.co.uk/">homepage</a></li>
+<li><strong>Боль / запрос:</strong> ""Join our community of wellness enthusiasts and experience the life-changing benefits of contrast therapy." — <a href="https://ritualhaus.co.uk/">homepage</a>" (<a href="https://ritualhaus.co.uk/">homepage</a>)</li>
+<li><strong>Желание:</strong> ""London's newest recovery lounge for contrast, calm, and clarity." — <a href="https://ritualhaus.co.uk/">homepage</a>" (<a href="https://ritualhaus.co.uk/">homepage</a>)</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Контрастная терапия (ИК-сауна + холодное погружение) заявлена в названии категории: ""Welcome to Ritual Haus: London's Infrared Sauna &amp; Cold Plunge Sanctuary" — <a href="https://ritualhaus.co.uk/">homepage</a>" (<a href="https://ritualhaus.co.uk/">homepage</a>)
+- Брендированных протоколов или программ публично не обнаружено; входной продукт — "Experience your first combo session at a discounted rate. Includes personalized orientation" — <a href="https://ritualhaus.co.uk/">homepage</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично. Основатель/эксперт не представлен публично на сайте.</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Трёхчленный ритм «contrast, calm, and clarity» — "contrast, calm, and clarity" (triad)" — <a href="https://ritualhaus.co.uk/">homepage</a> — даёт ощущение полноты без объяснений</td>
+<td>REjuve может использовать аналогичный трёхчленный слоган, опирающийся на три ключевых состояния клиента после процедур</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Городской escape-нарратив: «Step out of the city» — "Step out of the city and into a ritual." — <a href="https://ritualhaus.co.uk/">homepage</a></td>
+<td>Для Zug-аудитории: «выйти из рабочего режима» как обрамление для любой процедуры</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Низкий входной барьер (первая сессия со скидкой + ориентация) — "Experience your first combo session at a discounted rate. Includes personalized orientation" — <a href="https://ritualhaus.co.uk/">homepage</a></td>
+<td>REjuve: диагностическая первая встреча как входной продукт снижает воспринимаемый риск</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>«Sanctuary» как городской ритуал, не медицинская услуга — "Welcome to Ritual Haus: London's Infrared Sauna &amp; Cold Plunge Sanctuary" — <a href="https://ritualhaus.co.uk/">homepage</a></td>
+<td>REjuve может сочетать sanctuary-язык с экспертизой нутрициолога — это отличие которого у Ritual Haus нет</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Нет публичных цен (No), нет Meta Ads (Не найдено) — нулевой платный трафик</td>
+<td>REjuve избегать закрытого ценообразования: прозрачность = конкурентное преимущество на CH-рынке</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>ig_followers: данные не найдены публично. Проверено: https://ritualhaus.co.uk/</li>
+<li>ig_followers_founder: данные не найдены публично. Проверено: https://ritualhaus.co.uk/</li>
+<li>meta_ads: объявлений не найдено. Проверено: Meta Ad Library</li>
+<li>b2b: данные не найдены публично. Проверено: https://ritualhaus.co.uk/</li>
+<li>Основатель / команда: данные не найдены публично. Проверено: https://ritualhaus.co.uk/</li>
+<li>Отзывы (Google, Treatwell, Fresha): данные не найдены публично</li>
+<li>TikTok / блог / рассылка: данные не найдены публично</li>
+</ul></div></article></div><h2 class="group-header">Экспертные студии — через личность специалиста</h2><div class="card-grid"><article class="studio-card"><div class="card-title">BrandauVital — Schönaich, DE</div><div class="card-sub">🟢 DACH · Schönaich, DE</div><div class="content"><p><strong>Сайт:</strong> <a href="https://www.brandauvital.de">brandauvital.de</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> Heilpraktikerin + ex-олимпийка (18x чемпионка Германии, MTB XCO), авторский метод NeuroPerform° — редкий пример позиционирования через спортивную биографию эксперта в медицинской нише.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>""Ganzheitliche Gesundheitslösungen für mehr Lebensqualität und Energie" — <a href="https://www.brandauvital.de/">homepage</a>"  </p>
+<p>""die Heilpraktiker Praxis für chronische Erkrankungen für Körper und Psyche sowie akute Sportverletzungen" — <a href="https://www.brandauvital.de/">homepage</a>"  </p>
+<p>""In contrast to many conventional treatment methods that only temporarily suppress symptoms, I focus on where the true causes lie." — <a href="https://www.brandauvital.de/Heilpraktikerpraxis">Heilpraktikerpraxis</a>"  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> expert-led / medical / anti-hype</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>Да (B2B указан)</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>No</td>
+<td><a href="https://www.brandauvital.de">website</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично (именных отзывов на сайте не обнаружено публично)</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично (публичная активность IG — 213 подписчиков студии; форматы не зафиксированы)
+- Основатель ведёт личный аккаунт: 9345 подписчиков</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> 213 подписчиков (студия) · 9345 подписчиков (основатель) · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram (студия)</td>
+<td>Active</td>
+<td>213 подписчиков</td>
+</tr>
+<tr>
+<td>Instagram (основатель)</td>
+<td>Active</td>
+<td>9345 подписчиков; личный бренд значимее студийного</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>0 объявлений</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+- данные не найдены публично (Meta Ads не размещались)</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Студия прямо называет целевые состояния: "Depression/Burnout", "Long/Post Covid" — <a href="https://www.brandauvital.de/">homepage</a> — хронические и острые состояния, включая спортивные травмы.</p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указан публично; по контексту — люди с хроническими заболеваниями, спортсмены</li>
+<li><strong>Боль / запрос:</strong> ""die Heilpraktiker Praxis für chronische Erkrankungen für Körper und Psyche sowie akute Sportverletzungen" — <a href="https://www.brandauvital.de/">homepage</a>" (<a href="https://www.brandauvital.de/">homepage</a>)</li>
+<li><strong>Желание:</strong> ""persönliche Gesundheits- und Lebensziele erfolgreich erreichen" — <a href="https://www.brandauvital.de/therapiemethoden">therapiemethoden</a>" (<a href="https://www.brandauvital.de/therapiemethoden">therapiemethoden</a>)</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Название стека — "Integrative Medizin &amp; Naturheilkunde" — <a href="https://www.brandauvital.de/">homepage</a> (Integrative Medizin &amp; Naturheilkunde как зонтичный термин)
+- ""We have only one body to live our life in. Therefore, we place special value on viewing the body holistically and supporting its natural regulation." — <a href="https://www.brandauvital.de/Heilpraktikerpraxis">Heilpraktikerpraxis</a>" (<a href="https://www.brandauvital.de/Heilpraktikerpraxis">Heilpraktikerpraxis</a>)</p>
+<p><strong>Бренд эксперта:</strong>
+- Elisabeth Brandau — Heilpraktikerin, "18x Deutschen Meistertitel im Radsport sowie als Olympionikin im MTB XCO" — <a href="https://www.brandauvital.de/%C3%BCber-elisabeth-brandau">über-elisabeth</a>
+- Авторский метод NeuroPerform° — данные не найдены публично в корпусе (название метода известно из задачи, не из цитаты)
+- Экспертиза представлена через отдельную страницу «über Elisabeth Brandau» с биографией и спортивными достижениями
+- ""18x Deutschen Meistertitel im Radsport sowie als Olympionikin im MTB XCO" — <a href="https://www.brandauvital.de/%C3%BCber-elisabeth-brandau">über-elisabeth</a>" (<a href="https://www.brandauvital.de/%C3%BCber-elisabeth-brandau">über-elisabeth</a>)</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Anti-hype: не обещают симптоматическое облегчение, говорят о причинах — "In contrast to many conventional treatment methods that only temporarily suppress symptoms, I focus on where the true causes lie." — <a href="https://www.brandauvital.de/Heilpraktikerpraxis">Heilpraktikerpraxis</a></td>
+<td>REjuve: формулировать «не временный эффект, а изменение состояния» — привязать к "In contrast to many conventional treatment methods that only temporarily suppress symptoms, I focus on where the true causes lie." — <a href="https://www.brandauvital.de/Heilpraktikerpraxis">Heilpraktikerpraxis</a></td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Личный бренд основателя (9345 vs 213) перевешивает студийный</td>
+<td>Кристине стоит развивать личный аккаунт активнее студийного</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>B2B присутствует (Yes), цены не публикуются — оффер через доверие эксперта, не прайс</td>
+<td>REjuve: тестировать «запрос на консультацию» вместо прямого прайс-листа</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Спортивная биография эксперта как trust-signal — "18x Deutschen Meistertitel im Radsport sowie als Olympionikin im MTB XCO" — <a href="https://www.brandauvital.de/%C3%BCber-elisabeth-brandau">über-elisabeth</a></td>
+<td>Если у Кристины есть спортивный / соревновательный бэкграунд — выводить на первый план</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Минимальное присутствие студии в соцсетях (213 подписчиков) — рост через личный бренд, а не контент студии</td>
+<td>REjuve не должна повторять: нужен контент-план именно для студийного аккаунта</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Цены и пакеты: данные не найдены публично. Проверено: <a href="https://www.brandauvital.de">brandauvital.de</a>, <a href="https://www.brandauvital.de/therapiemethoden">therapiemethoden</a></li>
+<li>Отзывы (Google, Treatwell, Fresha): данные не найдены публично</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email-рассылка: данные не найдены публично</li>
+<li>Метод NeuroPerform° — детальное описание: данные не найдены публично в корпусе</li>
+<li>Партнёрства: данные не найдены публично</li>
+<li>Рекламные формулировки (Meta Ads): данные не найдены публично (Не найдено — активных кампаний нет)</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Re::Vital — Zeiskam, DE</div><div class="card-sub">🟢 DACH · Zeiskam, DE</div><div class="content"><p><strong>Сайт:</strong> <a href="https://www.revital-studio.de">https://www.revital-studio.de</a> · <strong>Гео:</strong> DACH · <strong>Город:</strong> Zeiskam, DE<br />
+<strong>Почему в списке:</strong> небольшая немецкая студия с явным founder-led позиционированием через личный опыт болезни, без медицинских сертификатов — прямой структурный аналог REjuve.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Studio für Zelltraining und Regeneration" — <a href="https://www.revital-studio.de/">homepage</a>  </p>
+<p>"Für mehr Lebensenergie und eine gesündere Zukunft" — <a href="https://www.revital-studio.de/">homepage</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> expert-led / lifestyle / personal-story</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>"Kennenlern-Paket Beratung + 1× IHHT + 1× mHBOT — 80 €" — <a href="https://www.revital-studio.de/">homepage</a></td>
+<td><a href="https://www.revital-studio.de/">homepage</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Yes</td>
+<td><a href="https://www.revital-studio.de/">homepage</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> 26 подписчиков Instagram · активность не определена · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>Active</td>
+<td>26 подписчиков; форматы не определены</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>Не найдено объявлений</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Студия явно адресует людей, у которых «тело не справляется» — "Ich weiß, wie belastend es ist, wenn der Körper nicht mehr mitspielt — denn ich habe es selbst erlebt." — <a href="https://www.revital-studio.de/">homepage</a>. Клиент ищет поддержку и сопровождение, а не только процедуру.</p>
+<ul>
+<li><strong>Возраст / профиль:</strong> данные не найдены публично</li>
+<li><strong>Боль / запрос:</strong> "Ich weiß, wie belastend es ist, wenn der Körper nicht mehr mitspielt — denn ich habe es selbst erlebt." — <a href="https://www.revital-studio.de/">homepage</a> — <a href="https://www.revital-studio.de/">homepage</a></li>
+<li><strong>Желание:</strong> "Für mehr Lebensenergie und eine gesündere Zukunft" — <a href="https://www.revital-studio.de/">homepage</a> — <a href="https://www.revital-studio.de/">homepage</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Комбинация IHHT + mHBOT как входной пакет — "Kennenlern-Paket Beratung + 1× IHHT + 1× mHBOT — 80 €" — <a href="https://www.revital-studio.de/">homepage</a>
+- "Kennenlern-Paket Beratung + 1× IHHT + 1× mHBOT — 80 €" — <a href="https://www.revital-studio.de/">homepage</a> — <a href="https://www.revital-studio.de/">homepage</a></p>
+<p><strong>Бренд эксперта:</strong>
+- Основатель: "Dipl.-Informatiker und Software-Berater zum Gesundheits-Berater" — <a href="https://www.revital-studio.de/">homepage</a> — переход из IT в wellness через личный опыт болезни
+- Экспертиза представлена через личную историю болезни без медицинских сертификатов
+- "Ich weiß, wie belastend es ist..." — <a href="https://www.revital-studio.de/">homepage</a> — <a href="https://www.revital-studio.de/">homepage</a>
+- "Ich stehe Dir beratend und motivierend zur Seite" — <a href="https://www.revital-studio.de/">homepage</a> — <a href="https://www.revital-studio.de/">homepage</a></p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Метафора энергии как итог — "Für mehr Lebensenergie und eine gesündere Zukunft" — <a href="https://www.revital-studio.de/">homepage</a></td>
+<td>REjuve может использовать «жизненная энергия» вместо клинических терминов</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Личная история основателя как главный аргумент доверия — "Ich weiß, wie belastend es ist, wenn der Körper nicht mehr mitspielt — denn ich habe es selbst erlebt." — <a href="https://www.revital-studio.de/">homepage</a></td>
+<td>Нарратив Кристины «я сама прошла путь» работает как социальное доказательство без сертификатов</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Прозрачная цена на входной продукт снижает порог — "Kennenlern-Paket Beratung + 1× IHHT + 1× mHBOT — 80 €" — <a href="https://www.revital-studio.de/">homepage</a></td>
+<td>REjuve: первый пакет с открытой ценой на сайте как инструмент конверсии</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Founder без мед. диплома строит доверие через lived experience — "Dipl.-Informatiker und Software-Berater zum Gesundheits-Berater" — <a href="https://www.revital-studio.de/">homepage</a></td>
+<td>Кристине не нужна степень MD, нужна чёткая личная история с результатом</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Крайне низкое социальное присутствие (26 подписчиков) ограничивает охват</td>
+<td>REjuve: Instagram — обязательный канал с регулярностью, не разовым постингом</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Членство / подписка: данные не найдены публично. Проверено: https://www.revital-studio.de/</li>
+<li>Диагностика / измерения: данные не найдены публично. Проверено: https://www.revital-studio.de/</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email: данные не найдены публично</li>
+<li>Партнёрства: данные не найдены публично</li>
+<li>Google Business: данные не найдены публично</li>
+<li>Treatwell / Fresha: данные не найдены публично</li>
+<li>Рекламные формулировки Meta Ads: данные не найдены публично. Проверено: Meta Ad Library</li>
+<li>ig_followers_founder: данные не найдены публично</li>
+<li>b2b: данные не найдены публично</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Goode Health (Nicole Goode) — London, UK</div><div class="card-sub">🔵 UK · London, UK</div><div class="content"><p><strong>Сайт:</strong> https://www.nicolegoodehealth.com · <strong>Гео:</strong> UK<br />
+<strong>Почему в списке:</strong> Ближайший credential-аналог Кристины — BANT-нутрициолог + functional medicine, позиционирование через эксперта с академическими сертификациями; референс для построения профессионального бренда REjuve.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Functional Medicine Expert. Leading the Future of Personalised Healthcare." — <a href="https://www.nicolegoodehealth.com/">homepage</a>  </p>
+<p>"The Art of Science. Wellness Redefined." — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a>  </p>
+<p>"bespoke services to optimise your health"; "restore resilience, energy and long-term wellbeing" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> expert-led / medical / scientific</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>bespoke services (индивидуальные программы)</td>
+<td><a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>"Pricing starts at £399 a month" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></td>
+<td><a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Partial</td>
+<td><a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- "Named Functional Medicine Specialist of the Year 2025" — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a>
+- "Award winning &amp; #1 Bestselling Author. Podcast Host." — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a></p>
+<p><strong>Контентные форматы которые работают:</strong>
+- Подкаст — контент от первого лица (эксперт/ведущий)
+- Бестселлер-книга — экспертная позиция как канал доверия
+- данные не найдены публично по конкретным форматам в соцсетях</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram 170 подписчиков · Meta Ads: Коллизия имён</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>Active</td>
+<td>170 подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Коллизия имён</td>
+<td>0 объявлений</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong> данные не найдены публично (0 активных объявлений в Meta Ad Library)</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"bespoke services to optimise your health"; "restore resilience, energy and long-term wellbeing" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> данные не найдены публично</li>
+<li><strong>Боль / запрос:</strong> "optimise your health" / "supercharge your energy" — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a></li>
+<li><strong>Желание:</strong> "bespoke services to optimise your health"; "restore resilience, energy and long-term wellbeing" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a> — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- данные не найдены публично по набору конкретных процедур/технологий
+- "The Art of Science. Wellness Redefined." — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a> — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></p>
+<p><strong>Бренд эксперта:</strong>
+- "Nicole Goode." — <a href="https://www.nicolegoodehealth.com/">homepage</a> — имя основателя как бренд
+- "An award winning certified functional medicine practitioner &amp; registered nutritional therapist with special interest in neuroscience &amp; immunology" — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a>
+- "LLB Hons, CFMHC, AFMCP, BANT, CNHC, mRSM, mIFM" — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a>
+- "Named Functional Medicine Specialist of the Year 2025" — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a>
+- "Award winning &amp; #1 Bestselling Author. Podcast Host." — <a href="https://www.nicolegoodehealth.com/">homepage</a> — <a href="https://www.nicolegoodehealth.com/">nicolegoodehealth.com</a></p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Energy-metaphor + научный язык: "optimise your health" / "supercharge your energy" — <a href="https://www.nicolegoodehealth.com/">homepage</a></td>
+<td>Кристина может использовать тот же фрейм "оптимизация энергии" с опорой на нутрициологическую экспертизу</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Книга + подкаст как доверие-инфраструктура "Award winning &amp; #1 Bestselling Author. Podcast Host." — <a href="https://www.nicolegoodehealth.com/">homepage</a></td>
+<td>REjuve: long-form контент (серия статей / гостевой подкаст) строит авторитет надёжнее разовых постов</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Подписная модель с открытым входным ценником "Pricing starts at £399 a month" — <a href="https://www.goodehealth.uk/clinic">goodehealth.uk/clinic</a></td>
+<td>REjuve: частичное раскрытие цен снижает барьер первого контакта без демпинга</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Полная ставка на эксперта: name = brand "Functional Medicine Expert. Leading the Future of Personalised Healthcare." — <a href="https://www.nicolegoodehealth.com/">homepage</a></td>
+<td>Кристина как сертифицированный нутрициолог — сильная точка дифференциации; её credentials уместно выносить на первый экран</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Слабое Instagram-присутствие (170 подписчиков) при сильных credentials — несоответствие ожиданиям</td>
+<td>REjuve: экспертный бренд требует активного контент-канала, иначе credentials не конвертируются в awareness</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Детальный прайс (процедуры, пакеты): данные не найдены публично. Проверено: https://www.nicolegoodehealth.com/, https://www.goodehealth.uk/clinic</li>
+<li>Instagram (контентные форматы, частота постинга): данные не найдены публично</li>
+<li>Meta Ads (объявления, формулировки): данные не найдены публично. 0 активных объявлений.</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email: данные не найдены публично</li>
+<li>Отзывы Google / Treatwell: данные не найдены публично</li>
+<li>Корпоративный оффер (B2B): данные не найдены публично</li>
+<li>Диагностика / измерения: данные не найдены публично</li>
+<li>Возраст / профиль клиента: данные не найдены публично</li>
+</ul></div></article></div><h2 class="group-header">Измерительные и диагностические центры</h2><div class="card-grid"><article class="studio-card"><div class="card-title">121.000 Longevity — Baar, CH</div><div class="card-sub">🟢 DACH · Baar, CH</div><div class="content"><p><strong>Сайт:</strong> <a href="https://121.life/en">121.life</a> · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> ближайший сосед REjuve в Kanton Zug — premium-центр измерения биологического возраста с 500+ биомаркерами; ценовой ориентир и референс по диагностическому офферу.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Your personalized path to Longevity starts here!" — <a href="https://121.life/en/">homepage</a>  </p>
+<p>"121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location." — <a href="https://121.life/en/news-articles/launch/">launch article</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / medical / expert-led</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>"Our longevity offers start at CHF 2'350. All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a></td>
+<td><a href="https://121.life/en/">homepage</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>"All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a></td>
+<td><a href="https://121.life/en/">homepage</a></td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>"over 500 biomarkers such as blood, genetic and epigenetic markers, telomere lengths, body composition, and assessments of current biological age and pace of aging" — <a href="https://121.life/en/news-articles/launch/">launch article</a></td>
+<td><a href="https://121.life/en/news-articles/launch/">launch article</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Partial</td>
+<td><a href="https://121.life/en/">homepage</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- Launch article с подробным описанием технологии — edu + credentials</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — данные не найдены публично · основатель IG — данные не найдены публично · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>подписчики — данные не найдены публично</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>объявлений: 0</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>Есть</td>
+<td>launch article на сайте; частота не установлена</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+- данные не найдены публично (Meta Ads не активны)</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>Бренд не публикует явного портрета клиента. По косвенным признакам — ориентация на состоятельную аудиторию в немецкоязычной Швейцарии, заинтересованную в превентивной медицине.</p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указано публично</li>
+<li><strong>Боль / запрос:</strong> "personalized longevity plan based on the latest diagnostic methods" <em>(цитата из WebSearch-сниппета — прямой URL не доступен, 403)</em>" — <a href="https://121.life/en/services/">services</a> — <a href="https://121.life/en/services/">services</a> <em>(источник — сниппет WebSearch, прямой URL недоступен — 403)</em></li>
+<li><strong>Желание:</strong> "Your personalized path to Longevity starts here!" — <a href="https://121.life/en/">homepage</a> — <a href="https://121.life/en/">homepage</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- Модульная диагностическая программа: "over 500 biomarkers such as blood, genetic and epigenetic markers, telomere lengths, body composition, and assessments of current biological age and pace of aging" — <a href="https://121.life/en/news-articles/launch/">launch article</a>
+- Алгоритмические рекомендации: "Using a specially developed algorithm, precise supplements are recommended" — <a href="https://121.life/en/news-articles/launch/">launch article</a>
+- "All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a> — <a href="https://121.life/en/">homepage</a></p>
+<p><strong>Бренд эксперта:</strong>
+- данные не найдены публично (имя основателя / квалификация не установлены публично)
+- "121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location." — <a href="https://121.life/en/news-articles/launch/">launch article</a> — <a href="https://121.life/en/news-articles/launch/">launch article</a></p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>«Personalized path» + «Journey» — маршрутная метафора; "Your personalized path to Longevity starts here!" — <a href="https://121.life/en/">homepage</a></td>
+<td>Протестировать метафору «твоя траектория» в заголовках REjuve; привязать к "Your personalized path to Longevity starts here!" — <a href="https://121.life/en/">homepage</a></td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>launch article с научной аргументацией и цифрами (500+ биомаркеров)</td>
+<td>REjuve может публиковать «чек-ап в цифрах» — конкретные показатели до/после; опора на "over 500 biomarkers such as blood, genetic and epigenetic markers, telomere lengths, body composition, and assessments of current biological age and pace of aging" — <a href="https://121.life/en/news-articles/launch/">launch article</a></td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Модульная сборка «от базы»; "Our longevity offers start at CHF 2'350. All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a></td>
+<td>REjuve: показывать «базовый пакет + модули» вместо единой цены — снижает барьер входа; "All Diagnostics and services can be added as modules" — <a href="https://121.life/en/">homepage</a></td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Уникальность через географию («first group in Europe»); "121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location." — <a href="https://121.life/en/news-articles/launch/">launch article</a></td>
+<td>REjuve: подчеркнуть уникальность локации/сочетания в Zug — «единственный в кантоне»</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Сайт отдаёт 403 на большинстве страниц — крайне закрытый онлайн-контент; Не найдено рекламы</td>
+<td>REjuve нужна противоположная стратегия: открытый контент, активный прогрев через соцсети</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>ig_followers: данные не найдены публично. Проверено: https://instagram.com/121.life, https://121.life/en/</li>
+<li>ig_followers_founder: данные не найдены публично</li>
+<li>meta_ads: объявлений 0 по данным Meta Ad Library</li>
+<li>b2b: данные не найдены публично. Проверено: https://121.life/en/</li>
+<li>Google Business / рейтинги: данные не найдены публично</li>
+<li>Имя и квалификация основателя: данные не найдены публично. Проверено: https://121.life/en/news-articles/launch/</li>
+<li>Членство / подписка: данные не найдены публично. Проверено: https://121.life/en/</li>
+<li>TikTok: данные не найдены публично</li>
+</ul></div></article><article class="studio-card"><div class="card-title">Biokinetics — St. Gallen, CH</div><div class="card-sub">🟢 DACH · St. Gallen, CH</div><div class="content"><p><strong>Сайт:</strong> https://biokinetics.ch · <strong>Гео:</strong> DACH<br />
+<strong>Почему в списке:</strong> Longevity-центр в немецкоязычной Швейцарии (DACH) с диагностикой, EMS-тренингом и индивидуальными программами — близкий географический и концептуальный референс для REjuve (Zug).</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"Entdecke das Biokinetics Zentrum für Longevity, Health und Training in St. Gallen" — <a href="https://biokinetics.ch/">homepage</a>  </p>
+<p>"ein längeres, gesünderes Leben voller Vitalität" — <a href="https://biokinetics.ch/">homepage</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / expert-led</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>EMS-тренинг — "Fit in nur 20 min" — <a href="https://biokinetics.ch/ems-training">/ems-training</a></td>
+<td><a href="https://biokinetics.ch/ems-training">biokinetics.ch/ems-training</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>"Blutanalyse, Inbody, Haltung" — <a href="https://biokinetics.ch/">homepage</a></td>
+<td><a href="https://biokinetics.ch/">biokinetics.ch</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>No</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong> данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong> данные не найдены публично</p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — подписчиков · Meta Ads: Inactive · 12 объявл.</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>— подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Inactive · 12 объявл.</td>
+<td>объявлений: Inactive · 12 объявл.</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong> данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"Longevity, health, Performance, recovery" — <a href="https://biokinetics.ch/">homepage</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> данные не найдены публично</li>
+<li><strong>Боль / запрос:</strong> "ein längeres, gesünderes Leben voller Vitalität" — <a href="https://biokinetics.ch/">homepage</a> (<a href="https://biokinetics.ch/">biokinetics.ch</a>)</li>
+<li><strong>Желание:</strong> данные не найдены публично</li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- "Longevity, health, Performance, recovery" — <a href="https://biokinetics.ch/">homepage</a> — <a href="https://biokinetics.ch/">biokinetics.ch</a>
+- Диагностика: "Auf Basis umfassender Diagnostik, inklusive eines schmerzfreien Bluttest-Systems, Körperanalyse und Stresstests, entwickeln wir individuelle Supplementierungen." — <a href="https://biokinetics.ch/">homepage</a> — <a href="https://biokinetics.ch/">biokinetics.ch</a>
+- Персонализация: "individuelle Supplementierungen, die genau auf Ihre Bedürfnisse abgestimmt sind" — <a href="https://biokinetics.ch/">homepage</a> — <a href="https://biokinetics.ch/">biokinetics.ch</a></p>
+<p><strong>Бренд эксперта:</strong> данные не найдены публично</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Комбинация «Longevity + Health + Performance» в одном заголовке "Entdecke das Biokinetics Zentrum für Longevity, Health und Training in St. Gallen" — <a href="https://biokinetics.ch/">homepage</a></td>
+<td>REjuve может использовать аналогичный трёхчастный фрейм (восстановление + здоровье + долголетие) в заголовках</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>EMS как быстрый входной формат ("Fit in nur 20 min" — <a href="https://biokinetics.ch/ems-training">/ems-training</a>) + диагностика как основа для персонализации "Auf Basis umfassender Diagnostik, inklusive eines schmerzfreien Bluttest-Systems, Körperanalyse und Stresstests, entwickeln wir individuelle Supplementierungen." — <a href="https://biokinetics.ch/">homepage</a></td>
+<td>REjuve: короткий входной продукт снижает порог, диагностика переводит клиента в долгосрочный трек</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>Данные → действие: диагностика ("Blutanalyse, Inbody, Haltung" — <a href="https://biokinetics.ch/">homepage</a>, "umfangreiche Diagnostik" — <a href="https://biokinetics.ch/">homepage</a>) → индивидуальные решения ("individuelle Supplementierungen, die genau auf Ihre Bedürfnisse abgestimmt sind" — <a href="https://biokinetics.ch/">homepage</a>)</td>
+<td>REjuve: явная цепочка «результат анализов → персональный протокол» усиливает доверие к процессу</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Цены не опубликованы ("110 CHF Gutschein" — <a href="https://biokinetics.ch/empfehlungs-programm">/empfehlungs-programm</a> — только реферальный бонус виден); отсутствие IG-метрик</td>
+<td>REjuve: открытые цены на входной продукт + активный Instagram снижают барьер первого контакта</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Instagram (подписчики, активность): данные не найдены публично. Проверено: https://biokinetics.ch</li>
+<li>Meta Ads (рекламные формулировки объявлений): данные не найдены публично. Статус: Inactive · 12 объявл.</li>
+<li>Цены и пакеты (кроме реферального бонуса): данные не найдены публично</li>
+<li>Членство / подписка: данные не найдены публично</li>
+<li>TikTok: данные не найдены публично</li>
+<li>Блог / email: данные не найдены публично</li>
+<li>Отзывы Google / Treatwell: данные не найдены публично</li>
+<li>Корпоративный оффер (B2B): данные не найдены публично</li>
+<li>Бренд эксперта / основатель: данные не найдены публично</li>
+<li>Партнёрства: данные не найдены публично</li>
+</ul></div></article><article class="studio-card"><div class="card-title">My Vital Metrics — London + Manchester, UK</div><div class="card-sub">🔵 UK · London + Manchester, UK</div><div class="content"><p><strong>Сайт:</strong> <a href="https://myvitalmetrics.com">myvitalmetrics.com</a> · <strong>Гео:</strong> UK<br />
+<strong>Почему в списке:</strong> Зрелая measurement-lab модель с опубликованными ценами и именованным deliverable «Personal Action Blueprint» — сильнейший референс трансляции данных в план действий.</p>
+<hr />
+<h2>Что обещают клиенту</h2>
+<blockquote>
+<p>"The UK's Most Advanced HEALTH &amp; HUMAN PERFORMANCE LAB" — <a href="https://myvitalmetrics.com/">homepage</a>  </p>
+<p>"Often people look at the scales and assume their weight is the only indicator of good health... they aren't the full picture" — <a href="https://myvitalmetrics.com/about-us/">about-us</a>  </p>
+<p>"Reconnect with yourself and the metrics that matter." — <a href="https://myvitalmetrics.com/about-us/">about-us</a>  </p>
+<p>"We focus on tests which will produce a real outcome and action plan for our customers. Data for data's sake is pointless." — <a href="https://myvitalmetrics.com/about-us/">about-us</a>  </p>
+</blockquote>
+<p><strong>Тон бренда:</strong> scientific / expert-led / medical</p>
+<hr />
+<h2>Оффер и цены</h2>
+<table>
+<thead>
+<tr>
+<th>Элемент</th>
+<th>Данные</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Входной продукт</td>
+<td>"DEXA Express £99" — <a href="https://myvitalmetrics.com/pricing/">/pricing/</a></td>
+<td><a href="https://myvitalmetrics.com/pricing/">pricing</a></td>
+</tr>
+<tr>
+<td>Пакеты / серии</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Членство / подписка</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Диагностика / измерения</td>
+<td>Есть; "Research-grade insights" — <a href="https://myvitalmetrics.com/">homepage</a>; "There are some vital metrics that give us a more holistic view of our health" — <a href="https://myvitalmetrics.com/about-us/">about-us</a></td>
+<td><a href="https://myvitalmetrics.com/">homepage</a>, <a href="https://myvitalmetrics.com/about-us/">about-us</a></td>
+</tr>
+<tr>
+<td>Корпоративный оффер</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Цены опубликованы?</td>
+<td>Yes</td>
+<td><a href="https://myvitalmetrics.com/pricing/">pricing</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Что резонирует</h2>
+<p><strong>Соцдоказательство:</strong>
+- данные не найдены публично</p>
+<p><strong>Контентные форматы которые работают:</strong>
+- Страница «Action Plan» — перевод DEXA / RMR-данных в конкретные шаги; "This is our way of helping you to translate the data into actionable insights" — <a href="https://myvitalmetrics.com/turning-a-dexa-or-rmr-into-an-action-plan/">action plan</a>
+- Позиционирование через anti-hype: "Often people look at the scales and assume their weight is the only indicator of good health... they aren't the full picture" — <a href="https://myvitalmetrics.com/about-us/">about-us</a>, "Research-grade insights" — <a href="https://myvitalmetrics.com/">homepage</a></p>
+<p><strong>Отзывы и рейтинг:</strong>
+- Google Business: данные не найдены публично
+- Treatwell / Fresha: данные не найдены публично</p>
+<p><strong>Метрики присутствия:</strong> Instagram — подписчиков · Meta Ads: Не найдено</p>
+<hr />
+<h2>Каналы и реклама</h2>
+<table>
+<thead>
+<tr>
+<th>Канал</th>
+<th>Статус</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instagram</td>
+<td>данные не найдены публично</td>
+<td>— подписчиков</td>
+</tr>
+<tr>
+<td>Meta Ads</td>
+<td>Не найдено</td>
+<td>Не найдено объявлений</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Блог / email</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Партнёрства</td>
+<td>данные не найдены публично</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекламные формулировки:</strong>
+данные не найдены публично</p>
+<hr />
+<h2>Кто их клиент</h2>
+<p>"from health-conscious individuals to competitive athletes wanting scientific insights into performance" — <a href="https://myvitalmetrics.com/">homepage</a> — <a href="https://myvitalmetrics.com/">homepage</a></p>
+<ul>
+<li><strong>Возраст / профиль:</strong> не указано публично</li>
+<li><strong>Боль / запрос:</strong> "Often people look at the scales and assume their weight is the only indicator of good health... they aren't the full picture" — <a href="https://myvitalmetrics.com/about-us/">about-us</a> — <a href="https://myvitalmetrics.com/about-us/">about-us</a></li>
+<li><strong>Желание:</strong> "Reconnect with yourself and the metrics that matter." — <a href="https://myvitalmetrics.com/about-us/">about-us</a> — <a href="https://myvitalmetrics.com/about-us/">about-us</a></li>
+</ul>
+<hr />
+<h2>Позиционирование: через стек или через эксперта?</h2>
+<p><strong>Стек процедур:</strong>
+- DEXA-сканирование + RMR-тест → «Personal Action Blueprint»: "This is our way of helping you to translate the data into actionable insights" — <a href="https://myvitalmetrics.com/turning-a-dexa-or-rmr-into-an-action-plan/">action plan</a> — <a href="https://myvitalmetrics.com/turning-a-dexa-or-rmr-into-an-action-plan/">action plan</a>
+- "There are some vital metrics that give us a more holistic view of our health" — <a href="https://myvitalmetrics.com/about-us/">about-us</a> — <a href="https://myvitalmetrics.com/about-us/">about-us</a></p>
+<p><strong>Бренд эксперта:</strong>
+- "Expert contextualisation and analysis is absolutely critical in the process." — <a href="https://myvitalmetrics.com/about-us/">about-us</a> — <a href="https://myvitalmetrics.com/about-us/">about-us</a>
+- Персональные данные об основателе/эксперте: данные не найдены публично</p>
+<hr />
+<h2>Механики для REjuve</h2>
+<table>
+<thead>
+<tr>
+<th>Область</th>
+<th>Что у них работает</th>
+<th>Гипотеза для REjuve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Копи / язык</td>
+<td>Anti-hype: "We focus on tests which will produce a real outcome and action plan for our customers. Data for data's sake is pointless." — <a href="https://myvitalmetrics.com/about-us/">about-us</a> — данные не ради данных, а ради действий</td>
+<td>REjuve может использовать ту же логику: "каждое измерение → конкретный шаг" вместо "узнай о себе всё"</td>
+</tr>
+<tr>
+<td>Формат контента</td>
+<td>Именованный deliverable «Personal Action Blueprint» переводит абстрактный скан в ощутимый продукт</td>
+<td>Разработать именованный итог для каждой процедуры REjuve (не "результаты DEXA", а "план питания и движения на 12 недель")</td>
+</tr>
+<tr>
+<td>Структура оффера</td>
+<td>Прозрачные цены снижают барьер входа; "DEXA Express £99" — <a href="https://myvitalmetrics.com/pricing/">/pricing/</a> — входной продукт с конкретной ценой</td>
+<td>REjuve: опубликовать хотя бы входную цену (один стартовый пакет) — снижает трение до первого визита</td>
+</tr>
+<tr>
+<td>Позиционирование</td>
+<td>"The UK's Most Advanced HEALTH &amp; HUMAN PERFORMANCE LAB" — <a href="https://myvitalmetrics.com/">homepage</a> — прямое заявление "самая продвинутая лаборатория"; научный авторитет без celebrity-backing</td>
+<td>REjuve: позиционироваться через измеримость ("до / после в цифрах"), а не через процедуры</td>
+</tr>
+<tr>
+<td><strong>Чего НЕ делать</strong></td>
+<td>Нет видимого социального доказательства (отзывы, фото клиентов не обнаружены) — риск недоверия у новых клиентов</td>
+<td>REjuve: активно собирать и публиковать конкретные клиентские результаты с цифрами; не повторять закрытость MVM</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Данные не найдены публично</h2>
+<ul>
+<li>Instagram-аккаунт (followers, активность): данные не найдены публично. Проверено: https://myvitalmetrics.com/, https://www.instagram.com/</li>
+<li>Основатель / имя эксперта: данные не найдены публично. Проверено: https://myvitalmetrics.com/about-us/</li>
+<li>Meta Ads: 0 активных объявлений (Meta Ad Library)</li>
+<li>Google Business / Treatwell / Fresha рейтинг: данные не найдены публично</li>
+<li>Корпоративные пакеты / B2B: данные не найдены публично. Проверено: https://myvitalmetrics.com/</li>
+<li>TikTok / блог / email-рассылка: данные не найдены публично</li>
+</ul></div></article></div><div class="footer">Сгенерировано из выверенных MD-источников (docs/research/wellness-studios/). Источник истины — markdown; HTML — артефакт.</div>
+</div></body></html>
