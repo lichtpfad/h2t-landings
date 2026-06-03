@@ -531,6 +531,25 @@ tr:last-child td { border-bottom: none; }
 .title-body-block .body > * + * { margin-top: 12px; }
 
   </style>
+
+<style id="deck-mobile-scroll-patch">
+/* Контент-тяжёлые слайды выше вьюпорта телефона. Центрированный overflow
+   обрезается сверху+снизу, фиксированный #nav-hint наезжает на контент.
+   На мобильном: активный слайд скроллится по вертикали, контент — по верху,
+   длинные слайды читаются целиком. Десктоп не затронут (mobile-only). */
+@media (max-width: 600px) {
+  .slide {
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 56px; /* последняя строка освобождает фиксированный nav-hint */
+  }
+  .slide-inner {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+}
+</style>
 </head>
 <body>
   <div id="progress-bar"></div>
