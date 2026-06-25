@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Позиционирование REjuve — доска референсов</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #fff;
+  --text: #1a1a1a; --text-dim: #6b6b6b;
+  --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #4a8a5f;
+  --border: #e0ddd8;
+  --font-heading: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-body); font-size: 14px;
+  line-height: 1.6; -webkit-font-smoothing: antialiased;
+}
+.page-wrap { max-width: 880px; margin: 0 auto; padding: 48px 40px 80px; }
+@media (max-width: 600px) { .page-wrap { padding: 24px 16px 60px; } }
+
+.site-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 24px; }
+.site-header h1 { font-family: var(--font-heading); font-size: 30px; font-weight: 700; line-height: 1.2; }
+.site-header .meta { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+
+.lede { font-size: 14px; color: var(--text-dim); background: var(--bg-card);
+  border: 1px solid var(--border); border-left: 3px solid var(--accent3);
+  border-radius: 4px; padding: 14px 18px; margin-bottom: 28px; }
+.lede b { color: var(--text); }
+.lede .how { margin-top: 8px; }
+
+.toc { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 22px 14px 40px; margin-bottom: 36px; }
+.toc-title { font-size: 11px; text-transform: uppercase; letter-spacing: .7px;
+  color: var(--text-dim); margin: 0 0 6px -22px; }
+.toc ol { margin: 0; }
+.toc li { margin-bottom: 3px; font-size: 13px; }
+.toc a { color: var(--accent2); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+.section { margin-bottom: 44px; scroll-margin-top: 16px; }
+.section-title {
+  font-family: var(--font-heading); font-size: 21px; font-weight: 700;
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 16px;
+}
+.section > p { margin-bottom: 12px; }
+
+.ref { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 20px; margin-bottom: 14px; }
+.ref-sample { font-style: italic; color: var(--text);
+  border-left: 3px solid var(--accent2); padding: 4px 0 4px 16px; margin: 6px 0; }
+.ref-source { font-size: 12px; color: var(--text-dim); margin: 6px 0; }
+.ref-source a { color: var(--accent2); text-decoration: none; }
+.ref-source a:hover { text-decoration: underline; }
+.ref-take { font-size: 13.5px; margin-top: 8px; }
+.tag { display: inline-block; font-size: 10px; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-dim); border: 1px solid var(--border);
+  border-radius: 3px; padding: 1px 6px; margin-right: 6px; }
+.tag.take { color: var(--accent3); border-color: var(--accent3); }
+.tag.src  { color: var(--accent2); border-color: var(--accent2); }
+
+.takeaway { background: var(--bg-card); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 4px;
+  padding: 14px 18px; margin-bottom: 12px; }
+.takeaway b { color: var(--accent); }
+
+figure.shot { margin: 16px 0; }
+figure.shot img { width: 100%; border: 1px solid var(--border);
+  border-radius: 6px; display: block; }
+figure.shot figcaption { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+figure.shot figcaption a { color: var(--accent2); text-decoration: none; }
+.shot-ph { border: 1px dashed var(--border); border-radius: 6px; padding: 26px;
+  text-align: center; color: var(--text-dim); font-size: 13px;
+  background: var(--bg-light); margin: 16px 0; }
+
+ul.tight { margin: 8px 0 8px 20px; }
+ul.tight li { margin-bottom: 4px; }
+
+table.ptab { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+table.ptab th, table.ptab td { border: 1px solid var(--border);
+  padding: 8px 10px; text-align: left; vertical-align: top; }
+table.ptab th { background: var(--bg-light); font-weight: 600; }
+
+.footer { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-dim); }
+.footer code { font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<header class="site-header"><h1>Позиционирование REjuve — доска референсов</h1><div class="meta">Доска референсов · 25 июня 2026</div></header>
+<div class="lede"><b>Что это.</b> Структурированная доска референсов-ориентиров для позиционирования бренда REjuve. Рабочий мудборд, <b>не финальное позиционирование</b>.<div class="how"><b>Как читать блок:</b> <span class="tag src">Образец</span> формулировка конкурента дословно (EN/DE не переводим — это образец чужого копирайта) · <span class="tag">Источник</span> бренд и ссылка · <span class="tag take">Что берём</span> зачем этот референс и что из него вытащить.</div><div class="how"><b>Граница честности.</b> Цены и пакеты на чужих макетах — иллюстрация оформления с референсных сайтов, <b>не наши цены</b>.</div></div>
+<div class="toc"><div class="toc-title">Содержание</div><ol><li><a href="#formulations">Формулировки — голос и тон</a></li><li><a href="#positioning">Позиционирование</a></li><li><a href="#site">Сайт</a></li><li><a href="#packages">Пакеты = Protocols</a></li><li><a href="#first-visit">Первый визит</a></li><li><a href="#gift-cards">Gift cards</a></li><li><a href="#competitors">Конкуренты в Цуге</a></li><li><a href="#partnerships">Партнёрства и коллаборации</a></li><li><a href="#treatments">Treatments</a></li><li><a href="#ideas">Бэклог идей</a></li></ol></div>
+<section class="section" id="formulations"><h2 class="section-title">1. Формулировки — голос и тон</h2><div class="ref"><div class="ref-sample">“For those who value recovery as an intentional practice within everyday life — clear, measured, and repeatable.”</div><div class="ref-source"><span class="tag src">Источник</span>Maison Infrared (London guide) — <a href="https://maisoninfrared.com/pages/london-infrared-recovery" target="_blank" rel="noopener">https://maisoninfrared.com/pages/london-infrared-recovery</a></div></div><div class="ref"><div class="ref-sample">“For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief.”</div><div class="ref-source"><span class="tag src">Источник</span>Maison Infrared (London guide) — <a href="https://maisoninfrared.com/pages/london-infrared-recovery" target="_blank" rel="noopener">https://maisoninfrared.com/pages/london-infrared-recovery</a></div></div><div class="ref"><div class="ref-sample">“No trends. No wellness noise.”</div><div class="ref-source"><span class="tag src">Источник</span>Maison Infrared (homepage) — <a href="https://maisoninfrared.com/" target="_blank" rel="noopener">https://maisoninfrared.com/</a></div><div class="ref-take"><span class="tag take">Что берём</span>Для отстройки. В кастдеве и рисёрче уже были сигналы, что люди боятся впаривания — эта формулировка снимает напряжение. Если подтвердится потребность в приватности — добавить сюда же.</div></div><div class="ref"><div class="ref-sample">“Measurable outcomes, personal progression, and a follow-up relationship that continues between visits.”</div></div><div class="ref"><div class="ref-sample">“Healthy Aging, präventiv gegen Zellalterung und oxidativen Stress”</div><div class="ref-sample">“Not only longer, but better”</div><div class="ref-source"><span class="tag src">Источник</span>Longevity HBO Circle (WOO)</div><div class="ref-take"><span class="tag take">Что берём</span>Рамка «здоровое старение, профилактика клеточного старения и окислительного стресса».</div></div><div class="ref"><div class="ref-sample">“free and non-binding initial consultation”</div><div class="ref-source"><span class="tag src">Источник</span>формулировка под вопросом</div><div class="ref-take"><span class="tag take">Что берём</span>Бесплатная точка входа — снижение барьера через первую процедуру или консультацию. Плюс SEO-материалы.</div></div></section>
+<section class="section" id="positioning"><h2 class="section-title">2. Позиционирование</h2><p>Экспертные модели позиционирования студий. Город небольшой — Кристине нужно занять конкретную нишу в головах людей. Как владелица и эксперт студии она несёт миссию и пользу жителям Цуга. <b>Нужно проработать нарратив.</b></p><div class="ref"><div class="ref-sample">“Functional Medicine Expert. Leading the Future of Personalised Healthcare.”</div><div class="ref-source"><span class="tag src">Источник</span>Goode Health (Nicole Goode) — <a href="https://www.nicolegoodehealth.com/" target="_blank" rel="noopener">https://www.nicolegoodehealth.com/</a></div><div class="ref-take"><span class="tag take">Что берём</span>Экспертность подтверждается через глубину протокола — количество биомаркеров, список модальностей.</div></div><div class="ref"><div class="ref-sample">“121.000 is the first group in Europe to combine scientifically backed preventive and curative approaches at the same location.”</div><div class="ref-sample">“over 500 biomarkers such as blood, genetic and epigenetic markers, telomere lengths, body composition, and assessments of current biological age and pace of aging”</div><div class="ref-source"><span class="tag src">Источник</span>121.000 Longevity — <a href="https://121.life/en/news-articles/launch/" target="_blank" rel="noopener">https://121.life/en/news-articles/launch/</a></div></div><p style="margin-top:8px"><b>Собрано для позиционирования и оффера:</b></p><ul class="tight"><li><b>Диагностика как точка входа</b> — OligoScan + Tanita = данные, а не обещания.</li><li><b>Единственный в регионе</b>, где всё собрано в одном месте.</li><li><b>Expert-led</b> — Кристина.</li><li><b>Personalized · Protocols · No noise · Biology / science backed.</b></li></ul><div class="takeaway"><b>IDEA — разделить лонгевити и реальные боли.</b> Так возникает рамка: оставаться здоровым <i>и</i> решать конкретные проблемы. REjuve может сегментировать аудиторию через ритуал/практику, а не только через боль. Опора: «For those who prefer recovery to be measured, personalised, and aligned with long-term resilience rather than short-term relief.»</div></section>
+<section class="section" id="site"><h2 class="section-title">3. Сайт</h2><ul class="tight"><li><a href="https://lichtpfad.github.io/h2t-landings/rejuve/european-reference-deck.html" target="_blank" rel="noopener">european-reference-deck.html</a> (наш reference deck)</li><li><a href="https://healthyhorizon.com/" target="_blank" rel="noopener">healthyhorizon.com</a></li></ul><p><span class="tag take">Что берём</span>Хороший источник вдохновения — направления, тексты. Если почистить стиль и адаптировать к нашему стеку.</p></section>
+<section class="section" id="packages"><h2 class="section-title">4. Пакеты = Protocols</h2><p>Хорошо звучит: <b>3 протокола, понятный outcome и proof.</b></p><div class="ref"><div class="ref-sample">“Deep Regeneration Tissue Repair, Joint Unloading and Inflammatory Support”</div><div class="ref-source"><span class="tag src">Источник</span>Healthy Horizon (protocols) — <a href="https://healthyhorizon.com/protocols#mitochondrial-charge" target="_blank" rel="noopener">https://healthyhorizon.com/protocols#mitochondrial-charge</a></div><div class="ref-take"><span class="tag take">Что берём</span>Чётко, понятно — можно использовать в предложении для Оливии. В пакетах есть безлимитные процедуры — интересно.</div></div><figure class="shot"><img src="assets/positioning-refs/protocols.png" alt="Healthy Horizon — страница протоколов" loading="lazy"><figcaption>Healthy Horizon — страница протоколов · <a href="https://healthyhorizon.com/protocols#mitochondrial-charge" target="_blank" rel="noopener">первоисточник</a></figcaption></figure><div class="takeaway"><b>IDEA — 2 трека: боль и долголетие.</b> «To improve both your current, and future health.» Разделить программы на решение боли (видимый результат) и долгосрочные результаты (вложение в будущее благополучие — не стесняться модных слов про митохондрии). Вопрос: как это видит Кристина, её роль? Возможно, 2 варианта — curated с Кристиной и самостоятельный.</div></section>
+<section class="section" id="first-visit"><h2 class="section-title">5. Первый визит</h2><p>Хорошо прописаны предложения для первого визита — он же «шот» для быстрого эффекта (например, с дороги, джетлаг и прочее).</p><figure class="shot"><img src="assets/positioning-refs/first-visit.png" alt="Healthy Horizon — «COME AND EXPERIENCE IT» (линейка пакетов)" loading="lazy"><figcaption>Healthy Horizon — «COME AND EXPERIENCE IT» (линейка пакетов) · <a href="https://healthyhorizon.com/" target="_blank" rel="noopener">первоисточник</a></figcaption></figure><ul class="tight"><li><i>Entry point</i> — Sauna &amp; Cold Plunge — <b>40€</b> (day pass)</li><li><i>One day</i> — Deep Relaxation (Sauna · Cold Plunge · Vibroacoustic · Float) — <b>104€</b></li><li><i>One day</i> — Energy Boost (Sauna · Cold Plunge · Red Light · Hydrogen · IHHT) — <b>132€</b></li><li><i>One day</i> — System Reset (Sauna · Cold Plunge · Hydrogen · Hyperbaric Oxygen) — <b>152€</b></li></ul><p style="font-size:12px;color:var(--text-dim)">Цены чужого сайта, иллюстрация формата.</p></section>
+<section class="section" id="gift-cards"><h2 class="section-title">6. Gift cards</h2><p>Делаем — так можно множить славу. Обсудить подарочный сертификат для тех, кто покупает мембершип.</p><div class="ref"><div class="ref-sample">“A Gift for Someone You Care About. Each experience is designed around a specific health outcome. The perfect present for a boyfriend, girlfriend, partner, father, mother, or close friend. Purchase online, include a personal message, and the recipient books at a time that works for them.”</div><div class="ref-take"><span class="tag take">Что берём</span>Day Experiences — подарок вокруг конкретного health-ауткама, покупка онлайн с личным сообщением, получатель сам выбирает время.</div></div><div class="ref"><div class="ref-sample">“Corporate Gift Cards — для сотрудников и партнёров, объёмные скидки по числу карт: 10–20 карт (−10%), 20–50 (−15%), 50–100 (−20%), 100+ (−25%). Персональные — от 20€.”</div><div class="ref-source"><span class="tag src">Источник</span>Renessence</div></div><figure class="shot"><img src="assets/positioning-refs/gift-cards.png" alt="Gift cards — персональные + корпоративные" loading="lazy"><figcaption>Gift cards — персональные + корпоративные</figcaption></figure></section>
+<section class="section" id="competitors"><h2 class="section-title">7. Конкуренты в Цуге</h2><p><a href="https://biohacking-studio.ch" target="_blank" rel="noopener"><b>biohacking-studio.ch</b></a> — конкурент в нише биохакинга из Цуга, но с медицинским уклоном + передовые технологии. Пользуется Meta — надо посмотреть, что у них.</p><div class="ref"><div class="ref-sample">“Wir haben uns der Praxis des Biohackings verschrieben, einem zukunftsorientierten Ansatz, der darauf abzielt, die biologischen Funktionen des Körpers zu optimieren und zu verbessern.”</div><div class="ref-take"><span class="tag take">Что берём</span>Снова сигнал о ненавязчивости — похоже, для Цуга это важно. Встроить в коммуникацию + приватность.</div></div><p><a href="https://longevitycenter.ch" target="_blank" rel="noopener"><b>longevitycenter.ch</b></a> — ещё один ориентир.</p><div class="ref"><div class="ref-sample">“Everything begins with measurement. Everything leads to alignment.”</div><div class="ref-source"><span class="tag src">Источник</span>Longevity Center — <a href="https://longevitycenter.ch" target="_blank" rel="noopener">https://longevitycenter.ch</a></div></div><figure class="shot"><img src="assets/positioning-refs/book-first-visit.png" alt="longevitycenter.ch — «Book Your First Visit» (+ швейцарская страховка)" loading="lazy"><figcaption>longevitycenter.ch — «Book Your First Visit» (+ швейцарская страховка) · <a href="https://longevitycenter.ch" target="_blank" rel="noopener">первоисточник</a></figcaption></figure><div class="takeaway"><b>ПОДУМАТЬ:</b> хочет ли Кристина закрытое сообщество? Тогда никаких «залётных туристов» — тайно для своих.</div><h3 style="font-family:var(--font-heading);font-size:16px;margin:18px 0 8px">Educational hook</h3><div class="ref"><div class="ref-sample">“About 30–40% of chronic diseases are genetically determined. Up to 70% are influenced by our lifestyle.”</div><div class="ref-source"><span class="tag src">Источник</span>mitosphere.de — <a href="https://mitosphere.de/en/" target="_blank" rel="noopener">https://mitosphere.de/en/</a></div></div></section>
+<section class="section" id="partnerships"><h2 class="section-title">8. Партнёрства и коллаборации</h2><p style="font-size:12px;color:var(--text-dim)">(раздел «Для Кристины»)</p><table class="ptab"><thead><tr><th>Тип</th><th>Референс</th><th>Что делает REjuve</th></tr></thead><tbody><tr><td><b>Партнёрства</b></td><td>Augustinus Bader, Moleqlar, AURUM — halo-эффект от известных брендов</td><td>найти 2–3 Swiss/DE premium wellness-бренда для co-branding</td></tr><tr><td><b>Ambassador</b></td><td>Nina Ruge (медиа, 70 лет, living proof) — aspirational, не medical</td><td>найти Zug/Swiss публичную фигуру (бизнес/культура)</td></tr><tr><td><b>Medical</b></td><td>Partner physician отдельно (Dr. Auer) — compliance-safe</td><td>аналогичная модель для CH</td></tr></tbody></table></section>
+<section class="section" id="treatments"><h2 class="section-title">9. Treatments</h2><p>Интересно разделили тех-тритмент и классический (массаж и прочее).</p><div class="ref"><div class="ref-sample">“Take ownership of your health and unwind with our extensive list of tech therapies and treatments. At Renessence, all of our tech treatments have been scientifically researched to optimize yourself and help you heal from within.”</div><div class="ref-source"><span class="tag src">Источник</span>Renessence</div><div class="ref-take"><span class="tag take">Что берём</span>Хороший паттерн «book now / learn more» и дальше хороший анфолд (раскрытие). На референсе процедуры с ценами (Infrared Sauna ~30€, Hydrowave Massage ~30€, Red Light Therapy ~45€). Цены чужого сайта.</div></div><figure class="shot"><img src="assets/positioning-refs/treatments.png" alt="Renessence — карточки treatments (book now / learn more)" loading="lazy"><figcaption>Renessence — карточки treatments (book now / learn more)</figcaption></figure></section>
+<section class="section" id="ideas"><h2 class="section-title">10. Бэклог идей</h2><ul class="tight"><li><b>Named Protocols как единый язык бренда.</b> Можно поиграться с «RE:» в названиях. Чуть «попсово» — может подойти для названий программ первого визита или подарков. Референсы: Recover Society (Re:gain / Re:charge / Re:juvenate), Healthy Horizon (Neural Regulation / Mitochondrial Charge).</li><li><b>Membership transfer option</b> — «если уезжаешь на 2+ недели, передай абонемент другому». Референс: Renessence.</li><li><b>«Membership by consultation only»</b> — фильтр аудитории через воронку. Референсы: Lifehacker (Typeform + WhatsApp), Lanserhof (форма + отбор).</li><li><b>Визуализации.</b> Хорошо сделанные графики — нам нужны такие визуализации для сайта и коммуникации.</li></ul><figure class="shot"><img src="assets/positioning-refs/longevity-graph.png" alt="Визуализация healthspan / lifespan — «Stay young, live long, love life»" loading="lazy"><figcaption>Визуализация healthspan / lifespan — «Stay young, live long, love life»</figcaption></figure><div class="takeaway"><b>⚠ Сверить с оригиналом.</b> Идеи и часть макетов сняты с визуального слайда дока Лидии — при финализации сверить формулировки.</div></section>
+<div class="footer">REjuve · доска референсов для позиционирования · 25 июня 2026</div>
+</div>
+</body>
+</html>
