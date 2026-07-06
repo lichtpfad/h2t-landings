@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClaudeWorking · Бизнес-модели микроакселератора</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0d; --surface:#151515; --surface-2:#101010;
+  --fg:#ededed; --fg-body:rgba(237,237,237,.74); --fg-muted:rgba(237,237,237,.42); --fg-faint:rgba(237,237,237,.22);
+  --border:rgba(255,255,255,.09); --border-soft:rgba(255,255,255,.055);
+  --accent:#a9c4ea; --ok:#5bbf9a; --warn:#d6a54a;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg-body);font-family:var(--sans);
+  font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  padding:clamp(20px,4vw,56px) clamp(16px,4vw,56px);max-width:1120px;margin:0 auto}
+.tabnum,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.back{font-family:var(--mono);font-size:11px;color:var(--fg-muted);margin-bottom:18px;display:inline-block}
+.back:hover{color:var(--accent)}
+
+header{border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:26px}
+header h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:-.02em;color:var(--fg);line-height:1.12}
+.meta{margin-top:9px;font-family:var(--mono);font-size:11px;color:var(--fg-muted);letter-spacing:.02em}
+.lead{color:var(--fg-body);font-size:15px;line-height:1.7;max-width:76ch;margin:18px 0 0}
+.lead b{color:var(--fg);font-weight:600}
+
+section{margin-top:44px}
+h2{font-size:clamp(1.15rem,2.6vw,1.5rem);font-weight:600;color:var(--fg);letter-spacing:-.01em;
+  padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:4px}
+h2 .n{font-family:var(--mono);font-size:.66em;color:var(--accent);margin-right:10px}
+p.note{color:var(--fg-muted);font-size:13.5px;max-width:76ch;margin-top:12px;line-height:1.6}
+
+.table-wrap{margin-top:18px;overflow:visible}
+table{border-collapse:collapse;width:100%;font-size:13px;table-layout:fixed}
+thead th{text-align:left;font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fg-muted);padding:0 12px 10px;border-bottom:1px solid var(--border);white-space:normal;vertical-align:bottom}
+thead th:first-child{padding-left:2px}
+tbody td{padding:14px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top;
+  overflow-wrap:anywhere;line-height:1.55}
+tbody td:first-child{padding-left:2px}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+.cell-lead b{color:var(--fg);font-weight:600;font-size:13.5px;letter-spacing:-.01em}
+
+ul.clean{margin:14px 0 0;padding:0;list-style:none;max-width:80ch}
+ul.clean li{position:relative;padding:8px 0 8px 20px;border-bottom:1px solid var(--border-soft);font-size:14px;line-height:1.6}
+ul.clean li:last-child{border-bottom:none}
+ul.clean li::before{content:'';position:absolute;left:2px;top:15px;width:5px;height:5px;background:var(--accent);opacity:.6}
+ul.clean b{color:var(--fg);font-weight:600}
+
+.disclaimer{margin-top:40px;padding:16px 18px;border:1px solid var(--border);background:var(--surface-2);
+  font-size:12.5px;color:var(--fg-muted);line-height:1.6;max-width:82ch}
+.disclaimer b{color:var(--fg-body)}
+
+footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);letter-spacing:.03em}
+
+@media (max-width:860px){
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  table,tbody,tr,td{display:block;width:100%}
+  tbody tr{border:1px solid var(--border);background:var(--surface);padding:14px 16px;margin-bottom:14px}
+  tbody tr:hover{background:var(--surface)}
+  tbody td{border:none;padding:6px 0;display:grid;grid-template-columns:8em 1fr;gap:6px 12px;align-items:baseline}
+  tbody td:first-child{padding-left:0;display:block;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--border-soft)}
+  tbody td::before{content:attr(data-label);color:var(--fg-muted);font-size:9.5px;
+    text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+  td.cell-lead::before{display:none}
+  .cell-lead b{font-size:15px}
+}
+</style></head><body>
+<a class="back" href="../">← ClaudeWorking</a>
+<header>
+ <h1>Бизнес-модели микроакселератора</h1>
+ <div class="meta">CLOUDWORKING · Карта построения и финансирования · синтез 2026-07-04</div>
+</header>
+<p class="lead">Карта опций <b>как строить</b> формат (акселератор / буткемп / cohort-курс / сообщество) и <b>как за него платят</b> — для микроакселераторов и cohort-образования в сфере AI. Синтез по публичным источникам (2026) и общей рыночной практике. Юридические нюансы Германии (статус Gewerbe/Freiberufler, VAT/Kleinunternehmer, AZAV-сертификация, допустимость ISA/revenue-share) требуют проверки у Steuerberater / Rechtsanwalt — по тексту помечено «⚠ проверить».</p>
+
+<section>
+ <h2><span class="n">01</span>Методы построения</h2>
+ <p class="note">Семь моделей формата плюс ортогональная ось «синхрон / async». Ни одна не универсальна — выбор зависит от капитала, аудитории и горизонта.</p>
+ <div class="table-wrap">
+ <table>
+  <colgroup><col style="width:16%"><col style="width:34%"><col style="width:25%"><col style="width:25%"></colgroup>
+  <thead><tr><th>Метод</th><th>Суть</th><th>Плюсы</th><th>Минусы</th></tr></thead>
+  <tbody>
+     <tr><td class="cell-lead" data-label="Метод"><b>Accelerator (классический)</b></td><td data-label="Суть">Time-boxed cohort 3–6 мес, отбор, менторство, demo day, обычно берёт 5–10% equity, даёт капитал ($25K–$500K). Двигатель — fundraising.</td><td data-label="Плюсы">Кредибилити, сеть инвесторов, «штамп» отбора, cohort-эффект</td><td data-label="Минусы">Нужен капитал на чеки + сеть инвесторов; equity-модель = юр-сложность; demo-day инфраструктура</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Incubator</b></td><td data-label="Суть">Открытый горизонт (мес–годы), нянчит идею «0→1»: пространство, менторство, комьюнити. 72% инкубаторов живут на аренде, лишь 14% дают деньги. Equity 0–5%.</td><td data-label="Плюсы">Низкое давление, гибко, мало/нет equity</td><td data-label="Минусы">Нужно физ-пространство или долгий горизонт; медленно окупается; «оптимизирует комфорт, не скорость»</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Bootcamp</b></td><td data-label="Суть">Короткий (дни–недели), интенсив по конкретному навыку. Обычно fee-based, без equity — низкий риск для обеих сторон. Пример: Le Wagon, Ironhack.</td><td data-label="Плюсы">Простая монетизация (плата за место), не нужен капитал/equity, знакомая модель для эксперта</td><td data-label="Минусы">Высокая нагрузка на преподавателя; конкуренция; «продаёшь навык, не компанию»</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Cohort-based course (CBC)</b></td><td data-label="Суть">Синхронный поток с live-сессиями, дедлайнами, peer-accountability. Completion 40–90% против 3–15% у self-paced → цена в 2–5× выше. Цена $500–$5K/место.</td><td data-label="Плюсы">Премиальные цены; высокий completion → отзывы/рефералы; валидация до масштабирования</td><td data-label="Минусы">Требует 4–8 ч/нед личного времени на поток; бум-баст цикл CBC 2020–24, цены осели к $497–$4997</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Mastermind</b></td><td data-label="Суть">Малая группа (4–12) равных, высокая интимность, 1:1 доступ, ретриты. Топ-ценовой сегмент $1K–$5K/мес или $2.5K–$10K/место.</td><td data-label="Плюсы">Максимальная маржа на участника; низкая нагрузка по числу людей; premium-позиционирование</td><td data-label="Минусы">Требует доказанного track record (before/after данные, не просто отзывы); мало мест = потолок дохода</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Venture Studio</b></td><td data-label="Суть">Со-строит компании с нуля, даёт идею+команду+капитал+операторов, берёт 20–40% (до 80%) equity. Не cohort, не demo day.</td><td data-label="Плюсы">Наибольшая ценность для фаундера; глубокая вовлечённость</td><td data-label="Минусы">Требует капитала, команды операторов, инфраструктуры — противоположность соло; долгий цикл</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Community-membership</b></td><td data-label="Суть">Ongoing подписка (не cohort): комьюнити + контент + регулярные live. Нет отбора, нет фикс-даты окончания. Пример: Theanna ($99/мес, 300+ фаундеров), Skool/Circle-модели.</td><td data-label="Плюсы">Recurring MRR (предсказуемо); низкий churn при постоянной ценности; масштабируется без роста личного времени пропорционально</td><td data-label="Минусы">Медленный старт (нужна критическая масса); нужна постоянная модерация; ценность должна «продолжаться»</td></tr>
+     <tr><td class="cell-lead" data-label="Метод"><b>Peer-learning / project-based</b></td><td data-label="Суть">Обучение через совместные проекты, взаимная проверка, минимум лекций. Часто внутри cohort/community. Ruzuku: discussions +16 п.п. к completion, assessments +15 п.п.</td><td data-label="Плюсы">Дёшево в доставке (участники учат друг друга); высокая вовлечённость; AI-агенты как «третий участник» пары</td><td data-label="Минусы">Слабо монетизируется в чистом виде; качество зависит от состава группы</td></tr>
+  </tbody>
+ </table>
+ </div>
+ <ul class="clean">
+  <li><b>Live (синхрон):</b> completion 40–90%, цена в 2–5× выше, но привязано к личному времени ведущего (4–8 ч/нед на поток). Точка старта — валидация и отзывы.</li>
+  <li><b>Async (self-paced):</b> completion 3–15%, цена $50–200, зато масштабируется без личного времени. Строится <b>после</b> нескольких live-потоков из записей.</li>
+  <li><b>Гибрид (доминирует в 2026):</b> evergreen self-paced ($297–997, пассив) + cohort/mastermind ($2.5K–10K, high-ticket) + доступ в сообщество — до 3–5× выручки против чистых моделей.</li>
+ </ul>
+</section>
+
+<section>
+ <h2><span class="n">02</span>Методы финансирования</h2>
+ <p class="note">Кто платит за участника: он сам, инвестор, спонсор или государство. В Германии ключевой рычаг — AZAV/Bildungsgutschein (гос-во оплачивает обучение) и KOMPASS (ESF+) для соло-самозанятых.</p>
+ <div class="table-wrap">
+ <table>
+  <colgroup><col style="width:16%"><col style="width:34%"><col style="width:25%"><col style="width:25%"></colgroup>
+  <thead><tr><th>Модель</th><th>Механика</th><th>Плюсы / минусы</th><th>DE-нюанс</th></tr></thead>
+  <tbody>
+     <tr><td class="cell-lead" data-label="Модель"><b>Participant fee — upfront</b></td><td data-label="Механика">Полная оплата до старта потока. Пилот-цена на 30–50% ниже целевой, поднимать после каждого заполненного потока.</td><td data-label="Плюсы / минусы">+ Немедленный кэш, простота, фильтрует несерьёзных.<br>− Барьер входа отсекает часть аудитории</td><td data-label="DE-нюанс">Оборот учитывается в Gewerbe/EÜR; Kleinunternehmer §19 UStG до порога → без НДС ⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Participant fee — subscription</b></td><td data-label="Механика">Помесячная/годовая подписка на community/контент. Средний доход подписочной модели ~$94.7K/год у креаторов. Тиры $29–999/мес.</td><td data-label="Плюсы / минусы">+ Предсказуемый MRR, планирование, высокий LTV.<br>− Медленный старт, нужна постоянная ценность, churn</td><td data-label="DE-нюанс">Регулярные VAT-обязательства при превышении порога ⚠; авто-продление под DE/EU consumer law</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Revenue-share</b></td><td data-label="Механика">Участник платит % от выручки своего проекта после программы (для founder-акселератора).</td><td data-label="Плюсы / минусы">+ Выравнивает стимулы, снижает барьер.<br>− Отложенный/непредсказуемый кэш; тяжело отслеживать; спорно при low-income участниках</td><td data-label="DE-нюанс">Договорное право DE применимо; отслеживание чужой выручки = аудит-нагрузка ⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>ISA (Income Share Agreement)</b></td><td data-label="Механика">Участник платит % дохода после трудоустройства выше порога, с cap и лимитом срока. DE-рынок: CHANCEN eG (порог €27K/год, cap 170%, 5 лет выплат, финансируется ЕС), Bcas (порог €17K, 13.2% дохода).</td><td data-label="Плюсы / минусы">+ Убирает upfront-барьер, «study now pay later».<br>− Регуляторная серая зона; в США ED признал ISA частным студ-займом (2022) → регуляция; не работает для тех, кто идёт в своё дело</td><td data-label="DE-нюанс">Не строить ISA самому — использовать инфраструктуру CHANCEN eG / Bcas как партнёра-финансиста. ISA в DE юридически нетривиальны ⚠⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Equity-for-education</b></td><td data-label="Механика">Программа берёт долю в стартапах участников вместо/вместе с платой.</td><td data-label="Плюсы / минусы">+ Апсайд при успехе участников.<br>− Требует юр-инфраструктуры (SAFE/доли), долгий горизонт, дилюция участников</td><td data-label="DE-нюанс">Beteiligung в GmbH/UG участников = нотариус, сложные контракты ⚠⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Sponsor / corporate-funded</b></td><td data-label="Механика">Корпорация платит за программу ради доступа к талантам/инновациям/deal-flow. Пример: Accenture FinTech Lab. Для Cloud Working — AI-tool вендоры (Anthropic, Cursor, GitHub) как естественные спонсоры.</td><td data-label="Плюсы / минусы">+ «Не-дилютивные» деньги, снижает/обнуляет плату участника.<br>− Спонсор ждёт ROI и контроль; короткий горизонт; риск моно-источника</td><td data-label="DE-нюанс">Sponsoring-доход облагается; договор спонсорства ⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Grant / public-funded (AZAV/AVGS)</b></td><td data-label="Механика">Гос-во/агентство платит за участника. AZAV-сертификация → финансирование через Bundesagentur für Arbeit: Bildungsgutschein (безработные/под угрозой) и QCG (занятые). KOMPASS (ESF+) — до 90% для соло-самозанятых со стажем 2+ года (Le Wagon сертифицирован).</td><td data-label="Плюсы / минусы">+ «Гос-во платит за участника» — обнуляет барьер, стабильный поток учеников.<br>− AZAV-сертификация = время, аудит, бюрократия, требования к формату (мин. часы)</td><td data-label="DE-нюанс">AZAV — ключ. Требует Trägerzulassung + Maßnahmezulassung через аккредитованную Fachkundige Stelle ⚠. Стыкуется с грантовым workstream (`docs/research/grants/`)</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Scholarship</b></td><td data-label="Механика">Полные/частичные стипендии (свои или спонсорские) для части мест.</td><td data-label="Плюсы / минусы">+ Маркетинг, доступность, кейсы.<br>− Прямая потеря выручки, если не покрыто спонсором</td><td data-label="DE-нюанс">Стипендия как расход/маркетинг</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Membership / community</b></td><td data-label="Механика">См. subscription выше — recurring как основа.</td><td data-label="Плюсы / минусы">+ Стабильность, LTV $1.5K–8K/участник.<br>− Нужна критическая масса</td><td data-label="DE-нюанс">VAT при пороге ⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Tooling / platform-partner-subsidized</b></td><td data-label="Механика">AI-платформа субсидирует участников кредитами/лицензиями (аналог Google for Startups — до $200K cloud credits; Le Wagon Quotanda под гарантией EIF/InvestEU).</td><td data-label="Плюсы / минусы">+ Снижает стоимость для участника без затрат основателя; естественно для AI-кодинг-темы.<br>− Зависимость от вендора; лок-ин</td><td data-label="DE-нюанс">Договор с вендором; кредиты ≠ кэш основателю ⚠</td></tr>
+     <tr><td class="cell-lead" data-label="Модель"><b>Hybrid</b></td><td data-label="Механика">Комбинация: upfront-fee + community-subscription + tool-subsidy + grant-track.</td><td data-label="Плюсы / минусы">+ Диверсификация (Acterio: моно-источник = смерть акселератора).<br>− Управленческая сложность</td><td data-label="DE-нюанс">Смешанный учёт ⚠</td></tr>
+  </tbody>
+ </table>
+ </div>
+</section>
+
+<section>
+ <h2><span class="n">03</span>Принципы комбинирования</h2>
+ <ul class="clean">
+  <li><b>Диверсификация обязательна.</b> Большинство акселераторов стартуют с одного источника дохода; если он иссякает — программа умирает (наблюдение Acterio). Слои добавляются поверх простейшего.</li>
+  <li><b>Гибрид выигрывает.</b> Комбинация upfront-fee + подписка-сообщество + tool-subsidy + грант-трек диверсифицирует риск и повышает суммарную выручку.</li>
+  <li><b>От простого к сложному.</b> Типовая траектория: старт на upfront-fee (простота + кэш) → AZAV/грант (масштаб через гос-финансирование участника) → спонсор + membership (recurring).</li>
+  <li><b>Live → async → recurring.</b> Сначала синхронные потоки (валидация, цена, отзывы), затем self-paced из записей, затем подписочный слой поверх выпускников.</li>
+  <li><b>ISA — только через партнёра.</b> Income Share Agreements в Германии юридически нетривиальны; практичнее использовать инфраструктуру CHANCEN eG / Bcas, а не выпускать самому.</li>
+ </ul>
+</section>
+
+<div class="disclaimer">
+ <b>⚠ Юридический дисклеймер.</b> Статус Gewerbe vs Freiberufler для образовательной деятельности, VAT/Kleinunternehmer, требования AZAV, допустимость ISA/revenue-share контрактов в Германии — проверять у Steuerberater / Fachanwalt перед реализацией. Документ — рыночный синтез, не юридическая консультация. Цифры (completion, ценовые вилки) — ориентиры по публичным источникам, не гарантия.
+</div>
+
+<footer>
+ <span>CLOUDWORKING · БИЗНЕС-МОДЕЛИ</span>
+ <span class="tabnum">синтез 2026-07-04 · source: build-and-funding-models</span>
+</footer>
+</body></html>
