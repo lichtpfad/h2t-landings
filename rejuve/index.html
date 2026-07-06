@@ -42,9 +42,6 @@
     .card:hover { border-color: #c8c4be; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .card-date { font-size: 10px; color: var(--text-dim); font-weight: 500; }
-    .aud-badge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 3px; }
-    .aud-client { background: #e8f0e8; color: var(--accent3); }
-    .aud-internal { background: #f0eeeb; color: var(--text-dim); }
     .card-title { font-family: var(--font-heading); font-size: 16px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
     .card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.55; flex: 1; }
     .card-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none; }
@@ -81,133 +78,118 @@
 <script>
 // ═══════════════════════════════════════════════════════════
 // РЕЕСТР СТРАНИЦ — добавлять сюда новые entries
-// Поля: cat, title, desc, file, date (YYYY-MM-DD), audience ('client' | 'internal')
+// Поля: cat, title, desc, file, date (YYYY-MM-DD)
 //
-// Категории: 'proposal' | 'analytics' | 'research' | 'appendix'
+// Рубрики (порядок = этапы работы, см. docs/ops/portal-content-map.md):
+//   overview | analytics | market | positioning | journey | partners | digital
+// Портал видит только Кристина — внутренних документов нет, всё для клиента.
 // ═══════════════════════════════════════════════════════════
 
 const PAGES = [
 
-  // ── PROPOSAL ───────────────────────────────────────────
+  // ── 1 · ОБЗОР И ПЛАН РАБОТЫ ─────────────────────────────
   {
-    cat: 'proposal',
+    cat: 'overview',
     title: 'Три фазы',
-    desc: 'Roadmap трёх волн запуска. Сроки, deliverables, KPI по фазам.',
+    desc: 'Roadmap трёх волн запуска. Сроки, что получаете на выходе, ориентиры по каждой фазе.',
     file: 'phases-deck.html',
-    date: '2026-04-21',
-    audience: 'client'
+    date: '2026-04-21'
+  },
+  {
+    cat: 'overview',
+    title: 'Гид по интервью с клиентом',
+    desc: 'Сценарий разговора с клиентами: блоки, вопросы, что слушать и что зафиксировать после. Рабочий инструмент для звонков.',
+    file: 'interview-guide-deck.html',
+    date: '2026-06-03'
   },
 
-  // ── ANALYTICS ──────────────────────────────────────────
-  {
-    cat: 'analytics',
-    title: 'Макет панели: как будет выглядеть дашборд',
-    desc: 'Прототип будущей панели студии: деньги и клиенты, каналы и реклама, что система делает за вас. Часть данных уже реальные, часть — пример того, как это будет выглядеть.',
-    file: 'dashboard-mockup.html',
-    date: '2026-06-16',
-    audience: 'client'
-  },
-
-  {
-    cat: 'analytics',
-    title: 'Аудитория REjuve — сегменты, персоны, язык',
-    desc: 'Полный портрет аудитории: JTBD-сегменты, персоны и профили привлечения, демография (возраст/пол), язык клиента (цитаты из интервью и из онлайна) и числовой слой.',
-    file: 'audience-dashboard.html',
-    date: '2026-07-04',
-    audience: 'client'
-  },
+  // ── 2 · АНАЛИТИКА REjuve — ВАШИ ДАННЫЕ ──────────────────
   {
     cat: 'analytics',
     title: 'Аналитика студии: деньги, клиенты, активность',
     desc: 'Выручка живыми платежами, лестница ценности (разовая → пакет → абонемент), кто приносит выручку, Glencore как корпоративный контракт, активность на 4 июля.',
     file: 'data-summary-deck.html',
-    date: '2026-07-04',
-    audience: 'client'
-  },
-
-  // ── RESEARCH ───────────────────────────────────────────
-  {
-    cat: 'research',
-    title: 'Медицинские профили устройств',
-    desc: 'Доказательная база 10 устройств REjuve: механизм, польза с уровнем доказательности, evidence-цитаты, противопоказания + сводные матрицы по симптомам. Внутренний справочник для скриптов продаж и квалификации. (GYM/корпораты — в «Партнёры и компании».)',
-    file: 'device-profiles.html',
-    date: '2026-05-25',
-    audience: 'internal'
+    date: '2026-07-04'
   },
   {
-    cat: 'research',
-    title: 'Европейские референс-студии',
-    desc: '11 студий wellness/longevity по Европе. Позиционирование, ценообразование, устройства.',
-    file: 'european-reference-deck.html',
-    date: '2026-05-23',
-    audience: 'internal'
-  },
-  {
-    cat: 'research',
-    title: 'Конкурентная разведка',
-    desc: 'Досье конкурентов, матрица позиционирования, рыночные сигналы, аудитория и регуляторика.',
-    file: 'appendix-competitive-report.html',
-    date: '2026-04-21',
-    audience: 'internal'
-  },
-
-  ,{
-    cat: 'research',
-    title: 'Wellness Studios Reference',
-    desc: '13 standalone студий DACH + UK: сводный синтез паттернов + карточки по студиям. Цитаты с источниками, опоры под выводами (evidence-grounded).',
-    file: 'wellness-studios-reference.html',
-    date: '2026-06-03',
-    audience: 'internal'
-  }
-  ,{
-    cat: 'research',
-    title: 'Customer Language',
-    desc: '397 цитат · 135 источников (EN + DE). Сводный синтез + карточки по 8 процедурам: триггеры входа, барьеры, язык ценности, что возвращает клиентов.',
-    file: 'customer-language.html',
-    date: '2026-06-03',
-    audience: 'internal'
-  }
-  ,{
     cat: 'analytics',
-    title: 'Партнёры и компании для сотрудничества',
-    desc: 'Единый список для outreach (вкладки по типам): компании, небольшие компании рядом, врачи и клиники, спортзалы, йога и пилатес, клубы. По каждому — чем занимается, почему подходит, что уже есть для здоровья, персональный угол захода и контакты (до 5). Приоритетные помечены «рекомендуем начать».',
-    file: 'partners-outreach.html',
-    date: '2026-07-05',
-    audience: 'client'
-  }
-  ,{
+    title: 'Аудитория REjuve — сегменты, персоны, язык',
+    desc: 'Полный портрет аудитории: сегменты по задачам клиента, персоны и профили привлечения, демография (возраст/пол), язык клиента (цитаты из интервью и из онлайна) и числовой слой.',
+    file: 'audience-dashboard.html',
+    date: '2026-07-04'
+  },
+  {
     cat: 'analytics',
     title: 'Glencore — корпоративный визит: опрос',
     desc: 'Опрос 16 сотрудников Glencore после корпоративного визита: оценки, любимые процедуры, готовность вернуться (все 16 открыты), частота и спрос на регулярный формат.',
     file: 'glencore-survey.html',
-    date: '2026-06-15',
-    audience: 'client'
-  }
-  ,{
-    cat: 'research',
-    title: 'Гид по интервью с клиентом',
-    desc: 'Сценарий интервью с клиентами: блоки, вопросы, что слушать и что зафиксировать после. Рабочий инструмент для звонков.',
-    file: 'interview-guide-deck.html',
-    date: '2026-06-03',
-    audience: 'client'
-  }
-  ,{
-    cat: 'research',
+    date: '2026-06-15'
+  },
+
+  // ── 3 · РЫНОК И КОНКУРЕНТЫ ──────────────────────────────
+  {
+    cat: 'market',
+    title: 'Конкурентная разведка',
+    desc: 'Досье конкурентов, матрица позиционирования, рыночные сигналы, аудитория и регуляторика.',
+    file: 'appendix-competitive-report.html',
+    date: '2026-04-21'
+  },
+  {
+    cat: 'market',
+    title: 'Wellness Studios Reference',
+    desc: '13 отдельных студий DACH + UK: сводный разбор паттернов + карточки по студиям. Цитаты с источниками, опоры под выводами.',
+    file: 'wellness-studios-reference.html',
+    date: '2026-06-03'
+  },
+
+  // ── 4 · ПОЗИЦИОНИРОВАНИЕ И ОФФЕРЫ ───────────────────────
+  {
+    cat: 'positioning',
     title: 'Позиционирование REjuve — доска референсов',
-    desc: 'Отобранные референсы-ориентиры для позиционирования бренда: голос и тон, оффер и пакеты, первый визит, gift cards, партнёрства, treatments. Образцы копирайта конкурентов + что берём, со скриншотами оформления.',
+    desc: 'Отобранные референсы-ориентиры для позиционирования бренда: голос и тон, оффер и пакеты, первый визит, gift cards, партнёрства, процедуры. Образцы копирайта конкурентов + что берём, со скриншотами оформления.',
     file: 'positioning-references.html',
-    date: '2026-06-25',
-    audience: 'internal'
+    date: '2026-06-25'
+  },
+  {
+    cat: 'positioning',
+    title: 'Customer Language — язык клиента',
+    desc: '397 цитат · 135 источников (EN + DE). Сводный разбор + карточки по 8 процедурам: триггеры входа, барьеры, язык ценности, что возвращает клиентов.',
+    file: 'customer-language.html',
+    date: '2026-06-03'
+  },
+  {
+    cat: 'positioning',
+    title: 'Медицинские профили устройств',
+    desc: 'Доказательная база 10 устройств REjuve: механизм, польза с уровнем доказательности, цитаты-источники, противопоказания + сводные матрицы по симптомам. Опора для скриптов продаж и квалификации клиента.',
+    file: 'device-profiles.html',
+    date: '2026-05-25'
+  },
+
+  // ── 5 · КЛИЕНТСКИЙ ПУТЬ И АВТОМАТИЗАЦИЯ ─────────────────
+  {
+    cat: 'journey',
+    title: 'Макет панели: как будет выглядеть дашборд',
+    desc: 'Прототип будущей панели студии: деньги и клиенты, каналы и реклама, что система делает за вас. Часть данных уже реальные, часть — пример того, как это будет выглядеть.',
+    file: 'dashboard-mockup.html',
+    date: '2026-06-16'
+  },
+
+  // ── 6 · ПАРТНЁРСТВА И B2B ───────────────────────────────
+  {
+    cat: 'partners',
+    title: 'Партнёры и компании для сотрудничества',
+    desc: 'Единый список для аутрич (вкладки по типам): компании, небольшие компании рядом, врачи и клиники, спортзалы, йога и пилатес, клубы. По каждому — чем занимается, почему подходит, что уже есть для здоровья, персональный угол захода и контакты (до 5). Приоритетные помечены «рекомендуем начать».',
+    file: 'partners-outreach.html',
+    date: '2026-07-05'
   }
 
   // ── ДОБАВИТЬ НОВУЮ СТРАНИЦУ — скопировать шаблон ниже ──
   // ,{
-  //   cat: 'research',          // proposal | analytics | research | appendix
+  //   cat: 'positioning',   // overview | analytics | market | positioning | journey | partners | digital
   //   title: 'Название',
   //   desc: 'Одна-две строки: что внутри.',
-  //   file: 'filename.html',    // файл должен лежать в rejuve/
-  //   date: 'YYYY-MM-DD',
-  //   audience: 'internal'      // client | internal
+  //   file: 'filename.html',   // файл должен лежать в rejuve/
+  //   date: 'YYYY-MM-DD'
   // }
 
 ];
@@ -217,10 +199,13 @@ const PAGES = [
 // ═══════════════════════════════════════════════════════════
 
 const CATS = [
-  { id: 'proposal',  label: 'Proposal',   icon: '📋' },
-  { id: 'analytics', label: 'Аналитика',  icon: '📊' },
-  { id: 'research',  label: 'Research',   icon: '🔬' },
-  { id: 'appendix',  label: 'Приложения', icon: '📎' }
+  { id: 'overview',    label: 'Обзор и план работы' },
+  { id: 'analytics',   label: 'Аналитика REjuve — ваши данные' },
+  { id: 'market',      label: 'Рынок и конкуренты' },
+  { id: 'positioning', label: 'Позиционирование и офферы' },
+  { id: 'journey',     label: 'Клиентский путь и автоматизация' },
+  { id: 'partners',    label: 'Партнёрства и B2B' },
+  { id: 'digital',     label: 'Digital-тест' }
 ];
 
 function fmtDate(d) {
@@ -248,7 +233,6 @@ function renderPortal() {
       html += `<div class="card">
         <div class="card-top">
           <span class="card-date">${fmtDate(p.date)}</span>
-          <span class="aud-badge aud-${p.audience}">${p.audience === 'client' ? 'клиент' : 'внутреннее'}</span>
         </div>
         <div class="card-title">${p.title}</div>
         <div class="card-desc">${p.desc}</div>
