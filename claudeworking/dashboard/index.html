@@ -1,104 +1,218 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Дашборд: аналитика спроса — ClaudeWorking</title>
+<title>Аналитика спроса — ClaudeWorking</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0d0d;--surface:#151515;--surface-2:#101010;--fg:#ededed;--fg-body:rgba(237,237,237,.74);--fg-muted:rgba(237,237,237,.42);--fg-faint:rgba(237,237,237,.22);--border:rgba(255,255,255,.09);--border-soft:rgba(255,255,255,.06);--accent:#a9c4ea;--ok:#5bbf9a;--warn:#d6a54a;--red:#d67a7a;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+:root{--bg:#0d0d0d;--surface:#141414;--surface-2:#101010;--fg:#ededed;--body:rgba(237,237,237,.72);--muted:rgba(237,237,237,.4);--faint:rgba(237,237,237,.22);--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.05);--accent:#a9c4ea;--up:#5bbf9a;--dn:#d67a7a;--sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--fg-body);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;padding:clamp(20px,4vw,56px) clamp(16px,4vw,56px);max-width:1180px;margin:0 auto}
-a{color:var(--accent);text-decoration:none}.back{font-family:var(--mono);font-size:11px;color:var(--fg-muted);display:inline-block;margin-bottom:20px}.back:hover{color:var(--accent)}
-.mono{font-family:var(--mono)}
-header{border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:8px}
-h1{font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;letter-spacing:-.02em;color:var(--fg);line-height:1.14}
-.meta{margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--fg-muted)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0 10px}
-.kpi{border:1px solid var(--border);background:var(--surface);padding:16px 18px}
-.kpi .v{font-size:24px;font-weight:700;color:var(--fg);letter-spacing:-.01em}
-.kpi .v.accent{color:var(--accent)}.kpi .v.ok{color:var(--ok)}.kpi .v.red{color:var(--red)}
-.kpi .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-muted);margin-top:7px}
-section{margin-top:40px}
-h2{font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:600;color:var(--fg);padding-bottom:9px;border-bottom:1px solid var(--border);margin-bottom:6px}
-h2 .n{font-family:var(--mono);font-size:.62em;color:var(--accent);margin-right:9px}
-p.note{color:var(--fg-muted);font-size:13px;max-width:80ch;margin-top:10px;line-height:1.55}
-.chart{width:100%;height:auto;margin-top:14px;overflow:visible}
-.chart .lbl{font-family:var(--mono);font-size:11px;fill:var(--fg-body)}
-.chart .lbl2{font-family:var(--mono);font-size:15px;font-weight:600;fill:var(--fg)}
-.chart .val{font-family:var(--mono);font-size:11px;fill:var(--fg-muted)}
-.chart .val.big{font-size:15px;font-weight:600;fill:var(--fg)}
-.chart .sub{font-family:var(--mono);font-size:10px;fill:var(--fg-muted)}
-.chart .ax{stroke:var(--border);stroke-dasharray:3 4}
-.chart .frame{fill:none;stroke:var(--border-soft)}
-.chart .axl{font-family:var(--mono);font-size:11px;fill:var(--fg-muted)}
-.chart .quadl{font-family:var(--sans);font-size:10px;fill:var(--fg-faint);text-transform:uppercase;letter-spacing:.06em}
-.chart .pt{font-family:var(--mono);font-size:11px;font-weight:600}
-.quadwrap{max-width:500px;margin:16px auto 0}
-.qchart .ptin{font-family:var(--mono);font-size:14px;font-weight:700}
-.qlegend{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--fg-muted)}
-.qlg{display:inline-flex;align-items:center;gap:6px}.qlg i{width:9px;height:9px;border-radius:50%;display:inline-block}.qlg b{color:var(--fg)}
-.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--fg-muted)}
-.lg{display:inline-flex;align-items:center;gap:6px}.lg i{width:10px;height:10px;display:inline-block}
-.sparks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}
-.scard{border:1px solid var(--border);background:var(--surface);padding:14px 16px}
-.scard .sh{font-weight:600;color:var(--fg);font-size:13.5px;margin-bottom:6px}
-.scard .sub{font-family:var(--mono);font-size:10px;color:var(--fg-muted);margin-top:4px}
-.spark{width:100%;height:46px;display:block}
-.callout{margin-top:16px;border:1px solid var(--border);border-left:2px solid var(--accent);background:var(--surface-2);padding:16px 20px;font-size:14px;line-height:1.7;color:var(--fg-body);max-width:86ch}
-.callout b{color:var(--fg)}.callout .win{color:var(--ok);font-weight:600}.callout .warn{color:var(--red);font-weight:600}
-footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--fg-faint)}
-@media(max-width:620px){.chart .lbl,.chart .val,.chart .sub{font-size:9px}.chart .pt{font-size:9px}}
+body{background:var(--bg);color:var(--body);font-family:var(--sans);font-size:14.5px;line-height:1.6;-webkit-font-smoothing:antialiased;padding:clamp(22px,4vw,60px) clamp(18px,5vw,60px);max-width:920px;margin:0 auto}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ink{color:var(--fg)!important}.accent{color:var(--accent)!important}.muted{color:var(--muted)}
+a{color:var(--accent);text-decoration:none}
+.back{font-family:var(--mono);font-size:11px;color:var(--muted);display:inline-block;margin-bottom:26px}.back:hover{color:var(--accent)}
+h1{font-size:clamp(1.5rem,3.4vw,2rem);font-weight:700;letter-spacing:-.025em;color:var(--fg);line-height:1.12}
+.sub1{margin-top:9px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.02em}
+/* section rhythm: rules + air, no cards */
+section{margin-top:58px}
+.sh{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:20px}
+.sh .num{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.sh h2{font-size:14px;font-weight:600;color:var(--fg);text-transform:uppercase;letter-spacing:.11em}
+.cap{color:var(--muted);font-size:12.5px;line-height:1.55;max-width:64ch;margin:-8px 0 18px}
+.cap b{color:var(--body)}
+/* lead metrics: no boxes, hairline dividers */
+.leads{display:flex;flex-wrap:wrap;gap:0 34px;margin-top:26px}
+.lead{padding:4px 0 4px 0}
+.lead+.lead{padding-left:34px;border-left:1px solid var(--line);margin-left:0}
+.lead .n{font-family:var(--mono);font-size:34px;font-weight:500;color:var(--fg);letter-spacing:-.02em;line-height:1}
+.lead .n .u{font-size:.55em;color:var(--muted)}
+.lead .k{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-top:9px}
+/* ranking */
+.rrow{display:grid;grid-template-columns:20px 1fr 130px 42px;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--line2)}
+.rk{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.rname{font-size:14px;color:var(--body)}.rname b{font-weight:600;margin-right:6px}
+.rname .rsub{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.01em}
+.rbar{height:3px;background:var(--line);position:relative}
+.rbar .fill{position:absolute;left:0;top:0;height:100%;background:var(--muted)}
+.rbar .fill.accent{background:var(--accent)}
+.rtot{font-size:17px;color:var(--fg);text-align:right}
+/* volume list */
+.vrow{display:grid;grid-template-columns:26px 1fr auto;align-items:baseline;gap:10px;padding:9px 0 11px;border-bottom:1px solid var(--line2)}
+.vtag{font-size:10px;color:var(--faint);padding-top:1px}
+.vkw{font-size:13.5px;color:var(--body)}
+.vval{font-size:12.5px;color:var(--fg);white-space:nowrap;text-align:right}
+.vval .up{color:var(--up)}.vval .dn{color:var(--dn)}.vval .fl{color:var(--faint)}
+.vval .cpc{color:var(--muted);font-size:11px}
+.vbar{grid-column:2/4;height:2px;background:var(--line2);position:relative;margin-top:2px}
+.vbar .fill{position:absolute;left:0;top:0;height:100%;background:var(--muted);opacity:.7}
+.vbar .fill.accent{background:var(--accent);opacity:.85}
+/* scatter */
+.scatterwrap{max-width:400px;margin:6px auto 0}
+.scatter{width:100%;height:auto}
+.scatter .fr{fill:none;stroke:var(--line2)}
+.scatter .cx{stroke:var(--line);stroke-dasharray:2 4}
+.scatter .qt{font-family:var(--sans);font-size:8.5px;fill:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.scatter .axl{font-family:var(--mono);font-size:9px;fill:var(--muted)}
+.scatter .dot{fill:var(--muted)}.scatter .dot.accent{fill:var(--accent)}
+.scatter .dl{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--muted)}.scatter .dl.accent{fill:var(--accent)}
+/* sparklines */
+.sparks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:22px 26px;margin-top:20px}
+.skrow{}
+.skh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line2);padding-bottom:5px}
+.skn{font-size:12.5px;color:var(--body)}.skv{font-size:12px;color:var(--fg)}
+.spk{width:100%;height:34px;display:block;margin-top:6px}
+.spk polyline{fill:none;stroke:var(--muted);stroke-width:1.3}
+.spk.accent polyline{stroke:var(--accent);stroke-width:1.5}
+.skc{font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-top:5px}
+/* conclusion */
+.brief{border-left:2px solid var(--accent);padding:4px 0 4px 20px;margin-top:14px;font-size:14px;line-height:1.75;color:var(--body);max-width:70ch}
+.brief b{color:var(--fg)}.brief .g{color:var(--accent);font-weight:600}.brief .r{color:var(--dn)}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:10px;color:var(--faint)}
+@media(max-width:560px){.rrow{grid-template-columns:16px 1fr 40px;gap:10px}.rbar{display:none}.leads{gap:0 22px}.lead+.lead{padding-left:22px}.lead .n{font-size:28px}}
 </style></head><body>
 <a class="back" href="../">← ClaudeWorking</a>
-<header>
- <h1>Аналитика спроса · 5 гипотез позиционирования</h1>
- <div class="meta">DataForSEO (гео DE, абс. объём+CPC) · TrendsMCP (5 лет) · revealed-demand · 2026-07-06</div>
-</header>
+<h1>Аналитика спроса</h1>
+<div class="sub1">5 гипотез позиционирования · DataForSEO (гео DE) + TrendsMCP · 2026-07-06</div>
 
-<div class="kpis">
- <div class="kpi"><div class="v ok">H3</div><div class="l">#1 по спросу · Agentic</div></div>
- <div class="kpi"><div class="v accent">H2</div><div class="l">#1 по whitespace · Ship together</div></div>
- <div class="kpi"><div class="v">110 000</div><div class="l">пик термина · Claude Code /мес</div></div>
- <div class="kpi"><div class="v red">~0</div><div class="l">спрос на «build&amp;own» (H1)</div></div>
+<div class="leads">
+ <div class="lead"><div class="n accent">H3</div><div class="k">лид по спросу</div></div>
+ <div class="lead"><div class="n mono">110<span class="u">k</span></div><div class="k">Claude Code / мес</div></div>
+ <div class="lead"><div class="n accent">H2</div><div class="k">лид по whitespace</div></div>
+ <div class="lead"><div class="n mono">~0</div><div class="k">спрос на build&amp;own</div></div>
 </div>
 
 <section>
- <h2><span class="n">01</span>Ранжирование (взвешенный скоринг)</h2>
- <p class="note">Вклад каждого блока в итог (ширина = балл × вес). Спрос 35% · Whitespace 25% · Fit 20% · Монетизация 20%.</p>
- <svg viewBox="0 0 800 246" class="chart" role="img"><text x="160" y="29.0" text-anchor="end" class="lbl2">H3</text><text x="160" y="44.0" text-anchor="end" class="sub">Agentic depth</text><rect x="170.0" y="16" width="249.4" height="26" fill="#5bbf9a" opacity="0.85"><title>Спрос: 5.0×0.35=1.75</title></rect><rect x="419.4" y="16" width="53.4" height="26" fill="#a9c4ea" opacity="0.85"><title>Whitespace: 1.5×0.25=0.38</title></rect><rect x="472.8" y="16" width="142.5" height="26" fill="#d6a54a" opacity="0.85"><title>Fit: 5.0×0.2=1.00</title></rect><rect x="615.3" y="16" width="114.0" height="26" fill="#c98bd0" opacity="0.85"><title>Монет.: 4.0×0.2=0.80</title></rect><text x="737.3" y="35.0" class="val big">3.93</text><text x="160" y="75.0" text-anchor="end" class="lbl2">H2</text><text x="160" y="90.0" text-anchor="end" class="sub">Ship together</text><rect x="170.0" y="62" width="124.7" height="26" fill="#5bbf9a" opacity="0.85"><title>Спрос: 2.5×0.35=0.88</title></rect><rect x="294.7" y="62" width="142.5" height="26" fill="#a9c4ea" opacity="0.85"><title>Whitespace: 4.0×0.25=1.00</title></rect><rect x="437.2" y="62" width="142.5" height="26" fill="#d6a54a" opacity="0.85"><title>Fit: 5.0×0.2=1.00</title></rect><rect x="579.7" y="62" width="128.2" height="26" fill="#c98bd0" opacity="0.85"><title>Монет.: 4.5×0.2=0.90</title></rect><text x="715.9" y="81.0" class="val big">3.78</text><text x="160" y="121.0" text-anchor="end" class="lbl2">H4</text><text x="160" y="136.0" text-anchor="end" class="sub">AI-native team</text><rect x="170.0" y="108" width="224.4" height="26" fill="#5bbf9a" opacity="0.85"><title>Спрос: 4.5×0.35=1.57</title></rect><rect x="394.4" y="108" width="53.4" height="26" fill="#a9c4ea" opacity="0.85"><title>Whitespace: 1.5×0.25=0.38</title></rect><rect x="447.9" y="108" width="99.7" height="26" fill="#d6a54a" opacity="0.85"><title>Fit: 3.5×0.2=0.70</title></rect><rect x="547.6" y="108" width="114.0" height="26" fill="#c98bd0" opacity="0.85"><title>Монет.: 4.0×0.2=0.80</title></rect><text x="669.6" y="127.0" class="val big">3.45</text><text x="160" y="167.0" text-anchor="end" class="lbl2">H1</text><text x="160" y="182.0" text-anchor="end" class="sub">Own it</text><rect x="170.0" y="154" width="49.9" height="26" fill="#5bbf9a" opacity="0.85"><title>Спрос: 1.0×0.35=0.35</title></rect><rect x="219.9" y="154" width="53.4" height="26" fill="#a9c4ea" opacity="0.85"><title>Whitespace: 1.5×0.25=0.38</title></rect><rect x="273.3" y="154" width="114.0" height="26" fill="#d6a54a" opacity="0.85"><title>Fit: 4.0×0.2=0.80</title></rect><rect x="387.3" y="154" width="71.2" height="26" fill="#c98bd0" opacity="0.85"><title>Монет.: 2.5×0.2=0.50</title></rect><text x="466.5" y="173.0" class="val big">2.03</text><text x="160" y="213.0" text-anchor="end" class="lbl2">H5</text><text x="160" y="228.0" text-anchor="end" class="sub">Founders+funding</text><rect x="170.0" y="200" width="74.8" height="26" fill="#5bbf9a" opacity="0.85"><title>Спрос: 1.5×0.35=0.52</title></rect><rect x="244.8" y="200" width="71.2" height="26" fill="#a9c4ea" opacity="0.85"><title>Whitespace: 2.0×0.25=0.50</title></rect><rect x="316.1" y="200" width="57.0" height="26" fill="#d6a54a" opacity="0.85"><title>Fit: 2.0×0.2=0.40</title></rect><rect x="373.1" y="200" width="42.7" height="26" fill="#c98bd0" opacity="0.85"><title>Монет.: 1.5×0.2=0.30</title></rect><text x="423.8" y="219.0" class="val big">1.73</text></svg>
- <div class="legend"><span class="lg"><i style="background:#5bbf9a"></i>Спрос ×0.35</span> <span class="lg"><i style="background:#a9c4ea"></i>Whitespace ×0.25</span> <span class="lg"><i style="background:#d6a54a"></i>Fit ×0.2</span> <span class="lg"><i style="background:#c98bd0"></i>Монет. ×0.2</span></div>
+ <div class="sh"><span class="num">01</span><h2>Ранжирование</h2></div>
+ <p class="cap">Взвешенный балл: спрос 35% · whitespace 25% · fit 20% · монетизация 20%. Акцентом — рекомендуемые.</p>
+ <div class="rank"><div class="rrow">
+  <div class="rk">1</div>
+  <div class="rname"><b class="accent">H3</b> Agentic depth<span class="rsub">спрос 5.0 · ws 1.5 · fit 5.0 · мон 4.0</span></div>
+  <div class="rbar"><span class="fill accent" style="width:79%"></span></div>
+  <div class="rtot mono">3.93</div>
+</div><div class="rrow">
+  <div class="rk">2</div>
+  <div class="rname"><b class="accent">H2</b> Ship together<span class="rsub">спрос 2.5 · ws 4.0 · fit 5.0 · мон 4.5</span></div>
+  <div class="rbar"><span class="fill accent" style="width:76%"></span></div>
+  <div class="rtot mono">3.78</div>
+</div><div class="rrow">
+  <div class="rk">3</div>
+  <div class="rname"><b class="ink">H4</b> AI-native team<span class="rsub">спрос 4.5 · ws 1.5 · fit 3.5 · мон 4.0</span></div>
+  <div class="rbar"><span class="fill ink" style="width:69%"></span></div>
+  <div class="rtot mono">3.45</div>
+</div><div class="rrow">
+  <div class="rk">4</div>
+  <div class="rname"><b class="ink">H1</b> Own it<span class="rsub">спрос 1.0 · ws 1.5 · fit 4.0 · мон 2.5</span></div>
+  <div class="rbar"><span class="fill ink" style="width:41%"></span></div>
+  <div class="rtot mono">2.03</div>
+</div><div class="rrow">
+  <div class="rk">5</div>
+  <div class="rname"><b class="ink">H5</b> Founders+funding<span class="rsub">спрос 1.5 · ws 2.0 · fit 2.0 · мон 1.5</span></div>
+  <div class="rbar"><span class="fill ink" style="width:35%"></span></div>
+  <div class="rtot mono">1.73</div>
+</div></div>
 </section>
 
 <section>
- <h2><span class="n">02</span>Спрос × Whitespace</h2>
- <p class="note">Ось X — спрос, ось Y — whitespace (вверх = свободнее). Размер круга = итоговый балл. <b>Идеал — верх-право (хотят + свободно) — пуст:</b> спрос (H3/H4) сидит внизу-справа (хотят, но тесно), а whitespace (H2) — вверху при среднем спросе. В этом и напряжение. H3/H4 слегка разнесены по вертикали для читаемости (в данных whitespace у них равный).</p>
- <div class="quadwrap"><svg viewBox="0 0 440 440" class="chart qchart" role="img"><rect x="42" y="42" width="356" height="356" class="frame"/><line x1="220.0" y1="42" x2="220.0" y2="398" class="ax"/><line x1="42" y1="220.0" x2="398" y2="220.0" class="ax"/><text x="50" y="58" class="quadl">свободно · не ищут</text><text x="390" y="58" text-anchor="end" class="quadl">хотят · свободно ★</text><text x="50" y="390" class="quadl">слабо · тесно</text><text x="390" y="390" text-anchor="end" class="quadl">хотят · тесно</text><text x="220.0" y="434" text-anchor="middle" class="axl">Спрос →</text><text x="13" y="220.0" text-anchor="middle" class="axl" transform="rotate(-90 13 220.0)">Whitespace →</text><circle cx="398.0" cy="266.3" r="19.3" fill="#5bbf9a" opacity="0.22" stroke="#5bbf9a" stroke-width="1.3"/><text x="398.0" y="270.3" text-anchor="middle" class="ptin" fill="#5bbf9a">H3</text><circle cx="220.0" cy="113.2" r="19.0" fill="#a9c4ea" opacity="0.22" stroke="#a9c4ea" stroke-width="1.3"/><text x="220.0" y="117.2" text-anchor="middle" class="ptin" fill="#a9c4ea">H2</text><circle cx="362.4" cy="316.1" r="18.5" fill="#d6a54a" opacity="0.22" stroke="#d6a54a" stroke-width="1.3"/><text x="362.4" y="320.1" text-anchor="middle" class="ptin" fill="#d6a54a">H4</text><circle cx="113.2" cy="291.2" r="16.2" fill="#d67a7a" opacity="0.22" stroke="#d67a7a" stroke-width="1.3"/><text x="113.2" y="295.2" text-anchor="middle" class="ptin" fill="#d67a7a">H1</text><circle cx="148.8" cy="255.6" r="15.8" fill="#7a7a86" opacity="0.22" stroke="#7a7a86" stroke-width="1.3"/><text x="148.8" y="259.6" text-anchor="middle" class="ptin" fill="#7a7a86">H5</text></svg></div>
- <div class="qlegend"><span class="qlg"><i style="background:#5bbf9a"></i><b>H3</b> Agentic depth · 3.93</span><span class="qlg"><i style="background:#a9c4ea"></i><b>H2</b> Ship together · 3.78</span><span class="qlg"><i style="background:#d6a54a"></i><b>H4</b> AI-native team · 3.45</span><span class="qlg"><i style="background:#d67a7a"></i><b>H1</b> Own it · 2.03</span><span class="qlg"><i style="background:#7a7a86"></i><b>H5</b> Founders+funding · 1.73</span></div>
+ <div class="sh"><span class="num">02</span><h2>Спрос × Whitespace</h2></div>
+ <p class="cap">Право — выше спрос, верх — свободнее. <b>Идеал (хотят·свободно ★) пуст:</b> спрос (H3/H4) внизу-справа — «хотят, но тесно»; whitespace (H2) — вверху при среднем спросе.</p>
+ <div class="scatterwrap"><svg viewBox="0 0 360 360" class="scatter" role="img"><rect x="30" y="30" width="300" height="300" class="fr"/><line x1="180.0" y1="30" x2="180.0" y2="330" class="cx"/><line x1="30" y1="180.0" x2="330" y2="180.0" class="cx"/><text x="330" y="22" text-anchor="end" class="qt">хотят · свободно ★</text><text x="30" y="22" class="qt">свободно · не ищут</text><circle cx="330.0" cy="222.0" r="5.5" class="dot accent"/><text x="321.0" y="225.5" text-anchor="end" class="dl accent">H3</text><circle cx="180.0" cy="90.0" r="5.5" class="dot accent"/><text x="189.0" y="93.5" text-anchor="start" class="dl accent">H2</text><circle cx="300.0" cy="258.0" r="5.5" class="dot ink"/><text x="291.0" y="261.5" text-anchor="end" class="dl ink">H4</text><circle cx="90.0" cy="240.0" r="5.5" class="dot ink"/><text x="99.0" y="243.5" text-anchor="start" class="dl ink">H1</text><circle cx="120.0" cy="210.0" r="5.5" class="dot ink"/><text x="129.0" y="213.5" text-anchor="start" class="dl ink">H5</text><text x="180.0" y="354" text-anchor="middle" class="axl">спрос →</text><text x="10" y="180.0" text-anchor="middle" class="axl" transform="rotate(-90 10 180.0)">whitespace →</text></svg></div>
 </section>
 
 <section>
- <h2><span class="n">03</span>Поисковый объём · DataForSEO (гео DE)</h2>
- <p class="note">Ширина по √-шкале (Claude Code 110k иначе плющит остальных). Справа — тренд 12 мес и CPC €. Цвет = гипотеза.</p>
- <svg viewBox="0 0 800 556" class="chart" role="img"><text x="202" y="27.0" text-anchor="end" class="lbl">Claude Code</text><rect x="210" y="14" width="495.0" height="16" fill="#5bbf9a" opacity="0.85"/><text x="713.0" y="27.0" class="val">110 000</text><text x="794" y="27.0" text-anchor="end" class="sub">↑ €3.65</text><text x="202" y="57.0" text-anchor="end" class="lbl">AI agents</text><rect x="210" y="44" width="148.5" height="16" fill="#5bbf9a" opacity="0.85"/><text x="366.5" y="57.0" class="val">9 900</text><text x="794" y="57.0" text-anchor="end" class="sub">↑ €7.68</text><text x="202" y="87.0" text-anchor="end" class="lbl">KI Agenten</text><rect x="210" y="74" width="99.0" height="16" fill="#5bbf9a" opacity="0.85"/><text x="317.0" y="87.0" class="val">4 400</text><text x="794" y="87.0" text-anchor="end" class="sub">↑ €6.24</text><text x="202" y="117.0" text-anchor="end" class="lbl">KI Weiterbildung</text><rect x="210" y="104" width="73.1" height="16" fill="#d6a54a" opacity="0.85"/><text x="291.1163456417236" y="117.0" class="val">2 400</text><text x="794" y="117.0" text-anchor="end" class="sub">↑ €10.35</text><text x="202" y="147.0" text-anchor="end" class="lbl">KI Automatisierung</text><rect x="210" y="134" width="65.1" height="16" fill="#5bbf9a" opacity="0.85"/><text x="283.0557453266043" y="147.0" class="val">1 900</text><text x="794" y="147.0" text-anchor="end" class="sub">↓ €8.15</text><text x="202" y="177.0" text-anchor="end" class="lbl">AI automation</text><rect x="210" y="164" width="47.2" height="16" fill="#5bbf9a" opacity="0.85"/><text x="265.1963981676568" y="177.0" class="val">1 000</text><text x="794" y="177.0" text-anchor="end" class="sub">↑ €10.64</text><text x="202" y="207.0" text-anchor="end" class="lbl">AI accelerator</text><rect x="210" y="194" width="26.7" height="16" fill="#a9c4ea" opacity="0.85"/><text x="244.69831455354438" y="207.0" class="val">320</text><text x="794" y="207.0" text-anchor="end" class="sub">→ €2.13</text><text x="202" y="237.0" text-anchor="end" class="lbl">KI Startup</text><rect x="210" y="224" width="21.6" height="16" fill="#7a7a86" opacity="0.85"/><text x="239.62810671325624" y="237.0" class="val">210</text><text x="794" y="237.0" text-anchor="end" class="sub">↓ €4.49</text><text x="202" y="267.0" text-anchor="end" class="lbl">KI Beratung Mittelstand</text><rect x="210" y="254" width="19.5" height="16" fill="#a9c4ea" opacity="0.85"/><text x="237.4595734793957" y="267.0" class="val">170</text><text x="794" y="267.0" text-anchor="end" class="sub">↓ €17.77</text><text x="202" y="297.0" text-anchor="end" class="lbl">AI for small business</text><rect x="210" y="284" width="10.6" height="16" fill="#a9c4ea" opacity="0.85"/><text x="228.55343545960272" y="297.0" class="val">50</text><text x="794" y="297.0" text-anchor="end" class="sub">→ €14.77</text><text x="202" y="327.0" text-anchor="end" class="lbl">KI für kleine Unternehmen</text><rect x="210" y="314" width="10.6" height="16" fill="#a9c4ea" opacity="0.85"/><text x="228.55343545960272" y="327.0" class="val">50</text><text x="794" y="327.0" text-anchor="end" class="sub">↑ €15.45</text><text x="202" y="357.0" text-anchor="end" class="lbl">eigene KI entwickeln</text><rect x="210" y="344" width="9.4" height="16" fill="#d67a7a" opacity="0.85"/><text x="227.43927963353136" y="357.0" class="val">40</text><text x="794" y="357.0" text-anchor="end" class="sub">→ €3.51</text><text x="202" y="387.0" text-anchor="end" class="lbl">KI Schulung Mitarbeiter</text><rect x="210" y="374" width="9.4" height="16" fill="#d6a54a" opacity="0.85"/><text x="227.43927963353136" y="387.0" class="val">40</text><text x="794" y="387.0" text-anchor="end" class="sub">→ €11.38</text><text x="202" y="417.0" text-anchor="end" class="lbl">KI Workshop Berlin</text><rect x="210" y="404" width="8.2" height="16" fill="#a9c4ea" opacity="0.85"/><text x="226.17465595606322" y="417.0" class="val">30</text><text x="794" y="417.0" text-anchor="end" class="sub">→ €12.35</text><text x="202" y="447.0" text-anchor="end" class="lbl">AI upskilling</text><rect x="210" y="434" width="6.7" height="16" fill="#d6a54a" opacity="0.85"/><text x="224.6745786383861" y="447.0" class="val">20</text><text x="794" y="447.0" text-anchor="end" class="sub">→ €9.45</text><text x="202" y="477.0" text-anchor="end" class="lbl">build AI startup</text><rect x="210" y="464" width="4.7" height="16" fill="#7a7a86" opacity="0.85"/><text x="222.7196398167657" y="477.0" class="val">10</text><text x="794" y="477.0" text-anchor="end" class="sub">→ </text><text x="202" y="507.0" text-anchor="end" class="lbl">build own AI system</text><rect x="210" y="494" width="0.0" height="16" fill="#d67a7a" opacity="0.85"/><text x="218.0" y="507.0" class="val">—</text><text x="794" y="507.0" text-anchor="end" class="sub">· </text><text x="202" y="537.0" text-anchor="end" class="lbl">AI vendor lock-in</text><rect x="210" y="524" width="0.0" height="16" fill="#d67a7a" opacity="0.85"/><text x="218.0" y="537.0" class="val">—</text><text x="794" y="537.0" text-anchor="end" class="sub">· </text></svg>
+ <div class="sh"><span class="num">03</span><h2>Поисковый объём · DataForSEO</h2></div>
+ <p class="cap">Запросов/мес, гео Germany. Ширина по √-шкале. Справа — тренд 12 мес и CPC €.</p>
+ <div class="vol"><div class="vrow">
+  <span class="vtag mono">H3</span><span class="vkw">Claude Code</span>
+  <span class="vval mono">110 000 <i class="up">↗</i> <span class="cpc">€3.65</span></span>
+  <div class="vbar"><span class="fill accent" style="width:100.0%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H3</span><span class="vkw">AI agents</span>
+  <span class="vval mono">9 900 <i class="up">↗</i> <span class="cpc">€7.68</span></span>
+  <div class="vbar"><span class="fill accent" style="width:30.0%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H3</span><span class="vkw">KI Agenten</span>
+  <span class="vval mono">4 400 <i class="up">↗</i> <span class="cpc">€6.24</span></span>
+  <div class="vbar"><span class="fill accent" style="width:20.0%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H4</span><span class="vkw">KI Weiterbildung</span>
+  <span class="vval mono">2 400 <i class="up">↗</i> <span class="cpc">€10.35</span></span>
+  <div class="vbar"><span class="fill ink" style="width:14.8%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H3</span><span class="vkw">KI Automatisierung</span>
+  <span class="vval mono">1 900 <i class="dn">↘</i> <span class="cpc">€8.15</span></span>
+  <div class="vbar"><span class="fill accent" style="width:13.1%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H3</span><span class="vkw">AI automation</span>
+  <span class="vval mono">1 000 <i class="up">↗</i> <span class="cpc">€10.64</span></span>
+  <div class="vbar"><span class="fill accent" style="width:9.5%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H2</span><span class="vkw">AI accelerator</span>
+  <span class="vval mono">320 <i class="fl">→</i> <span class="cpc">€2.13</span></span>
+  <div class="vbar"><span class="fill accent" style="width:5.4%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H5</span><span class="vkw">KI Startup</span>
+  <span class="vval mono">210 <i class="dn">↘</i> <span class="cpc">€4.49</span></span>
+  <div class="vbar"><span class="fill ink" style="width:4.4%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H2</span><span class="vkw">KI Beratung Mittelstand</span>
+  <span class="vval mono">170 <i class="dn">↘</i> <span class="cpc">€17.77</span></span>
+  <div class="vbar"><span class="fill accent" style="width:3.9%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H2</span><span class="vkw">AI for small business</span>
+  <span class="vval mono">50 <i class="fl">→</i> <span class="cpc">€14.77</span></span>
+  <div class="vbar"><span class="fill accent" style="width:2.1%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H2</span><span class="vkw">KI für kleine Unternehmen</span>
+  <span class="vval mono">50 <i class="up">↗</i> <span class="cpc">€15.45</span></span>
+  <div class="vbar"><span class="fill accent" style="width:2.1%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H1</span><span class="vkw">eigene KI entwickeln</span>
+  <span class="vval mono">40 <i class="fl">→</i> <span class="cpc">€3.51</span></span>
+  <div class="vbar"><span class="fill ink" style="width:1.9%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H4</span><span class="vkw">KI Schulung Mitarbeiter</span>
+  <span class="vval mono">40 <i class="fl">→</i> <span class="cpc">€11.38</span></span>
+  <div class="vbar"><span class="fill ink" style="width:1.9%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H2</span><span class="vkw">KI Workshop Berlin</span>
+  <span class="vval mono">30 <i class="fl">→</i> <span class="cpc">€12.35</span></span>
+  <div class="vbar"><span class="fill accent" style="width:1.7%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H4</span><span class="vkw">AI upskilling</span>
+  <span class="vval mono">20 <i class="fl">→</i> <span class="cpc">€9.45</span></span>
+  <div class="vbar"><span class="fill ink" style="width:1.3%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H5</span><span class="vkw">build AI startup</span>
+  <span class="vval mono">10 <i class="fl">→</i> <span class="cpc"></span></span>
+  <div class="vbar"><span class="fill ink" style="width:1.0%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H1</span><span class="vkw">build own AI system</span>
+  <span class="vval mono"><span class='muted'>—</span> <i class="fl">·</i> <span class="cpc"></span></span>
+  <div class="vbar"><span class="fill ink" style="width:0.0%"></span></div>
+</div><div class="vrow">
+  <span class="vtag mono">H1</span><span class="vkw">AI vendor lock-in</span>
+  <span class="vval mono"><span class='muted'>—</span> <i class="fl">·</i> <span class="cpc"></span></span>
+  <div class="vbar"><span class="fill ink" style="width:0.0%"></span></div>
+</div></div>
 </section>
 
 <section>
- <h2><span class="n">04</span>Траектория интереса · TrendsMCP (5 лет)</h2>
- <p class="note">Нормализованный интерес 0–100. Лид-термины выросли с ~0 до пика в 2025–2026 — секулярный рост.</p>
- <div class="sparks"><div class="scard"><div class="sh">Claude Code</div><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><polyline points="0.0,43.0 5.0,43.0 10.0,43.0 15.0,43.0 20.0,43.0 25.0,43.0 30.0,43.0 35.0,43.0 40.0,43.0 45.0,43.0 50.0,43.0 55.0,43.0 60.0,43.0 65.0,43.0 70.0,43.0 75.0,43.0 80.0,43.0 85.0,43.0 90.0,43.0 95.0,43.0 100.0,43.0 105.0,43.0 110.0,43.0 115.0,43.0 120.0,43.0 125.0,43.0 130.0,43.0 135.0,43.0 140.0,43.0 145.0,43.0 150.0,43.0 155.0,43.0 160.0,43.0 165.0,43.0 170.0,43.0 175.0,43.0 180.0,43.0 185.0,43.0 190.0,41.4 195.0,42.5 200.0,42.5 205.0,39.3 210.0,36.2 215.0,31.4 220.0,36.7 225.0,35.6 230.0,36.2 235.0,27.2 240.0,20.9 245.0,7.7 250.0,6.2 255.0,3.0 260.0,20.4" fill="none" stroke="#5bbf9a" stroke-width="1.6"/></svg><div class="sub">5 лет · сейчас 43/100 ↑</div></div><div class="scard"><div class="sh">AI agents</div><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><polyline points="0.0,43.0 5.0,43.0 10.0,43.0 15.0,43.0 20.0,43.0 25.0,43.0 30.0,43.0 35.0,43.0 40.0,43.0 45.0,43.0 50.0,43.0 55.0,43.0 60.0,43.0 65.0,43.0 70.0,43.0 75.0,43.0 80.0,43.0 85.0,43.0 90.0,43.0 95.0,43.0 100.0,43.0 105.0,43.0 110.0,43.0 115.0,43.0 120.0,43.0 125.0,42.6 130.0,43.0 135.0,42.6 140.0,42.6 145.0,42.6 150.0,42.6 155.0,42.6 160.0,42.6 165.0,42.6 170.0,42.2 175.0,42.2 180.0,41.8 185.0,40.1 190.0,40.6 195.0,40.6 200.0,40.6 205.0,38.1 210.0,38.1 215.0,27.1 220.0,24.2 225.0,30.3 230.0,27.5 235.0,31.2 240.0,26.7 245.0,17.7 250.0,13.2 255.0,3.0 260.0,30.3" fill="none" stroke="#5bbf9a" stroke-width="1.6"/></svg><div class="sub">5 лет · сейчас 31/100 ↑</div></div><div class="scard"><div class="sh">KI Agenten</div><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><polyline points="0.0,43.0 5.0,43.0 10.0,43.0 15.0,43.0 20.0,43.0 25.0,43.0 30.0,43.0 35.0,43.0 40.0,43.0 45.0,43.0 50.0,43.0 55.0,43.0 60.0,43.0 65.0,43.0 70.0,43.0 75.0,43.0 80.0,43.0 85.0,43.0 90.0,43.0 95.0,43.0 100.0,43.0 105.0,43.0 110.0,43.0 115.0,43.0 120.0,43.0 125.0,43.0 130.0,43.0 135.0,43.0 140.0,43.0 145.0,43.0 150.0,43.0 155.0,43.0 160.0,43.0 165.0,43.0 170.0,43.0 175.0,43.0 180.0,37.8 185.0,39.1 190.0,35.2 195.0,37.3 200.0,34.7 205.0,24.7 210.0,31.3 215.0,23.9 220.0,27.3 225.0,26.0 230.0,24.3 235.0,26.0 240.0,3.0 245.0,3.4 250.0,4.7 255.0,12.6 260.0,14.3" fill="none" stroke="#5bbf9a" stroke-width="1.6"/></svg><div class="sub">5 лет · сейчас 66/100 ↑</div></div><div class="scard"><div class="sh">KI Weiterbildung</div><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><polyline points="0.0,43.0 5.0,43.0 10.0,43.0 15.0,43.0 20.0,43.0 25.0,43.0 30.0,43.0 35.0,43.0 40.0,43.0 45.0,43.0 50.0,43.0 55.0,43.0 60.0,43.0 65.0,43.0 70.0,43.0 75.0,43.0 80.0,43.0 85.0,43.0 90.0,43.0 95.0,43.0 100.0,43.0 105.0,43.0 110.0,43.0 115.0,43.0 120.0,43.0 125.0,37.4 130.0,36.0 135.0,36.0 140.0,35.6 145.0,34.2 150.0,38.3 155.0,37.9 160.0,43.0 165.0,32.3 170.0,34.2 175.0,31.8 180.0,33.7 185.0,27.7 190.0,29.5 195.0,30.4 200.0,29.5 205.0,22.5 210.0,28.1 215.0,3.9 220.0,14.6 225.0,12.8 230.0,13.7 235.0,13.2 240.0,4.9 245.0,9.5 250.0,3.0 255.0,9.5 260.0,19.3" fill="none" stroke="#5bbf9a" stroke-width="1.6"/></svg><div class="sub">5 лет · сейчас 51/100 ↑</div></div><div class="scard"><div class="sh">KI Automatisierung</div><svg viewBox="0 0 260 46" class="spark" preserveAspectRatio="none"><polyline points="0.0,43.0 5.0,43.0 10.0,43.0 15.0,43.0 20.0,43.0 25.0,43.0 30.0,43.0 35.0,43.0 40.0,43.0 45.0,43.0 50.0,43.0 55.0,43.0 60.0,43.0 65.0,43.0 70.0,43.0 75.0,43.0 80.0,43.0 85.0,43.0 90.0,43.0 95.0,43.0 100.0,43.0 105.0,43.0 110.0,43.0 115.0,43.0 120.0,43.0 125.0,43.0 130.0,43.0 135.0,43.0 140.0,43.0 145.0,43.0 150.0,43.0 155.0,43.0 160.0,43.0 165.0,43.0 170.0,43.0 175.0,43.0 180.0,43.0 185.0,43.0 190.0,37.4 195.0,43.0 200.0,36.0 205.0,22.1 210.0,31.4 215.0,29.0 220.0,31.4 225.0,28.1 230.0,7.2 235.0,13.2 240.0,12.3 245.0,8.1 250.0,3.0 255.0,7.2 260.0,23.9" fill="none" stroke="#5bbf9a" stroke-width="1.6"/></svg><div class="sub">5 лет · сейчас 41/100 ↑</div></div></div>
+ <div class="sh"><span class="num">04</span><h2>Траектория · TrendsMCP</h2></div>
+ <p class="cap">Нормализованный интерес 0–100 за 5 лет. Лид-термины выросли с ~0 до пика в 2025–26.</p>
+ <div class="sparks"><div class="skrow"><div class="skh"><span class="skn">Claude Code</span><span class="skv mono">43</span></div><svg viewBox="0 0 180 34" class="spk accent" preserveAspectRatio="none"><polyline points="0.0,32.0 3.5,32.0 6.9,32.0 10.4,32.0 13.8,32.0 17.3,32.0 20.8,32.0 24.2,32.0 27.7,32.0 31.2,32.0 34.6,32.0 38.1,32.0 41.5,32.0 45.0,32.0 48.5,32.0 51.9,32.0 55.4,32.0 58.8,32.0 62.3,32.0 65.8,32.0 69.2,32.0 72.7,32.0 76.2,32.0 79.6,32.0 83.1,32.0 86.5,32.0 90.0,32.0 93.5,32.0 96.9,32.0 100.4,32.0 103.8,32.0 107.3,32.0 110.8,32.0 114.2,32.0 117.7,32.0 121.2,32.0 124.6,32.0 128.1,32.0 131.5,30.8 135.0,31.6 138.5,31.6 141.9,29.2 145.4,26.9 148.8,23.3 152.3,27.3 155.8,26.5 159.2,26.9 162.7,20.2 166.2,15.4 169.6,5.6 173.1,4.4 176.5,2.0 180.0,15.0"/></svg><div class="skc">5 лет · рост с ~0</div></div><div class="skrow"><div class="skh"><span class="skn">AI agents</span><span class="skv mono">31</span></div><svg viewBox="0 0 180 34" class="spk accent" preserveAspectRatio="none"><polyline points="0.0,32.0 3.5,32.0 6.9,32.0 10.4,32.0 13.8,32.0 17.3,32.0 20.8,32.0 24.2,32.0 27.7,32.0 31.2,32.0 34.6,32.0 38.1,32.0 41.5,32.0 45.0,32.0 48.5,32.0 51.9,32.0 55.4,32.0 58.8,32.0 62.3,32.0 65.8,32.0 69.2,32.0 72.7,32.0 76.2,32.0 79.6,32.0 83.1,32.0 86.5,31.7 90.0,32.0 93.5,31.7 96.9,31.7 100.4,31.7 103.8,31.7 107.3,31.7 110.8,31.7 114.2,31.7 117.7,31.4 121.2,31.4 124.6,31.1 128.1,29.9 131.5,30.2 135.0,30.2 138.5,30.2 141.9,28.3 145.4,28.3 148.8,20.1 152.3,17.9 155.8,22.5 159.2,20.4 162.7,23.1 166.2,19.8 169.6,13.0 173.1,9.7 176.5,2.0 180.0,22.5"/></svg><div class="skc">5 лет · рост с ~0</div></div><div class="skrow"><div class="skh"><span class="skn">KI Agenten</span><span class="skv mono">66</span></div><svg viewBox="0 0 180 34" class="spk accent" preserveAspectRatio="none"><polyline points="0.0,32.0 3.5,32.0 6.9,32.0 10.4,32.0 13.8,32.0 17.3,32.0 20.8,32.0 24.2,32.0 27.7,32.0 31.2,32.0 34.6,32.0 38.1,32.0 41.5,32.0 45.0,32.0 48.5,32.0 51.9,32.0 55.4,32.0 58.8,32.0 62.3,32.0 65.8,32.0 69.2,32.0 72.7,32.0 76.2,32.0 79.6,32.0 83.1,32.0 86.5,32.0 90.0,32.0 93.5,32.0 96.9,32.0 100.4,32.0 103.8,32.0 107.3,32.0 110.8,32.0 114.2,32.0 117.7,32.0 121.2,32.0 124.6,28.1 128.1,29.1 131.5,26.1 135.0,27.8 138.5,25.8 141.9,18.3 145.4,23.2 148.8,17.7 152.3,20.3 155.8,19.3 159.2,18.0 162.7,19.3 166.2,2.0 169.6,2.3 173.1,3.3 176.5,9.2 180.0,10.5"/></svg><div class="skc">5 лет · рост с ~0</div></div><div class="skrow"><div class="skh"><span class="skn">KI Weiterbildung</span><span class="skv mono">51</span></div><svg viewBox="0 0 180 34" class="spk ink" preserveAspectRatio="none"><polyline points="0.0,32.0 3.5,32.0 6.9,32.0 10.4,32.0 13.8,32.0 17.3,32.0 20.8,32.0 24.2,32.0 27.7,32.0 31.2,32.0 34.6,32.0 38.1,32.0 41.5,32.0 45.0,32.0 48.5,32.0 51.9,32.0 55.4,32.0 58.8,32.0 62.3,32.0 65.8,32.0 69.2,32.0 72.7,32.0 76.2,32.0 79.6,32.0 83.1,32.0 86.5,27.8 90.0,26.8 93.5,26.8 96.9,26.4 100.4,25.4 103.8,28.5 107.3,28.2 110.8,32.0 114.2,24.0 117.7,25.4 121.2,23.6 124.6,25.0 128.1,20.5 131.5,21.9 135.0,22.6 138.5,21.9 141.9,16.7 145.4,20.8 148.8,2.7 152.3,10.7 155.8,9.3 159.2,10.0 162.7,9.7 166.2,3.4 169.6,6.9 173.1,2.0 176.5,6.9 180.0,14.2"/></svg><div class="skc">5 лет · рост с ~0</div></div><div class="skrow"><div class="skh"><span class="skn">KI Automatisierung</span><span class="skv mono">41</span></div><svg viewBox="0 0 180 34" class="spk ink" preserveAspectRatio="none"><polyline points="0.0,32.0 3.5,32.0 6.9,32.0 10.4,32.0 13.8,32.0 17.3,32.0 20.8,32.0 24.2,32.0 27.7,32.0 31.2,32.0 34.6,32.0 38.1,32.0 41.5,32.0 45.0,32.0 48.5,32.0 51.9,32.0 55.4,32.0 58.8,32.0 62.3,32.0 65.8,32.0 69.2,32.0 72.7,32.0 76.2,32.0 79.6,32.0 83.1,32.0 86.5,32.0 90.0,32.0 93.5,32.0 96.9,32.0 100.4,32.0 103.8,32.0 107.3,32.0 110.8,32.0 114.2,32.0 117.7,32.0 121.2,32.0 124.6,32.0 128.1,32.0 131.5,27.8 135.0,32.0 138.5,26.8 141.9,16.3 145.4,23.3 148.8,21.5 152.3,23.3 155.8,20.8 159.2,5.1 162.7,9.7 166.2,9.0 169.6,5.8 173.1,2.0 176.5,5.1 180.0,17.7"/></svg><div class="skc">5 лет · рост с ~0</div></div></div>
 </section>
 
 <section>
- <h2><span class="n">05</span>Вывод</h2>
- <div class="callout">
+ <div class="sh"><span class="num">05</span><h2>Вывод</h2></div>
+ <div class="brief">
   <b>Заходим через то, что ищут — продаём то, что уникально.</b><br>
-  <span class="win">Категория входа = H3 (агентный AI)</span>: Claude Code 110k, AI agents 10k, KI Agenten 4.4k↑ — спрос и обнаружение здесь.<br>
-  <span class="win">Остриё = H2 (живая сборка в Берлине под задачу)</span> + own-it как поддержка: низкий объём, но топ-CPC (17.77€) и whitespace.<br>
-  <b>H4 (KI-Weiterbildung 2400↑)</b> — вторичный канал денег (корпоративы/AZAV), не лид (насыщено).<br>
-  <span class="warn">H1 «build&amp;own» — почти нулевой поисковый спрос</span>: это дифференциатор, а не точка входа (его не гуглят). <b>H5</b> — фаза 2 (слабый спрос + VC-дыра).
+  <span class="g">Категория входа — H3 (агентный AI):</span> Claude Code 110k, AI agents 10k, KI Agenten 4.4k↗. Здесь спрос и обнаружение.<br>
+  <span class="g">Остриё — H2 (живая сборка в Берлине под задачу)</span> + own-it как поддержка: низкий объём, но топ-CPC (€17.77) и whitespace.<br>
+  <b>H4 (KI-Weiterbildung 2.4k↗)</b> — вторичный канал денег (корпоративы/AZAV), не лид (насыщено). <span class="r">H1 «build&amp;own» — ~0 поискового спроса</span> (дифференциатор, не точка входа). H5 — фаза 2.
  </div>
- <p class="note">Граница: desk-прокси спроса, не конверсия; термин-сет ~23. Решающий тест — smoke-test связки H3+H2, отдельно.</p>
+ <p class="cap" style="margin-top:20px">Граница: desk-прокси спроса, не конверсия; ~23 термина. Решающий тест — smoke-test связки H3+H2.</p>
 </section>
 
 <footer><span>CLOUDWORKING · DEMAND ANALYTICS</span><span class="mono">DataForSEO + TrendsMCP · 2026-07-06</span></footer>
