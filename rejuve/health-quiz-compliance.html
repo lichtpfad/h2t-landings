@@ -2,153 +2,129 @@
 <html lang="ru"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Health-квиз как лид-магнит — юридический разбор</title>
+<title>Онлайн-тест как инструмент привлечения — правила и как сделать чисто</title>
 <style>
   :root{--ink:#1b2733;--muted:#5c6b7a;--line:#e3ebf1;--accent:#2f7d6b;
         --bg:#f6f9fb;--warn:#8a6d1e;--warnbg:#fdf7e3;--bad:#b23b3b;--good:#2f7d6b;}
   *{box-sizing:border-box;}
-  body{margin:0;font:16px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  body{margin:0;font:16px/1.62 -apple-system,Segoe UI,Roboto,Arial,sans-serif;
        color:var(--ink);background:var(--bg);}
-  .wrap{max-width:860px;margin:0 auto;padding:30px 20px 64px;}
-  h1{font-size:27px;margin:0 0 4px;}
-  h2{font-size:19px;margin:34px 0 12px;padding-top:14px;border-top:2px solid var(--line);}
-  h3{font-size:15px;margin:18px 0 6px;color:var(--accent);text-transform:uppercase;letter-spacing:.03em;}
+  .wrap{max-width:820px;margin:0 auto;padding:30px 20px 64px;}
+  h1{font-size:26px;margin:0 0 6px;line-height:1.25;}
+  h2{font-size:19px;margin:34px 0 10px;padding-top:16px;border-top:2px solid var(--line);}
+  h3{font-size:15.5px;margin:16px 0 4px;}
   .lead{color:var(--muted);margin:0 0 18px;}
-  .tag{display:inline-block;font-size:12px;background:#eaf2ef;color:var(--accent);
-       padding:2px 10px;border-radius:20px;margin-bottom:14px;}
-  .note{background:var(--warnbg);border:1px solid #f0e2b8;border-radius:12px;
-        padding:12px 16px;color:var(--warn);font-size:14px;margin:0 0 22px;}
-  .verdict{background:#eaf3f0;border:1px solid #bfe0d6;border-left:5px solid var(--accent);
-           border-radius:12px;padding:16px 20px;margin:0 0 26px;}
-  .verdict b{color:var(--accent);}
-  blockquote{margin:10px 0;padding:10px 16px;border-left:3px solid var(--accent);
-             background:#fff;border-radius:0 8px 8px 0;color:#33424f;font-size:14.5px;}
-  blockquote cite{display:block;margin-top:6px;color:var(--muted);font-size:12.5px;font-style:normal;}
-  .qa{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0;}
-  .qa .q{font-weight:700;}
-  .qa .a{color:#33424f;font-size:15px;margin-top:5px;}
+  .intro{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:0 0 8px;}
+  .norm{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;}
+  .norm p{margin:6px 0;}
+  .src{font-size:13px;color:#7a8894;margin-top:8px;border-top:1px dashed var(--line);padding-top:7px;}
+  .src b{color:#5c6b7a;}
   table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px;}
   th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
   th{background:#eef4f8;font-size:13px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);}
   .reg{color:var(--bad);font-weight:600;}
   .ok{color:var(--good);font-weight:600;}
+  .disc{background:#eaf3f0;border:1px solid #bfe0d6;border-left:5px solid var(--accent);
+        border-radius:12px;padding:16px 20px;margin:14px 0;}
+  .disc b{color:var(--accent);}
   ul{margin:8px 0;padding-left:22px;}
-  li{margin:4px 0;}
+  li{margin:5px 0;}
   a{color:var(--accent);}
-  .src{font-size:13px;color:var(--muted);}
   .foot{color:var(--muted);font-size:13px;margin-top:30px;border-top:1px solid var(--line);padding-top:16px;}
   @media(max-width:560px){h1{font-size:22px;} .wrap{padding:22px 16px 48px;}}
 </style></head>
 <body><div class="wrap">
 
-<span class="tag">Внутренний разбор для команды · 6 июля 2026</span>
-<h1>Health-квиз как лид-магнит — юридический разбор</h1>
-<p class="lead">Можно ли функциональный опросник Кристины (симптомы по системам организма → зоны, красная = «серьёзные нарушения») использовать как онлайн-тест в воронке — и как это делают другие.</p>
+<h1>Онлайн-тест как инструмент привлечения: правила рекламы здоровья и как сделать чисто</h1>
+<p class="lead">Полная картина применимых норм в одном месте — Швейцария, EU, Google, Meta, данные. Рабочий материал к разговору 7 июля.</p>
 
-<div class="note">⚠️ Это рабочий разбор, не юридическое заключение. Цитаты законов — дословные из первоисточников (Fedlex, EU-регуляторы, Meta, Google). Перед публичным запуском — подпись швейцарского юриста + medical-review gate.</div>
-
-<div class="verdict">
-<b>Вердикт: шанс есть — но не через дисклеймер, а через смену того, что тест ВЫДАЁТ.</b><br>
-Тест, который берёт симптомы человека и выдаёт ему персональную оценку здоровья («красная зона = нарушение»), почти наверняка = медицинское изделие (EU) и запрещённый health-claim (CH) — <b>дисклеймер это не чинит</b>. Легальный путь: публичный квиз выдаёт <b>не персональную оценку здоровья</b>, а образ-жизни-архетип / образование; а настоящий клинический опросник Кристины остаётся <b>приватным внутри платной консультации</b>.
+<div class="intro">
+Идея использовать функциональный тест-опросник как входной инструмент — сильная и рабочая: так делают многие бренды здоровья и питания. Но всё, что касается здоровья, в рекламе Швейцарии и EU регулируется строго. Мы собрали здесь <b>все применимые нормы</b> — чтобы вместе решить, как сделать этот инструмент и эффективным, и полностью чистым. Ниже — сами правила (с источниками), а в конце — варианты, как это можно реализовать, для обсуждения.
 </div>
 
-<h2>Ответы на вопросы Лидии</h2>
+<h2>1 · Швейцария — реклама здоровья и деятельность</h2>
 
-<div class="qa"><div class="q">Тесты в воронке вообще нельзя?</div>
-<div class="a">Можно — и это делают десятки брендов (примеры ниже). Запрещён не тест, а <b>диагностическая рамка результата</b> («у вас нарушение / красная зона») + игра на страхе + удалённая рекомендация лечения.</div></div>
+<div class="norm">
+<h3>Нельзя ставить «диагноз онлайн» и пугать ухудшением</h3>
+<p>Реклама не может предлагать диагноз или лечение «по переписке» (то есть по результатам онлайн-формы) и не может вызывать страх, что без услуги/продукта состояние ухудшится.</p>
+<div class="src"><b>Основание:</b> Arzneimittel-Werbeverordnung (AWV) Art. 22 — «Werbung darf nicht: … eine Diagnose anbietet oder eine Behandlung auf dem Korrespondenzweg empfiehlt» (lit. a) · «die Befürchtung wecken, der Zustand … verschlechtere sich ohne die Anwendung» (lit. e).</div>
+</div>
 
-<div class="qa"><div class="q">А если тест не рекомендует действие/консультацию?</div>
-<div class="a">Убирает один удар (AWV 22 lit.a — «диагноз/лечение по переписке»), но <b>сам вывод «серьёзные нарушения» остаётся</b>: это health-claim (UWG 3b) и, по EU-критерию, «output used in a health decision» → всё ещё медизделие. Помогает, но не решает.</div></div>
+<div class="norm">
+<h3>Нельзя вводить в заблуждение и давить</h3>
+<p>Запрещены неверные или вводящие в заблуждение утверждения, а также «особо агрессивные» методы продаж и формулировки, создающие впечатление особой квалификации, которой нет.</p>
+<div class="src"><b>Основание:</b> Bundesgesetz gegen den unlauteren Wettbewerb (UWG) Art. 3 (lit. b — irreführende Angaben; lit. c — ложная квалификация; lit. h — aggressive Verkaufsmethoden). Общий запрет вводящей в заблуждение health-рекламы — HMG Art. 32.</div>
+</div>
 
-<div class="qa"><div class="q">А если прописать в тесте, что результаты — не мед-диагноз?</div>
-<div class="a"><b>Дисклеймер необходим, но не достаточен.</b> Регулятор смотрит на то, что софт <i>фактически делает</i>, а не на подпись. Цитата QualiHQ (ниже): «It does not matter that you added "this is not medical advice."» Противоречие «красная зона = нарушения» + «это не диагноз» не спасает.</div></div>
+<div class="norm">
+<h3>Коммерческая деятельность «для улучшения здоровья» — под надзором</h3>
+<p>Даже если для деятельности не нужна отдельная лицензия, коммерческая работа, направленная на улучшение состояния здоровья, в кантоне Цуг подпадает под надзор ведомства здравоохранения и требует уведомления.</p>
+<div class="src"><b>Основание:</b> Gesundheitsgesetz Kanton Zug (GesG) § 8 — «Tätigkeiten … unterstehen der Aufsicht der Gesundheitsdirektion, sofern sie gewerbsmässig ausgeübt werden und der … Verbesserung des Gesundheitszustandes … dienen … auskunfts- und meldepflichtig».</div>
+</div>
 
-<div class="qa"><div class="q">Как вообще регулируется нутрициология?</div>
-<div class="a">Диплом CNM даёт Кристине право на <b>платные консультации</b> (титул «Ernährungsberater» не защищён), но <b>не</b> на мед-диагнозы, терапевтические заявления и страховой биллинг (нужен EMR — у неё отказ). То есть консультировать можно; ставить «диагнозы» и обещать лечение — нет.</div></div>
+<h2>2 · EU — когда онлайн-тест считается «медицинским прибором»</h2>
+<p>Ключ — не сами вопросы, а <b>что тест выдаёт в результате</b>. Если тест берёт симптомы человека и выдаёт ему <b>личную оценку здоровья</b> (риск, «зона», состояние) — по правилам EU это программа-«медицинский прибор», а это дорогая сертификация (ISO 13485, клин-оценка, notified body). Если результат общий / образовательный и не даёт личной оценки — не считается.</p>
 
-<h2>1 · EU — когда тест становится медицинским изделием</h2>
-<p>Ключ — <b>заявленное назначение (intended purpose)</b>, а не набор вопросов. Софт = медизделие, если его вывод используется в решении о здоровье.</p>
-
-<blockquote>«software that takes patient-specific data as input and provides output "used to take decisions with diagnosis or therapeutic purposes" is a medical device. The word "used" matters. Your software does not need to diagnose. It needs only to provide information that is used in a diagnostic decision.»
-<cite>QualiHQ, суммируя MDCG 2019-11 (EU MDR guidance)</cite></blockquote>
-
-<blockquote>«It does not matter that you added "this is not medical advice." The function of the software is to influence a health decision, and that is the test the regulation applies.»
-<cite>QualiHQ — почему дисклеймер не работает</cite></blockquote>
-
-<blockquote>«whether the manufacturer intended the product to have a "medical purpose" will be the key distinguishing factor… if software uses patient-specific data in an automated manner to give patient-specific outcomes, it is more likely to… be a medical device.»
-<cite>Taylor Wessing, «Medical devices, wellbeing and lifestyle apps»</cite></blockquote>
-
-<h3>Где проходит линия (по QualiHQ)</h3>
 <table>
-<tr><th>Вывод теста</th><th>Статус</th></tr>
-<tr><td>Список состояний по введённым симптомам / «дифференциальный диагноз»</td><td class="reg">Регулируется</td></tr>
-<tr><td>Оценка риска для человека («ваши симптомы — высокий риск»)</td><td class="reg">Регулируется</td></tr>
-<tr><td>Рекомендация срочности / триаж</td><td class="reg">Регулируется</td></tr>
-<tr><td>Общая статья/образование, <b>не персонализировано</b> под ввод</td><td class="ok">Не регулируется</td></tr>
-<tr><td>Чеклист симптомов без анализа ответов</td><td class="ok">Не регулируется</td></tr>
-<tr><td>Сбор данных без интерпретации приложением</td><td class="ok">Не регулируется</td></tr>
+<tr><th>Что показывает результат</th><th>Статус</th></tr>
+<tr><td>Личная оценка / «зона» / уровень риска по симптомам конкретного человека</td><td class="reg">Считается мед-прибором</td></tr>
+<tr><td>Рекомендация «срочно к врачу» / список возможных состояний</td><td class="reg">Считается мед-прибором</td></tr>
+<tr><td>Общая образовательная информация, <b>не персональная оценка</b></td><td class="ok">Не считается</td></tr>
+<tr><td>Тип образа жизни / зона роста по привычкам (без оценки болезни)</td><td class="ok">Не считается</td></tr>
 </table>
-<blockquote>«If you redesign the output so it no longer produces a personalised assessment — for example, returning only general health information without ranking conditions or making a triage call — you may move outside scope. But this usually means fundamentally changing what the product does.»
-<cite>QualiHQ — как выйти из-под регулирования</cite></blockquote>
-<p class="src">Регулируемый симптом-чекер = обычно Class IIa (EU MDR Rule 11): ISO 13485, IEC 62304, клин-оценка, notified body, post-market. Т.е. путь «сделать как медизделие» дорогой — проще не быть им.</p>
 
-<h2>2 · Швейцария — реклама и деятельность (дословно)</h2>
+<div class="norm">
+<p><b>Важно:</b> дисклеймер «это не медицинский диагноз» <b>сам по себе не выводит</b> тест из-под правила — смотрят на то, что тест фактически делает, а не на подпись.</p>
+<div class="src"><b>Основание:</b> EU MDR + guidance MDCG 2019-11 — прибор, если софт даёт вывод, «used to take decisions with diagnosis or therapeutic purposes». Разбор: QualiHQ — «A disclaimer does not change the intended purpose of the software»; «If you redesign the output so it no longer produces a personalised assessment … you may move outside scope». Taylor Wessing — ключ в «intended medical purpose».</div>
+</div>
+
+<h2>3 · Реклама в Google</h2>
+<div class="norm">
+<p>Реклама, связанная со здоровьем, должна соответствовать местным законам и отраслевым стандартам; часть медицинских тем — только по заявке и сертификации. Нельзя строить аудиторию по чувствительным состояниям здоровья (например «люди с гормональными проблемами») и давать непроверяемые обещания результата.</p>
+<div class="src"><b>Основание:</b> Google Ads Policy — Healthcare and medicines: «ads and destinations are expected to follow appropriate laws and industry standards» (support.google.com/adspolicy/answer/176031) + Personalized advertising (запрет таргетинга по health-состояниям) + Misrepresentation.</div>
+</div>
+
+<h2>4 · Реклама в Meta (Instagram / Facebook)</h2>
+<div class="norm">
 <ul>
-<li><b>AWV Art. 22 lit. a:</b> «Werbung darf nicht: eine ärztliche … Untersuchung … als überflüssig erscheinen lassen, insbesondere indem sie eine <b>Diagnose anbietet oder eine Behandlung auf dem Korrespondenzweg empfiehlt</b>».</li>
-<li><b>AWV Art. 22 lit. e:</b> «die <b>Befürchtung wecken</b>, der Zustand … verschlechtere sich ohne die Anwendung» — запрет игры на страхе.</li>
-<li><b>UWG Art. 3 lit. b / c / h:</b> irreführende Angaben / ложная квалификация / «besonders aggressive Verkaufsmethoden».</li>
-<li><b>HMG Art. 32:</b> «Unzulässig ist Werbung: a. die irreführend ist…».</li>
-<li><b>GesG Zug § 8:</b> коммерческая деятельность «zur … Verbesserung des Gesundheitszustandes» — под надзором Gesundheitsdirektion + <b>Meldepflicht</b>, даже без Bewilligung.</li>
+<li>Нельзя намекать, что реклама «знает» состояние человека — формат «узнай, всё ли в порядке с твоими гормонами» запрещён.</li>
+<li>Нельзя вызывать негативное самовосприятие («что-то с тобой не так»).</li>
+<li>Реклама на тему питания / здоровья / веса — только для аудитории 18+.</li>
 </ul>
-<p class="src">Дословные тексты и ссылки Fedlex/bgs.zg.ch — во внутреннем compliance-досье.</p>
+<div class="src"><b>Основание:</b> Meta Ad Standards — Personal Attributes («are you suffering from…») и Health and Wellness («Ads must not imply or attempt to generate negative self-perception»).</div>
+</div>
 
-<h2>3 · Реклама в Meta (Instagram/Facebook)</h2>
-<ul>
-<li><b>Personal attributes:</b> нельзя намекать, что знаешь состояние человека — «are you suffering from…», «your condition». Health-квиз-реклама «узнай, всё ли с твоими гормонами» = прямое нарушение.</li>
-<li><b>Health &amp; Wellness:</b> «Ads must not imply or attempt to generate <b>negative self-perception</b>»; diet/health/weight — таргет только 18+.</li>
-<li>Механика «покажем красное → испугай → купи» = negative self-perception + personal attributes → авто-отклонение, риск бана Business Manager.</li>
-</ul>
-<p class="src">Источник: Meta Transparency Center → Ad Standards → Health and Wellness / Personal Attributes.</p>
+<h2>5 · Данные — обязательное согласие</h2>
+<div class="norm">
+<p>Ответы о симптомах — это особая, чувствительная категория персональных данных. Собирать их (в тесте или рассылке) можно только с <b>явного согласия</b> человека, на понятном правовом основании и с защищённым хранением.</p>
+<div class="src"><b>Основание:</b> revDSG (Швейцария) / GDPR Art. 9 — «special category / besondere Personendaten»; штраф до CHF 250 000. Ориентир: ICO — special category data.</div>
+</div>
 
-<h2>4 · Реклама в Google</h2>
-<blockquote>«Google Ads is dedicated to following advertising regulations for healthcare and medicine, so ads and destinations are expected to follow appropriate laws and industry standards.»
-<cite>Google Ads Policy — Healthcare and medicines</cite></blockquote>
-<ul>
-<li>Часть health-контента — только по <b>заявке и сертификации</b>; ожидается соответствие местному праву (для нас = HMG/UWG/GesG выше).</li>
-<li><b>Personalized advertising:</b> Google запрещает таргетинг по чувствительным health-состояниям — нельзя строить аудиторию «люди с гормональными проблемами».</li>
-<li>Общая политика Misrepresentation: без недостоверных/непроверяемых health-обещаний.</li>
-</ul>
-
-<h2>5 · Данные (обязательно при любом варианте)</h2>
-<p>Симптомы = <b>особые персональные данные</b> (revDSG / GDPR Art. 9). Рассылка/квиз, собирающий их, требует <b>явного согласия</b> + правовой основы + защищённого хранения. Штраф revDSG — до CHF 250 000 на ответственное лицо. Дисклеймер тут не заменяет согласие.</p>
-
-<h2>6 · Как это делают компании</h2>
+<h2>6 · Как это делают другие</h2>
 <table>
-<tr><th>Кто</th><th>Что</th><th>Нюанс</th></tr>
-<tr><td><a href="https://www.parsleyhealth.com/quiz">Parsley Health</a> — «Symptom Index»</td><td>Публичный функциональный health-квиз как лид-ген</td><td>У них <b>есть врачи</b> — право на оценочную рамку</td></tr>
-<tr><td><a href="https://thefunctionalmds.com/health-quiz">The Functional MDs</a></td><td>Health-квиз как вход в воронку</td><td>Снова MD-бэкенд</td></tr>
-<tr><td><a href="https://www.tryinteract.com/blog/how-the-habit-ayurveda-got-170000-leads-with-a-quiz/">Habit Ayurveda</a></td><td>170 000+ лидов через квиз</td><td>Wellness-рамка, не диагностика</td></tr>
-<tr><td><a href="https://www.tryinteract.com/blog/how-to-create-nutrition-quiz-lead-magnets-that-convert-at-57/">Interact (nutrition)</a></td><td>Nutrition-квизы, конверсия до 57%</td><td>Результат = тип/рекомендация, не диагноз</td></tr>
+<tr><th>Кто</th><th>Что делают</th></tr>
+<tr><td><a href="https://www.parsleyhealth.com/quiz">Parsley Health</a></td><td>Публичный health-тест как вход в воронку. Это медицинский сервис с врачами — поэтому оценочная рамка результата им доступна шире.</td></tr>
+<tr><td><a href="https://thefunctionalmds.com/health-quiz">The Functional MDs</a></td><td>Тест здоровья как первый шаг воронки (тоже с врачами).</td></tr>
+<tr><td><a href="https://www.tryinteract.com/blog/how-the-habit-ayurveda-got-170000-leads-with-a-quiz/">Habit Ayurveda</a></td><td>170 000+ обращений через тест — в рамке образа жизни, без медицинской оценки.</td></tr>
+<tr><td><a href="https://www.tryinteract.com/blog/how-to-create-nutrition-quiz-lead-magnets-that-convert-at-57/">Nutrition-тесты (Interact)</a></td><td>Тесты по питанию с высокой конверсией — результат подаётся как «твой тип / рекомендация», не как диагноз.</td></tr>
 </table>
-<p class="src">Паттерн: у кого нет врачей — подают результат как <b>wellness-архетип / образование</b> с дисклеймером; оценочно-диагностическую рамку («у вас нарушение») позволяют себе те, у кого есть клиницисты. У Кристины (не MD, без EMR) линия проходит строже — значит дальше в сторону «образование», не «оценка здоровья».</p>
+<p class="lead">Закономерность: у медицинских сервисов рамка результата шире; для wellness-студии результат лучше подавать как <b>тип образа жизни / образование</b>, а не как оценку здоровья.</p>
 
-<h2>7 · Рекомендуемая конструкция</h2>
+<h2>7 · Как это можно сделать — к обсуждению</h2>
+<div class="disc">
+<b>Рабочая гипотеза (обсудим вместе):</b>
 <ul>
-<li><b>Публичный квиз (лид-магнит):</b> домены образа жизни (сон / энергия / стресс / восстановление / привычки питания), результат = «твой тип + зона роста», аспирационно, <b>без органов, без слова «нарушения», без страха</b>. Не персонализированная мед-оценка → вне EU-регулирования.</li>
-<li><b>Клинический опросник Кристины</b> (системы → зоны) — <b>только приватный intake внутри платной консультации</b> (профессиональный контекст, не публичная реклама/софт-продукт).</li>
-<li>Обязательно: явное согласие на данные (revDSG), дисклеймер «не медицинская оценка», medical-review gate до запуска.</li>
-<li>Реклама: без personal attributes и negative self-perception (Meta), без таргетинга по health-состояниям (Google), без health-claims (HMG/UWG).</li>
+<li><b>Публичный тест как лид-магнит</b> — про образ жизни (сон, энергия, стресс, восстановление, привычки питания), результат = «твой тип + на что обратить внимание», в позитивной рамке, без «зон нарушений». Такой тест не даёт личной медицинской оценки → остаётся вне медицинского регулирования.</li>
+<li><b>Твой подробный функциональный опросник</b> (по системам организма) — как ценный инструмент <b>внутри платной консультации</b>, где ты работаешь с человеком лично. Там он на своём месте.</li>
+<li>В любом варианте: явное согласие на данные, аккуратные формулировки, проверка материалов на соответствие правилам перед запуском.</li>
 </ul>
+Это направление, а не окончательное решение — завтра обсудим, что тебе ближе.
+</div>
 
-<h2>Источники</h2>
-<p class="src">
-<b>EU медизделие:</b> <a href="https://qualihq.com/guides/is-a-symptom-checker-a-medical-device">QualiHQ (symptom checker)</a> · <a href="https://health.ec.europa.eu/system/files/2022-12/md_borderline_manual_12-2022_en.pdf">EU Borderline Manual 12-2022</a> · MDCG 2019-11 · <a href="https://www.taylorwessing.com/en/interface/2019/bodytech/border-issues-medical-devices-wellbeing-and-lifestyle-apps">Taylor Wessing</a><br>
-<b>Реклама:</b> Meta Transparency Center (Health &amp; Wellness, Personal Attributes) · <a href="https://support.google.com/adspolicy/answer/176031">Google Ads — Healthcare and medicines</a><br>
-<b>Данные:</b> <a href="https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/special-category-data/what-is-special-category-data/">ICO special category data</a> · GDPR Art. 9 / revDSG<br>
-<b>Примеры:</b> parsleyhealth.com · thefunctionalmds.com · tryinteract.com · leadquizzes.com<br>
-<b>CH-право (дословно):</b> внутреннее compliance-досье (Fedlex HMG/AWV/UWG, bgs.zg.ch GesG Zug)
+<h2>На чём основано</h2>
+<p class="foot">
+Швейцарское право — Fedlex (HMG, AWV, UWG) и bgs.zg.ch (GesG Zug). EU — MDR / MDCG 2019-11, разборы QualiHQ и Taylor Wessing. Реклама — Google Ads Policy (Healthcare and medicines), Meta Ad Standards (Personal Attributes, Health &amp; Wellness). Данные — revDSG / GDPR Art. 9, ICO. Примеры — Parsley Health, The Functional MDs, Interact.<br><br>
+Рабочий материал к разговору 7 июля 2026. Не юридическое заключение — перед публичным запуском теста нужны проверка юристом и медицинское ревью.
 </p>
-
-<p class="foot">Рабочий разбор команды REjuve, 6 июля 2026. Не юридическое заключение — перед публичным запуском теста нужны подпись швейцарского юриста и medical-review (ADR-0006).</p>
 
 </div></body></html>
