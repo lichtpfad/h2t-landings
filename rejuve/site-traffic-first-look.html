@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Трафик сайта — первый взгляд</title>
+<style>
+  :root { --ink:#1c2733; --muted:#5b6b7a; --line:#e5ecf2; --accent:#2f7d6b; --bg:#f6f9fb; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif;
+         color:var(--ink); background:var(--bg); }
+  .wrap { max-width:820px; margin:0 auto; padding:28px 20px 56px; }
+  h1 { font-size:26px; margin:0 0 6px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .note { background:#fdf7e3; border:1px solid #f0e2b8;
+          border-radius:12px; padding:12px 16px; color:#6a5a1e; font-size:14px;
+          margin:0 0 24px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px;
+          padding:18px 20px; }
+  .card.full { grid-column:1 / -1; }
+  .card h2 { font-size:15px; margin:0 0 10px; color:var(--accent);
+             text-transform:uppercase; letter-spacing:.03em; }
+  .big { font-size:30px; font-weight:700; }
+  .sub { color:var(--muted); font-size:14px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:6px 0; border-bottom:1px solid var(--line); }
+  td.num { text-align:right; font-weight:600; }
+  tr:last-child td { border-bottom:0; }
+  .foot { color:var(--muted); font-size:13px; margin-top:24px;
+          border-top:1px solid var(--line); padding-top:16px; }
+  @media (max-width:560px) { .cards { grid-template-columns:1fr; }
+                             h1 { font-size:22px; } }
+</style></head>
+<body><div class="wrap">
+  <h1>Трафик сайта — первый взгляд</h1>
+  <p class="lead">Что видно за первые 5 недель работы нового сайта.</p>
+  <div class="note">⚠️ Ранний срез: 1 июня – 6 июля 2026. Людей пока немного, сайт ещё
+    обновляется — при переезде счётчик начнётся заново. Цифры показывают
+    <b>направление</b>, а не точные пропорции.</div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>Сколько людей</h2>
+      <div class="big">≈ 340</div>
+      <div class="sub">заходов на сайт за 5 недель. Больше половины —
+        с телефона (58%).</div>
+    </div>
+
+    <div class="card">
+      <h2>Откуда приходят</h2>
+      <table><tr><td>Прямые заходы</td><td class="num">44%</td></tr><tr><td>Поиск Google</td><td class="num">36%</td></tr><tr><td>Instagram</td><td class="num">15%</td></tr><tr><td>Другое</td><td class="num">4%</td></tr><tr><td>Facebook</td><td class="num">2%</td></tr></table>
+      <div class="sub" style="margin-top:8px">Рекламы пока нет — весь трафик
+        бесплатный.</div>
+    </div>
+
+    <div class="card">
+      <h2>Откуда географически</h2>
+      <div class="sub">Почти все — из Швейцарии. Больше всего:
+        <b>Цюрих, Цуг, Женева, Баар, Бюль, Лугано</b>. Английскую версию сайта смотрят чаще — это местная
+        международная аудитория региона, не заграница.</div>
+    </div>
+
+    <div class="card">
+      <h2>Что смотрят</h2>
+      <div class="sub">Заходят на главную, дальше — <b>услуги</b> и
+        <b>цены</b>. Часть людей открывает страницу цен сразу — сравнивают.</div>
+    </div>
+
+    <div class="card full">
+      <h2>Чего пока не видим — и что настраиваем</h2>
+      <div class="sub">Сейчас сайт видит визиты, но не показывает записи на
+        процедуры — они идут через систему бронирования отдельно. Форму
+        обратной связи за этот период отправили 3 раза. Мы настраиваем
+        отслеживание так, чтобы видеть не только сколько людей заходит, но и
+        сколько из них доходит до записи. Тогда каждый следующий разговор — о
+        фактах, а не догадках.</div>
+    </div>
+  </div>
+
+  <p class="foot">Данные собраны автоматически с сайта. Первый срез за
+    5 недель — по мере накопления картина станет точнее.</p>
+</div></body></html>
