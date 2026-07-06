@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Позиционирование: 5 гипотез — ClaudeWorking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0d; --surface:#151515; --surface-2:#101010;
+  --fg:#ededed; --fg-body:rgba(237,237,237,.74); --fg-muted:rgba(237,237,237,.42); --fg-faint:rgba(237,237,237,.22);
+  --border:rgba(255,255,255,.09); --border-soft:rgba(255,255,255,.055);
+  --accent:#a9c4ea; --ok:#5bbf9a; --warn:#d6a54a;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg-body);font-family:var(--sans);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;padding:clamp(20px,4vw,56px) clamp(16px,4vw,56px);max-width:1080px;margin:0 auto}
+.back{font-family:var(--mono);font-size:11px;color:var(--fg-muted);text-decoration:none;display:inline-block;margin-bottom:22px}
+.back:hover{color:var(--accent)}
+.mono{font-family:var(--mono)}
+
+.md-body{max-width:84ch}
+.md-body h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;letter-spacing:-.02em;color:var(--fg);line-height:1.15;margin:0 0 8px}
+.md-body h2{font-size:clamp(1.15rem,2.6vw,1.45rem);font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:40px 0 4px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.md-body h3{font-size:1.05rem;font-weight:600;color:var(--fg);margin:26px 0 6px}
+.md-body h4{font-size:.95rem;font-weight:600;color:var(--fg);margin:20px 0 4px}
+.md-body p{margin:11px 0;color:var(--fg-body)}
+.md-body a{color:var(--accent);text-decoration:none}
+.md-body a:hover{text-decoration:underline}
+.md-body strong{color:var(--fg);font-weight:600}
+.md-body em{color:var(--fg-muted);font-style:italic}
+.md-body ul,.md-body ol{margin:11px 0;padding-left:0;list-style:none}
+.md-body li{position:relative;padding:5px 0 5px 20px;color:var(--fg-body);line-height:1.55}
+.md-body li::before{content:'';position:absolute;left:2px;top:13px;width:5px;height:5px;background:var(--accent);opacity:.55}
+.md-body ol{counter-reset:ol}
+.md-body ol>li{counter-increment:ol}
+.md-body ol>li::before{content:counter(ol);background:none;color:var(--accent);font-family:var(--mono);font-size:11px;top:6px;left:0;width:auto;height:auto;opacity:.9}
+.md-body hr{border:none;border-top:1px solid var(--border);margin:34px 0}
+.md-body blockquote{margin:16px 0;padding:14px 18px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--fg-muted);font-size:13.5px;line-height:1.6}
+.md-body blockquote p{margin:6px 0;color:var(--fg-muted)}
+.md-body blockquote strong{color:var(--fg-body)}
+.md-body code{font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--border-soft);padding:1px 5px;color:var(--fg-body);overflow-wrap:anywhere}
+.md-body table{border-collapse:collapse;width:100%;font-size:13px;margin:18px 0;table-layout:auto}
+.md-body th{text-align:left;font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--fg-muted);padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:bottom}
+.md-body td{padding:11px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top;color:var(--fg-body);line-height:1.5;overflow-wrap:anywhere}
+.md-body tr:hover td{background:rgba(255,255,255,.02)}
+
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);letter-spacing:.03em}
+
+@media (max-width:720px){
+  .md-body{max-width:none}
+  .md-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0}
+  .md-table-wrap table{margin:0;min-width:520px}
+}
+</style></head><body>
+<a class="back" href="../">← ClaudeWorking</a>
+<div class="md-body">
+<h1>ClaudeWorking — гипотезы позиционирования (для дата-аналитики)</h1>
+<blockquote>
+<p>Зафиксировано 2026-07-06. Цель — НЕ финальное позиционирование, а набор <strong>тестируемых гипотез «что мы делаем»</strong>, которые далее ранжируются дата-аналитикой спроса (см. отдельный план). Формат по April Dunford (категория / таргет / альтернатива / остриё / value / JTBD).</p>
+<p><strong>Основание:</strong> <code>docs/business/2026-07-05-positioning.md</code>, <code>docs/business/2026-07-05-audience-hypotheses.md</code>, и находки этой сессии (<code>docs/research/competitors/2026-07-06-outcome-niche-crawl.md</code>, <code>docs/research/partnerships/2026-07-06-partner-candidates.md</code>).</p>
+<p><strong>Ключевая поправка сессии:</strong> <em>evidence-grounded / anti-hallucination</em> — НЕ уникальный дифференциатор (IndustryLens продаёт ровно это). Из острия выбывает; уходит максимум в поддержку.</p>
+</blockquote>
+<h2>Структура набора</h2>
+<ul>
+<li><strong>H1–H3 — три рамки ОДНОГО продукта</strong> (общий платящий beachhead: SMB Берлина; различается остриё/лид-сообщение).</li>
+<li><strong>H4, H5 — отдельные GTM-ставки</strong> (другая аудитория и бизнес-модель).</li>
+<li>Дата-аналитика сравнивает все пять как раздельные ставки по спросу + whitespace, но при выборе учитывает, что H1–H3 не взаимоисключающие (можно вести одну как лид, другие — в поддержку).</li>
+</ul>
+<hr />
+<h2>H1 — «Own it» (build &amp; own)</h2>
+<ul>
+<li><strong>Остриё:</strong> построй и владей своей AI-системой, а не арендуй SaaS / не аутсорсь агентству.</li>
+<li><strong>Категория:</strong> кастомная AI-система в собственности.</li>
+<li><strong>Таргет:</strong> SMB, кому важен контроль данных/процессов, раздражает per-seat lock-in (в т.ч. DSGVO-чувствительные).</li>
+<li><strong>Альтернатива у клиента:</strong> купить SaaS (Market Logic, IndustryLens, UW.AI) или нанять агентство (Context Studios).</li>
+<li><strong>Value:</strong> нет vendor lock-in, нет per-seat, данные и логика у тебя, кастом под процессы.</li>
+<li><strong>JTBD:</strong> «дай систему под мои процессы, которой я владею и могу менять сам».</li>
+</ul>
+<h2>H2 — «Ship together» (живой co-building)</h2>
+<ul>
+<li><strong>Остриё:</strong> совместная сборка рабочей системы за 3–6 недель вживую — не курс, не слайды.</li>
+<li><strong>Категория:</strong> оффлайн-акселератор Берлина.</li>
+<li><strong>Таргет:</strong> SMB-владелец, «надо срочно включиться в AI», нужен конкретный результат.</li>
+<li><strong>Альтернатива:</strong> онлайн-bootcamps (SixSides, Maven, Turing College), YouTube, «сам разберусь».</li>
+<li><strong>Value:</strong> уходишь с работающим результатом + навыком за недели; один пайплайн под твою боль, не generic MVP.</li>
+<li><strong>JTBD:</strong> «проведи меня вживую к работающему результату под мою задачу».</li>
+</ul>
+<h2>H3 — «Agentic depth» (настоящие coding-агенты)</h2>
+<ul>
+<li><strong>Остриё:</strong> настоящие агенты на Claude Code, а не no-code игрушки.</li>
+<li><strong>Категория:</strong> серьёзная агентная инженерия.</li>
+<li><strong>Таргет:</strong> tech-curious operators / SMB с IT / разработчики.</li>
+<li><strong>Альтернатива:</strong> Make/Airtable, ChatGPT-промпт-курсы, AZAV-free generic KI (DAKADI, Campus der digitalen Zukunft).</li>
+<li><strong>Value:</strong> production-агенты/пайплайны, которые масштабируются, а не демо; 25 лет инженерного бэкграунда.</li>
+<li><strong>JTBD:</strong> «собери со мной серьёзную агентную систему, а не игрушку».</li>
+</ul>
+<h2>H4 — «AI-native team» (сотрудники)</h2>
+<ul>
+<li><strong>Остриё:</strong> сделать команду компании AI-native — не отдельный продукт, а внутри B2B-engagement.</li>
+<li><strong>Категория:</strong> корпоративный апскилл в агентных инструментах.</li>
+<li><strong>Таргет:</strong> SMB/компания, желающая, чтобы сотрудники работали агентно; enterprise-сотрудники индивидуально.</li>
+<li><strong>Альтернатива:</strong> AZAV-free generic KI-курсы (DAKADI, Campus), внутренние тренинги, ничего.</li>
+<li><strong>Value:</strong> премиум-апскилл в реальной агентной разработке (не промпт-базар), не размывает фокус.</li>
+<li><strong>JTBD:</strong> «сделай мою команду продуктивной с AI-агентами».</li>
+<li><strong>⚠️ Caveat (из positioning):</strong> как отдельный B2C-курс — низкие бюджеты + насыщено AZAV-free. Работает как <strong>fold-in внутри B2B</strong> (премиум); канал финансирования — IHK-Weiterbildung-Kooperation / AZAV.</li>
+</ul>
+<h2>H5 — «Founders &amp; funding» (разработчики) — альтернативная ставка</h2>
+<ul>
+<li><strong>Остриё:</strong> разработчики строят продукт, мы приводим инвесторов и co-build стартапы.</li>
+<li><strong>Категория:</strong> builder-акселератор с инвест-треком.</li>
+<li><strong>Таргет:</strong> разработчики / technical founders.</li>
+<li><strong>Альтернатива:</strong> Antler, Entrepreneur First, Pioneers, самому искать инвесторов.</li>
+<li><strong>Value:</strong> путь от продукта к traction + доступ к капиталу.</li>
+<li><strong>JTBD:</strong> «помоги собрать продукт и выйти на инвесторов».</li>
+<li><strong>⚠️ Предусловие:</strong> обещание инвесторов работает только при наличии VC-сети — её ещё предстоит набрать (это цель №4). Без неё гипотеза переобещает; касса слабее (бюджеты аудитории ограничены). → <strong>Фаза 2:</strong> запускать после того, как VC-сеть набрана.</li>
+</ul>
+<hr />
+<h2>Следующий шаг</h2>
+<p>План дата-аналитики: как измерить спрос + whitespace по каждой гипотезе (supply-density/трафик/фандинг как прокси спроса, Google Trends, цены/WTP, взвешивание с незанятостью рамки). Оформляется отдельно.</p>
+</div>
+<footer>
+ <span>CLOUDWORKING · Гипотезы позиционирования · 2026-07-06</span>
+ <span class="mono">GitHub Pages · h2t-landings</span>
+</footer>
+</body></html>
