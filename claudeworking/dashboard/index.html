@@ -70,6 +70,23 @@ section{margin-top:58px}
 .brief{border-left:2px solid var(--accent);padding:4px 0 4px 20px;margin-top:14px;font-size:14px;line-height:1.75;color:var(--body);max-width:70ch}
 .brief b{color:var(--fg)}.brief .g{color:var(--accent);font-weight:600}.brief .r{color:var(--dn)}
 footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:10px;color:var(--faint)}
+/* targeting */
+.ttable{margin-top:16px}
+.trow{display:grid;grid-template-columns:1.7fr 58px 58px 128px 96px;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.trow.th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line)}
+.trow .tk{color:var(--body)}.trow .tv{color:var(--fg)}
+.trow .tw.up{color:var(--up)}.trow .tw.dn{color:var(--dn)}.trow .tw.muted{color:var(--muted)}
+.trow .ti{color:var(--muted);font-family:var(--mono);font-size:11px}
+.rirow{display:grid;grid-template-columns:150px 1fr 44px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)}
+.rik{font-size:13px;color:var(--body)}
+.ribar{height:3px;background:var(--line);position:relative}.ribar .fill{position:absolute;left:0;top:0;height:100%;background:var(--muted)}.ribar .fill.accent{background:var(--accent)}
+.riv{font-size:13px;color:var(--fg);text-align:right}
+.season{display:flex;gap:5px;margin-top:14px;flex-wrap:wrap}
+.scell{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line2);font-family:var(--mono);font-size:11px;color:var(--faint)}
+.scell.pk{border-color:var(--accent);color:var(--accent);background:rgba(169,196,234,.08)}
+.pbrow{display:grid;grid-template-columns:200px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid var(--line2);align-items:baseline}
+.pbk{font-size:13.5px;font-weight:600}.pbv{font-size:13px;color:var(--body);line-height:1.55}
+@media(max-width:600px){.ttable{overflow-x:auto}.trow{min-width:470px}.pbrow{grid-template-columns:1fr;gap:3px}.rirow{grid-template-columns:120px 1fr 40px}}
 @media(max-width:560px){.rrow{grid-template-columns:16px 1fr 40px;gap:10px}.rbar{display:none}.leads{gap:0 22px}.lead+.lead{padding-left:22px}.lead .n{font-size:28px}}
 </style></head><body>
 <a class="back" href="../">← ClaudeWorking</a>
@@ -199,14 +216,33 @@ footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);display
 </section>
 
 <section>
- <div class="sh"><span class="num">04</span><h2>Вывод</h2></div>
+ <div class="sh"><span class="num">04</span><h2>Таргетинг · SEO-окна и дешёвые buyers</h2></div>
+ <p class="cap">Где ранжироваться дёшево и с покупательским интентом. <b>Ранжируемо</b> = органика слабая (форумы/мелкие, ads=0); <b>тесно</b> = заняли гиганты. Связка тул+«Kurs» = «научиться строить сам» = матч с мастер-классом.</p>
+ <div class="ttable"><div class="trow th"><span>термин</span><span>объём</span><span>CPC</span><span>SEO-окно</span><span>интент</span></div><div class="trow"><span class="tk">n8n Kurs</span><span class="mono tv">140</span><span class="mono tv">€3.57</span><span class="up tw">ранжируемо</span><span class="ti">commercial</span></div><div class="trow"><span class="tk">Claude Code Kurs</span><span class="mono tv">70</span><span class="mono tv">€4.35</span><span class="up tw">ранжируемо</span><span class="ti">commercial</span></div><div class="trow"><span class="tk">ChatGPT Kurs</span><span class="mono tv">170</span><span class="mono tv">€5.82</span><span class="up tw">ранжируемо</span><span class="ti">commercial</span></div><div class="trow"><span class="tk">KI Automatisierung</span><span class="mono tv">1900</span><span class="mono tv">€8.15</span><span class="muted tw">средне</span><span class="ti">informational</span></div><div class="trow"><span class="tk">KI Schulung</span><span class="mono tv">2400</span><span class="mono tv">€9.61</span><span class="dn tw">тесно · гиганты</span><span class="ti">commercial</span></div><div class="trow"><span class="tk">KI Agenten</span><span class="mono tv">4400</span><span class="mono tv">€6.24</span><span class="dn tw">тесно · гиганты</span><span class="ti">commercial</span></div><div class="trow"><span class="tk">eigene KI entwickeln</span><span class="mono tv">40</span><span class="mono tv">€3.51</span><span class="muted tw">—</span><span class="ti">transactional</span></div></div>
+</section>
+
+<section>
+ <div class="sh"><span class="num">05</span><h2>Растущие термины · YoY</h2></div>
+ <p class="cap">Рост интереса год-к-году (TrendsMCP). Акцентом — «ловить рано» (×4+). n8n — плато (зрелый, использовать, но не «взлёт»).</p>
+ <div class="rirow"><span class="rik">Claude Code</span><div class="ribar"><span class="fill accent" style="width:100%"></span></div><span class="riv mono">×11.1</span></div><div class="rirow"><span class="rik">AI automation</span><div class="ribar"><span class="fill accent" style="width:57%"></span></div><span class="riv mono">×6.3</span></div><div class="rirow"><span class="rik">agentic AI</span><div class="ribar"><span class="fill accent" style="width:39%"></span></div><span class="riv mono">×4.3</span></div><div class="rirow"><span class="rik">RPA</span><div class="ribar"><span class="fill ink" style="width:28%"></span></div><span class="riv mono">×3.1</span></div><div class="rirow"><span class="rik">vibe coding</span><div class="ribar"><span class="fill ink" style="width:18%"></span></div><span class="riv mono">×2.0</span></div><div class="rirow"><span class="rik">KI Schulung</span><div class="ribar"><span class="fill ink" style="width:16%"></span></div><span class="riv mono">×1.8</span></div><div class="rirow"><span class="rik">n8n · плато</span><div class="ribar"><span class="fill ink" style="width:10%"></span></div><span class="riv mono">×1.1</span></div>
+</section>
+
+<section>
+ <div class="sh"><span class="num">06</span><h2>Сезонность</h2></div>
+ <p class="cap">Пик спроса — фев–март и сентябрь; провал — лето и декабрь. → кампании и мини-ивенты в эти окна.</p>
+ <div class="season"><span class="scell ">J</span><span class="scell pk">F</span><span class="scell pk">M</span><span class="scell ">A</span><span class="scell ">M</span><span class="scell ">J</span><span class="scell ">J</span><span class="scell ">A</span><span class="scell pk">S</span><span class="scell ">O</span><span class="scell ">N</span><span class="scell ">D</span></div>
+</section>
+
+<section>
+ <div class="sh"><span class="num">07</span><h2>Вывод и playbook</h2></div>
  <div class="brief">
   <b>Заходим через то, что ищут — продаём то, что уникально.</b><br>
   <span class="g">Категория входа — H3 (агентный AI):</span> Claude Code 110k, AI agents 10k, KI Agenten 4.4k↗. Здесь спрос и обнаружение.<br>
   <span class="g">Остриё — H2 (живая сборка в Берлине под задачу)</span> + own-it как поддержка: низкий объём, но топ-CPC (€17.77) и whitespace.<br>
   <b>H4 (KI-Weiterbildung 2.4k↗)</b> — вторичный канал денег (корпоративы/AZAV), не лид (насыщено). <span class="r">H1 «build&amp;own» — ~0 поискового спроса</span> (дифференциатор, не точка входа). H5 — фаза 2.
  </div>
- <p class="cap" style="margin-top:20px">Граница: desk-прокси спроса, не конверсия; ~23 термина. Решающий тест — smoke-test связки H3+H2.</p>
+ <div class="pb"><div class="pbrow"><span class="pbk accent">Контент/SEO — ядро</span><span class="pbv">Тул + «Kurs» (n8n Kurs, Claude Code Kurs) + восходящие (Claude Code, AI automation, agentic AI): ранжируемо, дёшево, коммерческий интент, матч с мастер-классом.</span></div><div class="pbrow"><span class="pbk accent">НЕ SEO на дженерик</span><span class="pbv">KI Agenten / KI Schulung — органика занята гигантами (Google · IBM · IHK · TÜV · Fraunhofer).</span></div><div class="pbrow"><span class="pbk accent">Build &amp; own → аутбаунд</span><span class="pbv">«eigene KI entwickeln» = transactional. Месседж для ABM/аутбаунда, не для SEO-обнаружения (объёма нет).</span></div><div class="pbrow"><span class="pbk accent">Ads — не основной</span><span class="pbv">Везде ads=0, но локальный объём мал → максимум узкий тест на тул+Kurs.</span></div><div class="pbrow"><span class="pbk accent">Тайминг</span><span class="pbv">Кампании и мини-ивенты Jan–Mar и Sep; избегать лета и декабря.</span></div></div>
+ <p class="cap" style="margin-top:20px">Граница: desk-прокси спроса, не конверсия. Решающий тест канала — живой (контент-пост, мини-ивент, ABM-касание).</p>
 </section>
 
 <footer><span>CLOUDWORKING · DEMAND ANALYTICS</span><span class="mono">DataForSEO + TrendsMCP · 2026-07-06</span></footer>
