@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClaudeWorking · Competitor Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0d; --surface:#151515; --surface-2:#101010;
+  --fg:#ededed; --fg-body:rgba(237,237,237,.72); --fg-muted:rgba(237,237,237,.40); --fg-faint:rgba(237,237,237,.22);
+  --border:rgba(255,255,255,.09); --border-soft:rgba(255,255,255,.055);
+  --accent:#a9c4ea;
+  --ok:#5bbf9a; --warn:#d6a54a; --red:#d67a7a;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg-body);font-family:var(--sans);
+  font-size:15px;line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased;
+  padding:clamp(20px,4vw,56px) clamp(16px,4vw,56px);max-width:1200px;margin:0 auto}
+.tabnum,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+i{color:var(--fg-muted);font-style:italic}
+.back{font-family:var(--mono);font-size:11px;color:var(--fg-muted);margin-bottom:18px;display:inline-block}
+.back:hover{color:var(--accent)}
+
+header{border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px}
+header h1{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;letter-spacing:-.02em;color:var(--fg);line-height:1.15}
+.meta{margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--fg-muted);letter-spacing:.02em}
+.meta #cnt{color:var(--accent)}
+.intro{color:var(--fg-body);font-size:14px;line-height:1.65;max-width:78ch;margin:16px 0 0}
+.intro b{color:var(--fg);font-weight:600}
+#counts{display:block;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--fg-muted);line-height:1.7}
+#counts b{color:var(--accent);font-weight:500}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin:24px 0 4px;
+  font-size:12px;color:var(--fg-muted)}
+label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+input[type=text]{background:var(--surface);color:var(--fg);border:1px solid var(--border);border-radius:0;
+  font-family:var(--sans);font-size:13px;padding:7px 12px;min-width:240px;flex:1 1 240px;max-width:340px}
+input[type=text]::placeholder{color:var(--fg-faint)}
+input[type=text]:focus{border-color:var(--fg-muted);outline:none}
+select{appearance:none;-webkit-appearance:none;background:var(--surface);color:var(--fg);
+  border:1px solid var(--border);font-family:var(--sans);font-size:12px;padding:7px 26px 7px 10px;
+  cursor:pointer;border-radius:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' fill='none' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center}
+select:hover,select:focus{border-color:var(--fg-muted);outline:none}
+
+.table-wrap{margin-top:18px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;table-layout:fixed}
+th[data-k="name"]{width:27%} th[data-k="region_bucket"]{width:14%} th[data-k="audience"]{width:30%}
+th[data-k="pricing"]{width:19%} th[data-k="funding_model"]{width:10%}
+thead th{position:sticky;top:0;z-index:5;background:var(--bg);text-align:left;
+  font-size:10.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-muted);
+  padding:0 14px 10px;border-bottom:1px solid var(--border);cursor:pointer;white-space:normal;user-select:none}
+thead th:first-child{padding-left:2px}
+thead th:hover{color:var(--fg)}
+thead th .arw{color:var(--accent);font-size:9px}
+tbody td{padding:14px;border-bottom:1px solid var(--border-soft);vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+tbody td:first-child{padding-left:2px}
+tbody tr{transition:background .12s}
+tbody tr:not(.detail-row):hover{background:rgba(255,255,255,.025);cursor:pointer}
+.prog{color:var(--fg);font-weight:600;font-size:14px;display:block;letter-spacing:-.01em;line-height:1.35}
+.prog-sub{display:block;margin-top:4px;color:var(--fg-muted);font-size:12px;line-height:1.45}
+.cell-pricing{font-size:12.5px}
+
+.tg{display:inline-block;padding:2px 8px;margin:2px 4px 2px 0;font-size:11px;line-height:1.5;
+  color:var(--fg-body);border:1px solid var(--border);white-space:normal;overflow-wrap:anywhere}
+tr:hover .tg{border-color:var(--fg-faint)}
+.fm-fee{color:var(--fg-body)} .fm-grant{color:var(--ok)} .fm-equity{color:var(--warn)} .fm-hybrid{color:var(--accent)} .fm-na{color:var(--fg-muted)}
+.rb-berlin{color:var(--ok)} .rb-de{color:var(--fg-body)}
+.muted{color:var(--fg-muted)}
+
+.detail{background:var(--surface-2);border-bottom:1px solid var(--border)}
+.detail-inner{padding:18px 20px;font-size:13.5px;color:var(--fg-body);line-height:1.7;max-width:92ch}
+.detail-inner h4{color:var(--fg);font-size:15px;font-weight:600;margin-bottom:10px}
+.detail-inner .row{margin:7px 0}
+.detail-inner b{color:var(--fg);font-weight:600}
+
+footer{margin-top:30px;padding-top:14px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);letter-spacing:.03em}
+
+@media (max-width:820px){
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  table,tbody,tr,td{display:block;width:100%}
+  tbody tr:not(.detail-row){border:1px solid var(--border);background:var(--surface);
+    padding:14px 16px;margin-bottom:14px}
+  tbody tr:not(.detail-row):hover{background:var(--surface)}
+  tbody td{border:none;padding:5px 0;display:grid;grid-template-columns:8.5em 1fr;gap:6px 12px;align-items:baseline}
+  tbody td:first-child{padding-left:0}
+  tbody td::before{content:attr(data-label);color:var(--fg-muted);font-size:10px;
+    text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+  td.cell-name{display:block;margin-bottom:8px;padding-bottom:10px;border-bottom:1px solid var(--border-soft)}
+  td.cell-name::before{display:none}
+  .prog{font-size:16px}
+  input[type=text]{max-width:none}
+  .detail{border:1px solid var(--border);margin-bottom:14px;margin-top:-8px}
+  .detail-inner{padding:14px 16px;font-size:14px}
+}
+</style></head><body>
+<a class="back" href="../claudeworking/">← ClaudeWorking</a>
+<header>
+ <h1>Competitor Explorer</h1>
+ <div class="meta">CLOUDWORKING · Landscape AI-акселераторов / буткемпов · scan 2026-07-04 · <span id="cnt"></span></div>
+</header>
+<p class="intro">Аналоги ClaudeWorking — программы «build with AI» (акселераторы, буткемпы, cohort-курсы), для отстройки и понимания рынка. Наблюдения по публичным источникам (Exa, <b>2026-07-04</b>) — <b>НЕ исчерпывающий обзор</b> (~36 программ по 6 запросам); цены/форматы/даты меняются — сверять на сайте перед использованием. <b>Клик по строке</b> — детали (формат, что строят, цена, ссылка); <b>поиск и фильтры</b> сверху.</p>
+<span id="counts"></span>
+<div class="controls">
+ <input type="text" id="q" placeholder="поиск: имя, аудитория, формат, цена…" autocomplete="off">
+ <select id="f-region"><option value="">регион: все</option><option value="Berlin">Berlin</option><option value="Германия">Германия</option><option value="EU">EU</option><option value="Global/online">Global / online</option><option value="Другое">другое</option></select>
+ <select id="f-funding"><option value="">модель: все</option><option value="платный курс">платный курс</option><option value="грант/бесплатно">грант / бесплатно</option><option value="equity/инвестиции">equity / инвестиции</option><option value="гибрид/иное">гибрид / иное</option><option value="н/д">н/д</option></select>
+ <select id="f-group"><option value="">группа: все</option><option value="A">A · DE/Berlin</option><option value="B">B · EU/глобально</option><option value="C">C · референс-модели</option></select>
+ <select id="f-sort"><option value="region_bucket">сорт: регион</option><option value="name">сорт: имя</option><option value="funding_model">сорт: модель</option><option value="group">сорт: группа</option></select>
+</div>
+<div class="table-wrap">
+<table id="grid"><thead><tr>
+ <th data-k="name">Программа</th>
+ <th data-k="region_bucket">Регион</th>
+ <th data-k="audience">Аудитория</th>
+ <th data-k="pricing">Цена / финансирование</th>
+ <th data-k="funding_model">Модель</th>
+</tr></thead><tbody id="rows"></tbody></table>
+</div>
+<footer>
+ <span>CLOUDWORKING · COMPETITOR_EXPLORER</span>
+ <span class="tabnum">scan 2026-07-04 · source: competitors-analog</span>
+</footer>
+<script>
+const COMPETITORS = [{"name": "Claude Cowork BootCamp #2", "operator": "Berlin Product People GmbH (Stefan Wolpers)", "region": "Berlin, DE (live-virtual)", "format": "4 live-сессии × 3ч, раз в неделю; малая группа; «no coding required»", "audience": "Knowledge workers, PM, agile-коучи, кто НЕ владеет Claude Code", "build": "Рабочие Skills и AI-агенты в Claude Cowork, «compounding system», не стопка промптов", "pricing": "$199; треб. Claude Pro $20/мес", "url": "https://berlin-product-people.com/event/claude-cowork-bootcamp-june-10-2026/", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Berlin", "funding_model": "платный курс"}, {"name": "AI Mastery Bootcamp", "operator": "SixSides Academy (Boris Dittberner)", "region": "Berlin, DE (offline-неделя + online до/после)", "format": "3 фазы: 2 нед online → 7 дней в Берлине 9–18 → 4 нед online; 15 мест; qualifying call", "audience": "Solopreneurs, фрилансеры, founders idea-стадии, консультанты", "build": "Собственный продукт от идеи до live-URL за 7 дней (micro-SaaS, agency site+chatbot); Claude Code+Supabase+Stripe", "pricing": "Early Bird €2,490 (рег. €2,990) + VAT; Klarna рассрочка", "url": "https://sixsidesacademy.com/en/ai-mastery-bootcamp", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Berlin", "funding_model": "платный курс"}, {"name": "AI Programming & Automation Expert", "operator": "SixSides Academy", "region": "DE (online, Zoom+Slack)", "format": "8-нед когорта, 16 live-сессий 2ч (2×/нед); мин. 5 участников", "audience": "Self-employed с AI-запросом, команды, decision-makers", "build": "Claude Code prod-уровень, свои MCP-серверы, skills/subagents, multi-agent + eval harness, deploy сайт/SaaS", "pricing": "€3,900 (Klarna 3–8 мес); bundle €9,900", "url": "https://sixsidesacademy.com/en/kurse/ai-programming-automation-expert", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Германия", "funding_model": "платный курс"}, {"name": "Building with AI Agents", "operator": "Turing College", "region": "Berlin, DE (project-based, remote)", "format": "3 мес × 30ч/нед; 4 спринта+capstone; daily standup, 1:1 review; 12 мест", "audience": "German residents (в т.ч. безработные) + др. страны; «only language is English»", "build": "Реальные внутренние инструменты/приложения (Claude Code, БД, auth, Stripe, mobile, SaaS); ship production apps", "pricing": "Германия: цель — 100% бесплатно через Bildungsgutschein (гос. ваучер); др. страны — платно", "url": "https://building-with-ai.turingcollege.com/", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Berlin", "funding_model": "грант/бесплатно"}, {"name": "AI Founders", "operator": "Campus Founders (Heilbronn)", "region": "DE (12 нед, in-person cohort)", "format": "12 нед, 100% focus; недельные чеклисты; отбор ~30 pitch → 10-15 команд", "audience": "Early-stage AI/ML deep-tech стартапы с MVP, B2B SaaS; нужны tech+biz co-founder", "build": "Путь к traction/investor-ready; product ready to ship", "pricing": "Equity-free, cost-free; до €25k milestone-финансирование от партнёров", "url": "https://campusfounders.de/startups/aifounders/", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Германия", "funding_model": "грант/бесплатно"}, {"name": "AI Startup Builder — Terminal 01", "operator": "HHL Leipzig (Graduate School of Mgmt), Digital Space", "region": "Leipzig, DE (2-дн bootcamp)", "format": "2 дня (16-17 апр 2026); demo Claude Code, agentic foundations, ideation→pitch", "audience": "Early-stage founders, builders, tech-curious entrepreneurs, студенты", "build": "Идея стартапа + 30-дн validation roadmap + 3-мин pitch; вход в incubation", "pricing": "н/д (университетское событие)", "url": "https://www.hhl.de/event/ai-startup-builder-terminal-01/", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Германия", "funding_model": "н/д"}, {"name": "European Agentic AI Bootcamp", "operator": "HLRS (Univ. Stuttgart) + LRZ/ASC/Cyfronet/NVIDIA", "region": "Stuttgart/DE, online", "format": "3 дня (20-22 июл 2026); hands-on challenge", "audience": "SME, стартапы, researchers по всей EU (только EU/associated)", "build": "Практический AI-агент; Agent Skills, MCP, LangGraph, NeMo, NIM", "pricing": "Бесплатно (гос./EuroHPC)", "url": "https://www.hlrs.de/training/2026/bc-agai-nv", "group": "A", "group_label": "A. Германия / Берлин", "region_bucket": "Германия", "funding_model": "грант/бесплатно"}, {"name": "Pioneers AI Lab", "operator": "Pioneers (AI Studio @ Station F)", "region": "Paris, FR (hybrid, weekly on-site)", "format": "3-мес спринт; суббота on-site @ Station F + async; batch 8 лучших consumer builders EU", "audience": "Full-time builders, indie hackers, part-time founders (eng/design/growth)", "build": "Запущенный AI-native consumer/prosumer продукт «powered end-to-end by AI agents»; Demo Day", "pricing": "€100K funding + fast-track в Pioneers Accelerator", "url": "https://www.pioneerslab.ai/old-home", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "equity/инвестиции"}, {"name": "ProofAI Accelerator", "operator": "Innovato Consultancy", "region": "NL / remote", "format": "10 нед (2D-2W-2M sprint); Proof-track cohort + Ignite rolling; 6 мест cohort 1", "audience": "Technical founders с domain expertise + доступом к proprietary data", "build": "«Proof» что AI-решение работает (MVP + evidence, не pitch); Claude-skills копилот + human mentor", "pricing": "Proof: 0 upfront, 2% equity-опцион (2 года); Ignite: €2,500 fee", "url": "https://proofaiaccelerator.com/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "equity/инвестиции"}, {"name": "AcceleratorX", "operator": "CommUnity International", "region": "Europe (3 мес, hybrid)", "format": "3 мес, 4ч/нед; до 20ч менторства; in-person meetings", "audience": "Seed-stage AI-стартапы с live/near-launch MVP, EU-команда, 1 tech co-founder", "build": "GTM/distribution через сеть 34+ агентств, 30 стран; investor-ready; Demo Day", "pricing": "Founder-friendly equity case-by-case; direct capital + in-kind; help с EIC (€2.5M)", "url": "https://acceleratorx.eu/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "equity/инвестиции"}, {"name": "LeapX", "operator": "Leap2Peak (EE) + Entrepreneurs for Global Change (US)", "region": "Europe (5-нед hybrid)", "format": "4 нед online + 1 нед in-person (Canary Islands); 30 founders, top 12 в очную неделю", "audience": "Early/idea-стадия founders по всей Европе", "build": "Validated idea + функц. MVP + первый платящий клиент + pitch deck; €5k+ AI-кредитов", "pricing": "€1,000 (online) + €300 (очная неделя); angel network до €20K", "url": "https://euis.eu/leapx-a-new-ai-bootcamp-helping-europes-early-stage-founders-go-from-idea-to-customers-in-just-five-weeks-sponsored/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "equity/инвестиции"}, {"name": "LLM-BRIDGE Venture Incubation", "operator": "LLM-BRIDGE Consortium (EU Digital Europe Programme)", "region": "EU (12 нед, лето 2026)", "format": "12-нед incubation; selection→onboarding→acceleration→demo day; 30 стартапов", "audience": "Early-stage стартапы на GenAI/LLM/NLP", "build": "Валидация бизнес-модели, tech guidance, responsible-AI/regulatory; market prep", "pricing": "Грант: топ-5 получают по €25,000 (EU-финансирование)", "url": "https://www.llm-bridge.eu/wp-content/uploads/2026/04/LLM-Bridge-Venture-Incubation-Program-2026-Startup-Call_20260401_.pdf", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "грант/бесплатно"}, {"name": "PugliAI Accelerator", "operator": "PugliAI (AI Founders Italia)", "region": "Puglia, IT (16 нед, hybrid)", "format": "16 нед, 4 фазы; 8-10 стартапов; weekly 1:1", "audience": "Команды 1-5 чел с AI/tech-продуктом; итал. юрлицо + MVP", "build": "AI-продукт + встроенные HR/Sales/Marketing автоматизации; Singapore bridge", "pricing": "Гибрид: equity/fee/rev-share case-by-case; €100k+ услуг; итал./EU гранты", "url": "https://pugliai.com/en/accelerator.html", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "грант/бесплатно"}, {"name": "Becoming an AI-Native Builder", "operator": "Maven (Namrata Ganatra, ex-Meta/Coinbase)", "region": "Global (Maven, online)", "format": "6 нед; live-классы; cohort", "audience": "Tech-профессионалы (PM/designer/ops), инженеры, founders", "build": "Реальные AI-продукты/агенты/skills/plugins (Claude, Cursor, MCP, OpenClaw, Lovable)", "pricing": "$499", "url": "https://maven.com/ai-native-builder/becoming-ai-native-builder", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Agentic Buildcamp", "operator": "Aggregate Intellect (Amir Feizpour, PhD)", "region": "Global (Maven, online)", "format": "4 нед (3 спринта+demo prep); self-directed via MCP-сервер Sherpa-B в Claude Code", "audience": "Biz/tech предприниматели, PM/ops, разработчики", "build": "Живой агентный AI-app вокруг своей проблемы; публичный demo", "pricing": "$399 (alumni −50%)", "url": "https://maven.com/aggregate-intellect/llm-systems", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Claude Code for Non-Technical Founders", "operator": "Maven (Dheeraj Sharma, GenAI Unplugged)", "region": "Global (Maven, online)", "format": "4 нед, 6 live-сессий; «Hot Seat Build» live", "audience": "Non-technical founders/creators, solopreneurs", "build": "Claude Code-система, что «запускает часть бизнеса»: MCP (Gmail/Notion/Drive), multi-agent, scheduled, phone", "pricing": "$797; треб. Claude Pro $20", "url": "https://maven.com/genaiunplugged/claude-code-builder", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "AI Engineering Bootcamp", "operator": "The AI Internship (Aki Wijesundara, Manu J.)", "region": "Global (Maven, online)", "format": "4 нед + 2-нед sprint + live Demo Day; 5 live-сессий", "audience": "Инженеры в AI, PM, career-movers («не нужно быть сильным кодером»)", "build": "Deployed AI-агенты (LLM API, RAG, LangGraph, MCP, evals) — портфолио; строят через Claude Code/Cursor", "pricing": "~$ (80% off promo, база н/д)", "url": "https://maven.com/theaiinternship/ai-engineering-bootcamp", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "AI Engineers Bootcamp (Ship a SaaS)", "operator": "NoCodeLife (Kieran Ball)", "region": "Online (2 нед cohort)", "format": "2 нед, 2×90-мин live/нед + office hours; 12 мест", "audience": "Non-technical founders", "build": "Live production SaaS (Claude Code + Supabase + Stripe + Vercel) — реальный URL", "pricing": "н/д (треб. Claude Max $100/мес)", "url": "https://nocodelife.com/bootcamp", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Vibe Coding Bootcamp", "operator": "Maven (Harold Dijkstra, Kieran Ball)", "region": "Global (Maven, online)", "format": "2.5 нед; 5 live-сессий; 35 когорт, 1600+ студентов", "audience": "Non-technical (PM, маркетологи, дизайнеры)", "build": "2 работающих full-stack продукта (Lovable/Replit/Bolt/v0/Claude Code)", "pricing": "$799", "url": "https://maven.com/no-code-ai/vibe-coding-bootcamp", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "CodeLeap AI Bootcamp", "operator": "CodeLeap (ex-Google staff eng)", "region": "Online (8 нед cohort)", "format": "8 нед live; 3 portfolio-проекта; 14-дн возврат", "audience": "Профессионалы/founders, solo founders без tech co-founder", "build": "SaaS MVP + code-quality pipeline + AI-native app (Cursor, Claude Code, Copilot, Devin)", "pricing": "н/д", "url": "https://codeleap.ai/en/landing/ai-for-entrepreneurs", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "н/д"}, {"name": "Learn Vibe Build", "operator": "Learn Vibe Build (Regen Hub)", "region": "Boulder, US (3 нед in-person)", "format": "3 нед, 6 классов; «Learn/Vibe/Build»; ≤20; co-working", "audience": "Люди без кода + те, кто хочет глубже в agentic workflows", "build": "Реальный сайт на своём URL (Claude Design/Code, GitHub, hosting), MCP, автоматизации", "pricing": "Sliding scale $250/$500/$750 + scholarships", "url": "https://learnvibe.build/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "Global/online", "funding_model": "платный курс"}, {"name": "VibeHaus Accelerator", "operator": "VibeHaus (Mathu, TEDx curator)", "region": "AU (in-person, часовые)", "format": "6ч foundational / 3ч builder sprint; small-group", "audience": "Non-technical founders/операторы", "build": "Работающее web-приложение за 6 часов (Lovable, Claude, Supabase, Vercel)", "pricing": "«Don't Pay. Invite» (реферальный доступ)", "url": "https://www.vibehaus.live/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "Global/online", "funding_model": "гибрид/иное"}, {"name": "Vibe Coders University", "operator": "VibeCodeUni", "region": "Online (12 нед cohort)", "format": "12 нед; 25 мест; workspace, дины, 1:1 менторы, Demo Day", "audience": "«Vibe coders» уровня MVP → founders (нужны базовые навыки)", "build": "Путь MVP→revenue→$1M ARR; первые платящие клиенты", "pricing": "$1,997 (+ $97 app fee, возврат при приёме)", "url": "https://vibecodeuni.com/", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Agent Native Summer Camp", "operator": "AI Build Lab (Sara Davison, Tyler Fisk)", "region": "Online (12 нед, no-code)", "format": "12 нед live builds; 5 OS-модулей; 2 трека (свой бизнес / case study)", "audience": "Консультанты, агентства, AI PM, операторы, founders", "build": "«Agent-Native Growth OS» — рабочий agent fleet для бизнеса, который можно продать", "pricing": "$2,500", "url": "https://coho.lol/aibuildlab/agentnativesummercamp", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Cohorte Bootcamp", "operator": "Cohorte (Charafeddine M., ex-PwC AI Factory)", "region": "Remote (12 нед, part-time)", "format": "12 нед, ~12ч/нед; 3 ментора/cohort; 24 места; verification-curriculum", "audience": "Операторы (не разработчики); «не технический — OK»", "build": "Working AI-система (bot→workflow→3-агентная команда); tool-agnostic (n8n/API, no code)", "pricing": "€4,900/место (планы от €399/мес)", "url": "https://cohorte.co/bootcamp", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "Global/online", "funding_model": "платный курс"}, {"name": "Vibecode a Product Bootcamp", "operator": "Founder Institute", "region": "Online, global (10 дней)", "format": "10 дней, 4 live-сессии + 5-10ч self-paced между; FounderGen platform", "audience": "Solo founders, non-technical, AI-curious", "build": "Работающий продукт перед реальными клиентами без кода (Replit/n8n/OpenAI); процесс валидации", "pricing": "early-bird pricing (сумма н/д); часть FI-экосистемы", "url": "https://fi.co/insight/vibecode-a-product-bootcamp-2026-build-an-ai-powered-product-without-coding", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "н/д"}, {"name": "Hashed Vibe Labs", "operator": "Hashed (Web3 VC)", "region": "Seoul, KR (8 нед)", "format": "8 нед; weekly shipping sprints; отбор по shipped product + iteration pace; public demo", "audience": "AI-native builders (individuals/teams)", "build": "Реальный продукт каждую неделю; deploy + user validation; demo day", "pricing": "Инвестиция одновременно с отбором (сумма н/д)", "url": "https://en.bloomingbit.io/feed/news/106034", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "Global/online", "funding_model": "equity/инвестиции"}, {"name": "TinyFish Accelerator", "operator": "TinyFish + Mango Capital", "region": "Remote, global (9 нед)", "format": "9 нед; «Build in Public» (пост на X/LinkedIn — часть отбора); weekly mentorship; Demo Day", "audience": "Builders B2B AI-агентов", "build": "Production B2B-агент; первые клиенты из когорты; ship to production", "pricing": "$2M seed pool; funding decisions on demo day", "url": "https://is.gd/D6Imgf", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "Global/online", "funding_model": "equity/инвестиции"}, {"name": "Build Your First Product with AI", "operator": "Maven (Jitakshi Sharma, Claude Ambassador)", "region": "Global (Maven, online)", "format": "4 нед; 4 live-сессии; малая когорта (пилот: 10 женщин, все зашипили)", "audience": "Non-technical (идея, но нет tech-фона), студенты", "build": "Live-продукт на URL за 4 нед (Claude Code); «founder thinking», не только vibe", "pricing": "$500", "url": "https://maven.com/jitakshi-s/build-first-product-ai", "group": "B", "group_label": "B. EU / глобально — прямые аналоги", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "Antler", "operator": "Antler (global VC)", "region": "27+ городов, 6 континентов (incl. EU)", "format": "~6 мес (10-нед team-formation + 3-4 мес accel); 50-80 чел/cohort; residency", "audience": "Individuals (можно без идеи/co-founder), операторы, repeat founders", "build": "Формирование команды → компания; MVP, first customers, Demo Day", "pricing": "$100-200K за 8-12% equity + partner credits", "url": "https://www.foundra.ai/accelerators/antler", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "EU", "funding_model": "equity/инвестиции"}, {"name": "Entrepreneur First (EF)", "operator": "EF (Clifford/Bentinck)", "region": "London/Paris/Berlin/Bangalore/SF", "format": "~6 мес (Form 8 нед + Build 8 нед + Launch); 60-100/cohort", "audience": "Deep-tech/AI individuals с «edge»; solo", "build": "Co-founder matching → компания; deep-tech фокус", "pricing": "£80-125K за ~10% + стипендия во время Form", "url": "https://suprdeck.com/accelerators/entrepreneur-first", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "Berlin", "funding_model": "equity/инвестиции"}, {"name": "On Deck Fellowship (ODF)", "operator": "On Deck", "region": "SF (1-нед sprint) + remote community", "format": "1-нед in-person onboarding (80-100 builders) + lifetime community", "audience": "Committed founders/операторы pre-company", "build": "Community, perks ($800K+ кредитов), workshops; НЕ капитал", "pricing": "$3,000-5,000 за 8-10-нед cohort; membership $500-1,500/год", "url": "https://www.hireinsouth.com/post/ondeck-review", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "Global/online", "funding_model": "equity/инвестиции"}, {"name": "The Founder Launchpad", "operator": "Maven (Vidya Narayanan, Julian Nachtigal)", "region": "Global (online)", "format": "6 нед; weekly deliverables + live feedback", "audience": "Early-stage founders (в т.ч. technical/solo)", "build": "Positioning/MVP/GTM/fundraising системы; traction momentum", "pricing": "$2,647", "url": "https://maven.com/vidya/the-founder-launchpad", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "EU", "funding_model": "платный курс"}, {"name": "16VC Founder Fellowship", "operator": "16VC (London)", "region": "Remote, global (9 нед)", "format": "9 нед; founder pods + advisor office hours", "audience": "Pre-seed/seed founders (в т.ч. AI)", "build": "Fundable-компания; investment-ready", "pricing": "До $500K инвестиций избранным", "url": "https://16vc.substack.com/p/16vc-launches-summer-2026-founder", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "Global/online", "funding_model": "equity/инвестиции"}, {"name": "Simsy AI-Native Founder Cohort", "operator": "Simsy AI", "region": "Hybrid Dubai-Bengaluru (90 дней)", "format": "90 дней; 4 live/фаза + 1:1 + AI Copilot 24×7; 50 мест", "audience": "Корп-профессионалы 28-42 с идеей", "build": "Validated BMC + investor deck + 3 mentor/3 angel intros; money-back", "pricing": "$4,999 (полная предоплата)", "url": "https://simsy.ai/cohort", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "Global/online", "funding_model": "платный курс"}, {"name": "Google for Startups Accelerator: Europe & Israel", "operator": "Google", "region": "EU/IL (3 мес, hybrid)", "format": "3 мес; 10-15 стартапов/cohort; 1:1 эксперты Google", "audience": "AI/ML-стартапы Pre-Seed–Series A, HQ в EU/IL, 5+ сотр.", "build": "Решение tech-challenges с экспертами Google; early access AI-продуктов", "pricing": "Equity-free", "url": "https://startup.google.com/programs/accelerator/europe-israel/", "group": "C", "group_label": "C. Референс-модели формата", "region_bucket": "EU", "funding_model": "грант/бесплатно"}];
+const REGION_ORDER = {"Berlin":0, "Германия":1, "EU":2, "Global/online":3, "Другое":4};
+const GROUP_ORDER = {"A":0, "B":1, "C":2};
+const FUND_CLASS = {"платный курс":"fm-fee", "грант/бесплатно":"fm-grant", "equity/инвестиции":"fm-equity", "гибрид/иное":"fm-hybrid", "н/д":"fm-na"};
+const REGION_CLASS = {"Berlin":"rb-berlin", "Германия":"rb-de"};
+const SORT_LABELS = {name:"Программа", region_bucket:"Регион", audience:"Аудитория", pricing:"Цена / финансирование", funding_model:"Модель"};
+let sortKey = "region_bucket", sortDir = 1;
+const $ = s => document.querySelector(s);
+
+function passFilters(r){
+  const q = $("#q").value.trim().toLowerCase();
+  if(q){
+    const hay = [r.name,r.operator,r.region,r.audience,r.build,r.pricing,r.format].join(" ").toLowerCase();
+    if(!hay.includes(q)) return false;
+  }
+  if($("#f-region").value && r.region_bucket !== $("#f-region").value) return false;
+  if($("#f-funding").value && r.funding_model !== $("#f-funding").value) return false;
+  if($("#f-group").value && r.group !== $("#f-group").value) return false;
+  return true;
+}
+function sortVal(r){
+  if(sortKey==="region_bucket") return REGION_ORDER[r.region_bucket] ?? 9;
+  if(sortKey==="group") return GROUP_ORDER[r.group] ?? 9;
+  const v = r[sortKey]; return v==null ? "" : String(v).toLowerCase();
+}
+function esc(s){return (s==null?"":String(s)).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function safeUrl(u){return /^https?:/i.test(String(u))?esc(u):"#";}
+function detail(r){
+  return `<td colspan="5" class="detail"><div class="detail-inner">
+   <h4>${esc(r.name)}</h4>
+   <div class="row"><b>Оператор:</b> ${esc(r.operator)} · <b>Регион:</b> ${esc(r.region)}</div>
+   <div class="row"><b>Формат:</b> ${esc(r.format)}</div>
+   <div class="row"><b>Аудитория:</b> ${esc(r.audience)}</div>
+   <div class="row"><b>Что строят / получают:</b> ${esc(r.build)}</div>
+   <div class="row"><b>Цена / финансирование:</b> ${esc(r.pricing)}</div>
+   <div class="row"><b>Группа:</b> ${esc(r.group_label)}</div>
+   <div class="row"><a href="${safeUrl(r.url)}" target="_blank" rel="noopener">сайт ↗</a></div>
+  </div></td>`;
+}
+function syncSort(){
+  document.querySelectorAll("th").forEach(th=>{
+    const base = SORT_LABELS[th.dataset.k] || th.dataset.k;
+    th.innerHTML = base + (th.dataset.k===sortKey ? ` <span class="arw">${sortDir>0?'▲':'▼'}</span>` : '');
+  });
+  const fs=$("#f-sort"); if(fs && fs.value!==sortKey && SORT_LABELS[sortKey]) fs.value=sortKey;
+}
+function render(){
+  const rows = COMPETITORS.filter(passFilters).sort((a,b)=>{
+    const va=sortVal(a), vb=sortVal(b);
+    if(va<vb) return -1*sortDir; if(va>vb) return 1*sortDir;
+    return (a.name<b.name?-1:a.name>b.name?1:0);
+  });
+  $("#cnt").textContent = rows.length + " программ";
+  $("#rows").innerHTML = rows.map((r,i)=>`
+   <tr data-i="${i}" data-name="${esc(r.name)}">
+     <td class="cell-name" data-label="Программа"><span class="prog">${esc(r.name)}</span><span class="prog-sub">${esc(r.operator)}</span></td>
+     <td data-label="Регион"><span class="tg ${REGION_CLASS[r.region_bucket]||''}">${esc(r.region_bucket)}</span><span class="prog-sub">${esc(r.region)}</span></td>
+     <td data-label="Аудитория">${esc(r.audience)}</td>
+     <td class="cell-pricing" data-label="Цена">${esc(r.pricing)}</td>
+     <td data-label="Модель" class="${FUND_CLASS[r.funding_model]||''}">${esc(r.funding_model)}</td>
+   </tr>`).join("");
+  syncSort();
+}
+document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
+  const k=th.dataset.k; if(k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=1;} render();
+});
+["f-region","f-funding","f-group"].forEach(id=>{ const el=$("#"+id); if(el) el.onchange=render; });
+$("#q").addEventListener("input", render);
+(function(){ const fs=$("#f-sort"); if(fs) fs.onchange=()=>{ sortKey=fs.value; sortDir=1; render(); }; })();
+$("#rows").addEventListener("click", e=>{
+  if(e.target.closest("a")) return;
+  const tr=e.target.closest("tr"); if(!tr || tr.dataset.i===undefined) return;
+  const r=COMPETITORS.find(x=>x.name===tr.dataset.name); if(!r) return;
+  if(tr.nextElementSibling && tr.nextElementSibling.classList.contains("detail-row")){
+    tr.nextElementSibling.remove(); return;
+  }
+  const d=document.createElement("tr"); d.className="detail-row"; d.innerHTML=detail(r);
+  tr.after(d);
+});
+(function(){
+  const total=COMPETITORS.length;
+  const berlin=COMPETITORS.filter(r=>r.region_bucket==='Berlin').length;
+  const de=COMPETITORS.filter(r=>r.region_bucket==='Германия').length;
+  const grant=COMPETITORS.filter(r=>r.funding_model==='грант/бесплатно').length;
+  const el=$("#counts"); if(el) el.innerHTML='Всего <b>'+total+'</b> · Berlin <b>'+berlin+'</b> · Германия <b>'+de+'</b> · грант/бесплатно <b>'+grant+'</b> · платных <b>'+COMPETITORS.filter(r=>r.funding_model==='платный курс').length+'</b>.';
+})();
+render();
+</script></body></html>
