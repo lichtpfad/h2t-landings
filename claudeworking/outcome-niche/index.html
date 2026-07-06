@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Конкуренты: build vs buy — ClaudeWorking</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0d; --surface:#151515; --surface-2:#101010;
+  --fg:#ededed; --fg-body:rgba(237,237,237,.74); --fg-muted:rgba(237,237,237,.42); --fg-faint:rgba(237,237,237,.22);
+  --border:rgba(255,255,255,.09); --border-soft:rgba(255,255,255,.055);
+  --accent:#a9c4ea; --ok:#5bbf9a; --warn:#d6a54a;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg-body);font-family:var(--sans);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;padding:clamp(20px,4vw,56px) clamp(16px,4vw,56px);max-width:1080px;margin:0 auto}
+.back{font-family:var(--mono);font-size:11px;color:var(--fg-muted);text-decoration:none;display:inline-block;margin-bottom:22px}
+.back:hover{color:var(--accent)}
+.mono{font-family:var(--mono)}
+
+.md-body{max-width:84ch}
+.md-body h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;letter-spacing:-.02em;color:var(--fg);line-height:1.15;margin:0 0 8px}
+.md-body h2{font-size:clamp(1.15rem,2.6vw,1.45rem);font-weight:600;color:var(--fg);letter-spacing:-.01em;margin:40px 0 4px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.md-body h3{font-size:1.05rem;font-weight:600;color:var(--fg);margin:26px 0 6px}
+.md-body h4{font-size:.95rem;font-weight:600;color:var(--fg);margin:20px 0 4px}
+.md-body p{margin:11px 0;color:var(--fg-body)}
+.md-body a{color:var(--accent);text-decoration:none}
+.md-body a:hover{text-decoration:underline}
+.md-body strong{color:var(--fg);font-weight:600}
+.md-body em{color:var(--fg-muted);font-style:italic}
+.md-body ul,.md-body ol{margin:11px 0;padding-left:0;list-style:none}
+.md-body li{position:relative;padding:5px 0 5px 20px;color:var(--fg-body);line-height:1.55}
+.md-body li::before{content:'';position:absolute;left:2px;top:13px;width:5px;height:5px;background:var(--accent);opacity:.55}
+.md-body ol{counter-reset:ol}
+.md-body ol>li{counter-increment:ol}
+.md-body ol>li::before{content:counter(ol);background:none;color:var(--accent);font-family:var(--mono);font-size:11px;top:6px;left:0;width:auto;height:auto;opacity:.9}
+.md-body hr{border:none;border-top:1px solid var(--border);margin:34px 0}
+.md-body blockquote{margin:16px 0;padding:14px 18px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--fg-muted);font-size:13.5px;line-height:1.6}
+.md-body blockquote p{margin:6px 0;color:var(--fg-muted)}
+.md-body blockquote strong{color:var(--fg-body)}
+.md-body code{font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--border-soft);padding:1px 5px;color:var(--fg-body);overflow-wrap:anywhere}
+.md-body table{border-collapse:collapse;width:100%;font-size:13px;margin:18px 0;table-layout:auto}
+.md-body th{text-align:left;font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--fg-muted);padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:bottom}
+.md-body td{padding:11px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top;color:var(--fg-body);line-height:1.5;overflow-wrap:anywhere}
+.md-body tr:hover td{background:rgba(255,255,255,.02)}
+
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:10.5px;color:var(--fg-faint);letter-spacing:.03em}
+
+@media (max-width:720px){
+  .md-body{max-width:none}
+  .md-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0}
+  .md-table-wrap table{margin:0;min-width:520px}
+}
+</style></head><body>
+<a class="back" href="../">← ClaudeWorking</a>
+<div class="md-body">
+<h1>Outcome-ниша: прямые «buy»-конкуренты — crawl (build vs buy)</h1>
+<blockquote>
+<p><strong>Граница честности.</strong> Данные по публичным источникам через Exa (<code>h2t-ops:research</code>), доступ <strong>2026-07-06</strong>. Цитаты — с посадочных страниц/профилей; полный сайт-crawl и верификация цен на сайте НЕ делались. Цены/детали меняются — сверять перед использованием. Цель — понять, что продаёт outcome-ниша (готовые knowledge/research-системы), чтобы заострить клин ClaudeWorking <strong>build &amp; own vs buy</strong>.</p>
+<p>Связано с: GitHub issue #5, <code>docs/research/competitors/competitors-analog.md</code> (bootcamp/акселераторы), <code>docs/business/2026-07-05-positioning.md</code>.</p>
+</blockquote>
+<p>Легенда формата: <strong>SaaS self-serve</strong> (купил и пользуешься) · <strong>Consulting/done-with-you</strong> (внедряют за тебя) · <strong>Enablement/build-own</strong> (учат строить и владеть).</p>
+<hr />
+<h2>Named-цели</h2>
+<h3>1. IndustryLens — <code>industry-lens.com</code></h3>
+<ul>
+<li><strong>Кто:</strong> Berlin (10119), осн. 2025, ~4 чел. Founder Naveed Ratansi.</li>
+<li><strong>Что:</strong> agentic AI <strong>competitive intelligence</strong> для SMB B2B. Мониторит 350+ источников, отдаёт еженедельные battlecards/брифинги (Slack/Teams/email, пн 08:00). MCP-сервер — запрос из Claude/Cursor. Confidence-scoring, каждая claim с источником.</li>
+<li><strong>Формат:</strong> <strong>SaaS self-serve.</strong></li>
+<li><strong>Цена:</strong> <strong>опубликована €59–249/мес</strong>, 30-дн триал, no demo gate, 60-дн возврат.</li>
+<li><strong>Аудитория:</strong> B2B SaaS PMM / sales enablement, mid-market (200–1000 сотр.).</li>
+<li><strong>Отстройка-сигнал:</strong> ⚠️ Использует <strong>ровно тот же</strong> пич, что ClaudeWorking считал своей подписью: «no sources cited = hallucination risk у ChatGPT → у нас every claim linked to source, confidence scoring». Т.е. <em>evidence-grounded / anti-hallucination</em> — НЕ уникальный дифференциатор.</li>
+<li><em>Источник:</em> «agentic AI competitor intelligence platform designed specifically for small and midsized B2B companies» (<code>industry-lens.com</code>, entity Exa); «from EUR 59/month published on /pricing — no demo gate. Klue and Crayon start ~€20K–€40K/year with a demo gate» (<code>/intelligence/competitive-intelligence</code>), доступ 2026-07-06.</li>
+</ul>
+<h3>2. neonto — <code>neonto.de</code></h3>
+<ul>
+<li><strong>Кто:</strong> <strong>Köln</strong> (не Berlin), осн. 2024, ~2 чел. Co-founders Achim Reiz (Dr.-Ing., 25+ публикаций по KG), Pascal Sommer. (NB: финский «Neonto» — mobile-app-конструктор, другое юрлицо.)</li>
+<li><strong>Что:</strong> <strong>Knowledge-Graph enablement</strong> — academy (учат RDF/KG), consulting, и <strong>neonto editor</strong> (KG-IDE: превращает VS Code в KG-IDE; RDF/SPARQL/SHACL/RML).</li>
+<li><strong>Формат:</strong> <strong>Enablement / build-own</strong> (academy + consulting + tool).</li>
+<li><strong>Цена:</strong> user-based SaaS (€ не указана), «up to 20x more cost-efficient than other tools».</li>
+<li><strong>Отстройка-сигнал:</strong> 🎯 <strong>Ближайший философский аналог</strong> ClaudeWorking: явные «<strong>build &amp; own</strong>», «<strong>No Vendor Lock-In</strong>», «teach your team to build and maintain». НО: технология — семантик-веб/RDF-графы, НЕ агентные системы/Claude Code; и формат — курс+тул, а не live co-building акселератор под бизнес-задачу. Пересекается тезис, не рынок.</li>
+<li><em>Источник:</em> «neonto supports your business to create and maintain high-quality knowledge graphs… stay free from vendor lock-in» (<code>neonto.de</code>); «User Based Pricing… No Vendor Lock-In… Built on open standards» (<code>/solutions/editor/</code>), доступ 2026-07-06.</li>
+</ul>
+<h3>3. Unternehmenswissen.AI (продукт LLLOOP.AI) — <code>unternehmenswissen.ai</code></h3>
+<ul>
+<li><strong>Кто:</strong> by YEARNING.Consulting GmbH &amp; Co. KG (HQ Oldenburg; также Berlin/München/Königsfeld), ~3 чел, осн. 2025.</li>
+<li><strong>Что:</strong> Enterprise-KI «<strong>Betriebssystem für Wissen</strong>» — сверх RAG: сверяет инфо с целями компании, governance/Freigabe-логика, self-learning. Немецкие серверы, локальные модели, DSGVO.</li>
+<li><strong>Формат:</strong> <strong>Consulting + платформа</strong> (strategische Beratung + KI-Wissensmanagement); done-with-you.</li>
+<li><strong>Цена:</strong> не опубликована (консалтинг-led). Заявлено: <strong>40–60% der Investition förderfähig</strong>, 40% быстрее onboarding, до 15% экономии.</li>
+<li><strong>Аудитория:</strong> Mittelstand.</li>
+<li><strong>Отстройка-сигнал:</strong> «knowledge OS» — прямо use-case B ClaudeWorking, но продаётся как консалтинг-внедрение, не как «построй сам». Плюс — <strong>förderfähig</strong> (перекликается с твоим грант/AZAV-углом).</li>
+<li><em>Источник:</em> «etabliert ein echtes “Betriebssystem für Wissen”… geht weit über herkömmliche RAG-Systeme hinaus» (<code>yearning.consulting</code>); «40–60% der Investition förderfähig… 100% DSGVO-konform» (entity Exa), доступ 2026-07-06.</li>
+</ul>
+<h3>4. Market Logic Software (продукт DeepSights) — <code>marketlogicsoftware.com</code></h3>
+<ul>
+<li><strong>Кто:</strong> Berlin (Franklinstr. 28, 10587) + Chicago, AG, осн. <strong>2006</strong>, ~129 сотр., ~€21.6M выручки, $97.3M funding. <strong>Энтерпрайз.</strong></li>
+<li><strong>Что:</strong> end-to-end <strong>market intelligence / insights management</strong> платформа; DeepSights — AI-ассистент по market research 24/7, цитаты источников.</li>
+<li><strong>Формат:</strong> <strong>Enterprise SaaS</strong> (insights management), buy-and-use.</li>
+<li><strong>Цена:</strong> DeepSights starter <strong>от €1,000/мес</strong> (квартальная подписка, данные PR 2023 — ⚠️ возможно устарело); платформа — enterprise (не публично).</li>
+<li><strong>Аудитория:</strong> Fortune-500 бренды (Unilever, Vodafone, Novartis, Tesco, Dyson, Visa, AstraZeneca).</li>
+<li><strong>Отстройка-сигнал:</strong> другой сегмент (энтерпрайз-insights-команды), не пересекается с SMB-beachhead ClaudeWorking; полезен как «вот как выглядит купить-готовое на верхнем этаже».</li>
+<li><em>Источник:</em> «market leading SaaS provider of insights management… Since 2006» (<code>prnewswire</code>, 2023); «starter pack… from €1,000 per month» (<code>prnewswire</code>, 2023-03-23), доступ 2026-07-06.</li>
+</ul>
+<hr />
+<h2>Смежные игроки (company-knowledge / KI-Wissensmanagement, DE/EU)</h2>
+<div class="md-table-wrap"><table>
+<thead>
+<tr>
+<th>Игрок</th>
+<th>url</th>
+<th>Что</th>
+<th>Формат</th>
+<th>Заметка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Galilea</strong></td>
+<td>galilea.ai</td>
+<td>KI-Wissensmanagement: GenAI + Knowledge Graphs, семантик-поиск, источники, governance</td>
+<td>SaaS + tech-team (Cloud/On-Prem)</td>
+<td>EU-hosted; «Rundum-Betreuung»</td>
+</tr>
+<tr>
+<td><strong>Agentwise</strong></td>
+<td>agentwise.com</td>
+<td>Enterprise-KI «knowledge product, not chatbot»; knowledge-ops, model-agnostic</td>
+<td>Платформа, инфра под контролем клиента</td>
+<td>Анти-lock-in риторика</td>
+</tr>
+<tr>
+<td><strong>senqo</strong> (gewusst:KI)</td>
+<td>gewusst-ki.de</td>
+<td>KI-Wissensmanagement на своей инфре, источники</td>
+<td>Продукт + подготовка данных</td>
+<td>Локальная KI для чувствительных данных</td>
+</tr>
+<tr>
+<td><strong>KI Cockpit</strong></td>
+<td>ki-cockpit.com</td>
+<td>Zentralisieren Firmenwissen, DSGVO</td>
+<td>Платформа</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>OpenAI «Company Knowledge»</strong></td>
+<td>openai.com</td>
+<td>Контекст из аппов компании в ChatGPT</td>
+<td>Фича big-tech SaaS</td>
+<td>Контекст «сверху», не build-own</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Все — доступ 2026-07-06, Exa highlights; глубина = посадочная страница.</em></p>
+<hr />
+<h2>Вывод для отстройки (build vs buy)</h2>
+<p><strong>Три полюса «buy» в outcome-нише:</strong>
+1. <strong>Enterprise-insights SaaS</strong> (Market Logic) — дорого (€1k+/мес), для крупных insights-команд. Не beachhead.
+2. <strong>SME knowledge-OS через консалтинг</strong> (UW.AI, Galilea, Agentwise, senqo, KI Cockpit) — done-with-you внедрение RAG+/KG, DSGVO, часто förderfähig. Прямо конкурируют за use-case B (knowledge OS).
+3. <strong>Self-serve CI SaaS</strong> (IndustryLens) — дёшево (€59+), MCP, для use-case A (research/CI).</p>
+<p><strong>Клин ClaudeWorking подтверждён и уточнён:</strong>
+- ❌ Пусто по <strong>evidence-grounded/anti-hallucination как дифференциатору</strong> — IndustryLens и вся ниша уже так себя продают. <strong>Нельзя строить отстройку на «достоверности».</strong>
+- ✅ Пусто по <strong>формату</strong>: никто не продаёт <strong>акселератор, где бизнес САМ строит и владеет агентской (Claude Code) knowledge/research-системой</strong> под свою задачу. Ближайший по тезису — <strong>neonto</strong> («build &amp; own, no lock-in, teach»), но: (а) RDF/семантик-веб, не агенты; (б) курс+тул, не live co-building под конкретную бизнес-боль; (в) Köln, ~2 чел.
+- ✅ <strong>Партнёрская логика работает:</strong> neonto (KG-enablement), Galilea/Agentwise (компоненты) — потенциальные поставщики/менторы, не враги.
+- 💡 <strong>förderfähig</strong> (UW.AI) валидирует грант/AZAV-угол как реальный ценовой рычаг ниши.</p>
+<p><strong>Действие в позиционирование:</strong> сместить акцент с «anti-hallucination» (занято) на <strong>build &amp; own + агентный стек (Claude Code) + акселератор-формат под конкретную задачу</strong> — троица, которую buy-ниша структурно не закрывает.</p>
+</div>
+<footer>
+ <span>CLOUDWORKING · Outcome-ниша · scan 2026-07-06</span>
+ <span class="mono">GitHub Pages · h2t-landings</span>
+</footer>
+</body></html>
