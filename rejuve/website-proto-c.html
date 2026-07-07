@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>REjuve — Home (Concept C — Journey first)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#faf9f6; --bg-light:#f0eeeb; --bg-card:#fff;
+  --text:#1a1a1a; --text-dim:#6b6b6b;
+  --accent:#c45a3c; --accent2:#2d5f8a; --accent3:#4a8a5f;
+  --border:#e0ddd8;
+  --font-heading:'Playfair Display','Georgia',serif;
+  --font-body:'Inter','Helvetica Neue','Arial',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+img{max-width:100%;}
+
+/* prototype switcher bar (not part of the site) */
+.proto-bar{background:#1a1a1a;color:#faf9f6;font-size:12px;letter-spacing:.3px;
+  padding:8px 20px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;
+  position:sticky;top:0;z-index:50;}
+.proto-bar b{font-weight:600;}
+.proto-bar .sw{margin-left:auto;display:flex;gap:6px;}
+.proto-bar .sw a{border:1px solid #555;border-radius:4px;padding:2px 9px;
+  text-decoration:none;color:#ccc;}
+.proto-bar .sw a.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* header / nav */
+.site-header{background:var(--bg);border-bottom:1px solid var(--border);
+  padding:18px 40px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.site-header .brand{font-family:var(--font-heading);font-size:24px;font-weight:700;
+  letter-spacing:.5px;}
+.site-header nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--text-dim);}
+.site-header nav a{text-decoration:none;}
+.site-header nav a:hover{color:var(--accent);}
+.site-header .cta{margin-left:auto;}
+.btn{display:inline-block;font-size:14px;font-weight:500;text-decoration:none;
+  border-radius:6px;padding:10px 20px;transition:.15s;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid var(--accent);}
+.btn-primary:hover{background:#a94a30;}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 40px;}
+section{padding:64px 0;}
+.section-eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--accent);font-weight:600;margin-bottom:10px;}
+h2.section-title{font-family:var(--font-heading);font-size:30px;font-weight:700;
+  line-height:1.2;margin-bottom:12px;}
+.section-sub{color:var(--text-dim);max-width:640px;margin-bottom:32px;}
+
+/* hero */
+.hero{padding:80px 0 56px;}
+.hero-eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:1.4px;
+  color:var(--accent);font-weight:600;margin-bottom:16px;}
+.hero h1{font-family:var(--font-heading);font-weight:700;line-height:1.1;
+  font-size:52px;max-width:900px;margin-bottom:20px;}
+.hero .sub{font-size:19px;color:var(--text-dim);max-width:620px;margin-bottom:28px;}
+.hero .actions{display:flex;gap:14px;flex-wrap:wrap;}
+
+/* doors / cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+  padding:26px 24px;display:flex;flex-direction:column;}
+.card h3{font-family:var(--font-heading);font-size:21px;font-weight:700;margin-bottom:8px;}
+.card .lead{color:var(--text);margin-bottom:6px;}
+.card .to{color:var(--text-dim);font-size:14px;font-style:italic;margin-bottom:18px;}
+.card .go{margin-top:auto;color:var(--accent);font-weight:500;font-size:14px;
+  text-decoration:none;}
+.card.door{border-top:3px solid var(--accent);}
+.card.pillar{border-top:3px solid var(--accent3);}
+
+/* why list */
+.why{background:var(--bg-light);}
+.why ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 32px;
+  max-width:760px;margin:0 0 26px;}
+.why li{padding-left:24px;position:relative;}
+.why li::before{content:"—";position:absolute;left:0;color:var(--accent);}
+
+/* how steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s;}
+.step{border-top:2px solid var(--accent);padding-top:14px;}
+.step .n{font-family:var(--font-heading);font-size:15px;color:var(--accent);
+  font-weight:700;margin-bottom:6px;}
+.step h4{font-size:16px;font-weight:600;margin-bottom:4px;}
+.step p{font-size:14px;color:var(--text-dim);}
+
+/* services */
+.svc .cards .card{border-top:3px solid var(--accent2);}
+.svc .tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--accent2);border:1px solid var(--accent2);border-radius:3px;
+  padding:1px 7px;margin-bottom:10px;align-self:flex-start;}
+
+/* studio teaser */
+.studio{background:var(--bg-light);}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;}
+.chip{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;
+  padding:8px 16px;font-size:14px;}
+
+/* team */
+.team-list{display:flex;flex-wrap:wrap;gap:12px 28px;color:var(--text-dim);margin-bottom:8px;}
+.team-list b{color:var(--text);font-weight:600;}
+
+/* final cta */
+.cta-final{background:#1a1a1a;color:var(--bg);text-align:center;border-radius:14px;
+  margin:0 auto;max-width:900px;padding:56px 40px;}
+.cta-final h2{font-family:var(--font-heading);font-size:32px;margin-bottom:14px;}
+.cta-final p{color:#c9c6c0;margin-bottom:26px;}
+
+/* mini about (variant C) */
+.mini-about{padding-top:0;}
+.mini-about .box{background:var(--bg-card);border:1px solid var(--border);
+  border-left:3px solid var(--accent3);border-radius:8px;padding:22px 26px;
+  color:var(--text-dim);max-width:760px;}
+.mini-about .box b{color:var(--text);}
+
+/* footer */
+.footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 40px;
+  font-size:13px;color:var(--text-dim);text-align:center;}
+
+@media (max-width:820px){
+  .cards,.steps{grid-template-columns:1fr;}
+  .why ul{grid-template-columns:1fr;}
+  .site-header{padding:14px 18px;gap:14px;}
+  .site-header nav{display:none;}
+  .site-header .cta{margin-left:auto;}
+  .wrap{padding:0 18px;}
+  .hero h1{font-size:34px;}
+  .hero .sub{font-size:17px;}
+  .hero{padding:48px 0 36px;}
+  section{padding:44px 0;}
+}
+</style>
+</head><body>
+<div class="proto-bar"><b>PROTOTYPE</b><span>New REjuve site — three concept options. Not yet live.</span><span class="sw"><a class="" href="website-proto-a.html">A</a><a class="" href="website-proto-b.html">B</a><a class="on" href="website-proto-c.html">C</a></span></div>
+
+<header class="site-header">
+  <div class="brand">REjuve</div>
+  <nav>
+    <a href="#">Start Here</a><a href="#">Consultations</a><a href="#">Testing</a>
+    <a href="#">Studio &amp; Therapies</a><a href="#">Memberships</a><a href="#">Pricing</a>
+    <a href="#">About</a><a href="#">Contact</a>
+  </nav>
+  <div class="cta"><a class="btn btn-primary" href="#">Book a Discovery Call</a></div>
+</header>
+
+
+<section class="hero" style="padding-bottom:32px"><div class="wrap">
+  <div class="hero-eyebrow">Functional health studio · Zug</div>
+  <h1>Where would you like to start?</h1>
+  <p class="sub">REjuve brings testing, nutrition and recovery technology together in Zug.
+     Choose your path — or let us help you find it.</p>
+</div></section>
+<section style="padding-top:0"><div class="wrap">
+  
+<div class="cards">
+  <div class="card door">
+    <h3>I want to feel better</h3>
+    <div class="lead">Energy, stress, sleep, recovery.</div>
+    <div class="to">Studio &amp; recovery therapies, memberships.</div>
+    <a class="go" href="#">Explore the studio →</a>
+  </div>
+  <div class="card door">
+    <h3>I want answers</h3>
+    <div class="lead">Symptoms with no clear cause. "Normal" tests that don't add up.</div>
+    <div class="to">Consultations &amp; functional testing.</div>
+    <a class="go" href="#">See consultations →</a>
+  </div>
+  <div class="card door">
+    <h3>I want to invest in my health</h3>
+    <div class="lead">Prevention, longevity, performance.</div>
+    <div class="to">Deep-Dive, membership, ongoing guidance.</div>
+    <a class="go" href="#">Plan for the long run →</a>
+  </div>
+</div>
+
+  <p style="margin-top:18px;color:var(--text-dim)">Not sure?
+     <a href="#" style="color:var(--accent);font-weight:500">Book a free 15-min Discovery Call</a>.</p>
+</div></section>
+<section class="mini-about"><div class="wrap">
+  <div class="box"><b>Why REjuve?</b> We believe health should be understandable and personal.
+     A certified nutritional therapist and a small expert team combine root-cause thinking with
+     science-backed recovery technology — so you can understand your body and age well.</div>
+</div></section>
+
+
+<section class="why"><div class="wrap">
+  <div class="section-eyebrow">Why clients come to REjuve</div>
+  <h2 class="section-title">Does any of this sound familiar?</h2>
+  <ul>
+    <li>Low energy despite doing everything right</li>
+    <li>Poor sleep or slow recovery</li>
+    <li>Hormonal symptoms with no clear answers</li>
+    <li>Digestive discomfort</li>
+    <li>Ongoing stress and burnout</li>
+    <li>Fertility and preconception questions</li>
+    <li>A feeling that <em>something is off</em> — even when your tests are "normal"</li>
+  </ul>
+  <a class="btn btn-primary" href="#">Book a free Discovery Call</a>
+</div></section>
+
+<section class="how"><div class="wrap">
+  <div class="section-eyebrow">How REjuve works</div>
+  <h2 class="section-title">A clear path, built around you</h2>
+  <div class="steps">
+    <div class="step"><div class="n">01</div><h4>Understand</h4><p>Your history, symptoms, lifestyle and goals.</p></div>
+    <div class="step"><div class="n">02</div><h4>Investigate</h4><p>Targeted testing — only when it can change your plan.</p></div>
+    <div class="step"><div class="n">03</div><h4>Personalise</h4><p>A clear, practical strategy built around you.</p></div>
+    <div class="step"><div class="n">04</div><h4>Support</h4><p>Nutrition guidance and recovery therapies to make change last.</p></div>
+  </div>
+</div></section>
+
+<section class="svc"><div class="wrap">
+  <div class="section-eyebrow">What we offer</div>
+  <h2 class="section-title">Three ways we help — clearly separated</h2>
+  <div class="cards">
+    <div class="card"><span class="tag">The thinking</span>
+      <h3>Consultations</h3>
+      <div class="lead">We listen, connect the dots and build your plan. This is the core.</div>
+      <a class="go" href="#">See consultations →</a></div>
+    <div class="card"><span class="tag">The data, when needed</span>
+      <h3>Testing</h3>
+      <div class="lead">Deeper answers when symptoms don't add up — never testing for its own sake.</div>
+      <a class="go" href="#">About testing →</a></div>
+    <div class="card"><span class="tag">The support</span>
+      <h3>Studio &amp; Therapies</h3>
+      <div class="lead">Recovery technology that helps your body do its part.</div>
+      <a class="go" href="#">Explore the studio →</a></div>
+  </div>
+</div></section>
+
+<section class="studio"><div class="wrap">
+  <div class="section-eyebrow">The studio</div>
+  <h2 class="section-title">Recovery technology that works with your body</h2>
+  <p class="section-sub">A calm space with science-backed recovery therapies. Drop in for a single
+     session, or make it a routine with a membership.</p>
+  <div class="chips">
+    <span class="chip">Iyashi Dome — infrared detox</span>
+    <span class="chip">Light therapy (TheraLight)</span>
+    <span class="chip">Cryotherapy</span>
+    <span class="chip">BioCharger</span>
+    <span class="chip">Functional beverages</span>
+  </div>
+  <a class="btn btn-ghost" href="#">See memberships</a>
+</div></section>
+
+<section><div class="wrap">
+  <div class="section-eyebrow">The team</div>
+  <h2 class="section-title">A nutrition-led studio, with the right people around it</h2>
+  <p class="section-sub">Led by a certified nutritional therapist. For anything beyond nutrition and
+     lifestyle, we work alongside medical and complementary professionals — and refer to
+     specialists when that's the right call.</p>
+  <div class="team-list">
+    <span><b>Nutritional Therapist</b> — founder</span>
+    <span><b>Medical Doctor</b> — oversight &amp; referrals</span>
+    <span><b>TCM Practitioner</b></span>
+    <span><b>Personal Trainer &amp; Yoga Instructor</b></span>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="cta-final">
+    <h2>Not sure where to begin?</h2>
+    <p>A free 15-minute Discovery Call is the easiest first step. No pressure, ever.</p>
+    <a class="btn btn-primary" href="#">Book a Discovery Call</a>
+  </div>
+</div></section>
+
+<footer class="footer">
+  REjuve · Functional health studio, Zug · Prototype — concept options for the new site. Not yet live.
+</footer>
+
+</body></html>
