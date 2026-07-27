@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фабрика скрининга гипотез — закрытие Phase 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+<nav>
+  <div class="logo">[<span>СКРИНИНГ</span>] ФАБРИКА</div>
+  <div class="links"><a href="#signal">Вывод</a> <a href="#buylist">За что платить</a> <a href="#ask">Запрос</a>
+</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">PHASE 1 · ЗАКРЫТИЕ · решение по платным данным до 2026-08-07</div>
+  <h1>Фабрика скрининга гипотез,<br>которая <span>отказывается врать</span></h1>
+  <p class="desc">50 дней мы строили промышленный конвейер, который на любых данных и нескольких таймфреймах сразу выдаёт честный вердикт: убить, недоказуемо или кандидат. Машина по построению не может назвать мёртвую стратегию живой. Мы прогнали её по всем бесплатным данным — проходимых стратегий ноль. Это не провал, а точный счёт за следующий шаг.</p>
+  <div class="btn-row">
+    <a href="#buylist" class="btn btn-fill">ЗА ЧТО ПЛАТИТЬ</a>
+    <a href="#signal" class="btn btn-outline">ПОЧЕМУ ЭТО СИГНАЛ</a>
+  </div>
+</section>
+
+<section class="stats-bar" aria-label="Key metrics">
+  <div class="stats-bar__item">
+    <strong class="stats-bar__value">50 дней</strong>
+    <span class="stats-bar__label">от идеи до закрытия Phase 1 · 697 коммитов, ~98 в неделю</span>
+  </div>
+  <div class="stats-bar__item">
+    <strong class="stats-bar__value">0</strong>
+    <span class="stats-bar__label">проходимых стратегий на бесплатных данных (честно)</span>
+  </div>
+  <div class="stats-bar__item">
+    <strong class="stats-bar__value">$4 190–6 440</strong>
+    <span class="stats-bar__label">в месяц — точная цель закупки данных для следующего шага</span>
+  </div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Задача — фабрика, а не одна гипотеза</h2>
+    <div class="section__body"><p>Цель никогда не была «доказать одну торговую идею». Цель — построить <strong>фабрику проверки идей</strong>: гибкий конвейер, который быстро отсеивает то, что не работает, чтобы рабочие варианты находились быстро, а не подтверждался заранее выбранный фаворит.</p> <p><strong>Машина честна по построению (fail-closed).</strong> Любой случай, где данных мало или сигнал слаб, помечается как «недоказуемо» — никогда как ложное «покупай». «Убить» выносится только на статистически мощном отрицании. «Кандидат в торговлю» требует одновременно значимости, ёмкости и полного доверия к данным — все три условия, а не одно.</p> <p><strong>Хребет фабрики — честный учёт множественности.</strong> Чем больше идей проверяешь, тем жёстче поднимается статистическая планка — иначе «то, что сработало» окажется просто самым удачливым шумом.</p>
+</div>
+  </div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Как машина решает — вердикт, а не мнение</h2>
+    <div class="section__body"><p>Каждая гипотеза проходит по конвейеру из 9 стадий: загрузка данных → нормализация → признаки → проверка достаточности данных → скрининг-движок → контроль множественности → машина вердиктов → лист закупки данных. На выходе — один из четырёх честных вердиктов:</p> <ul> <li><strong>KILL</strong> — статистически доказано, что эффекта нет.</li> <li><strong>INCONCLUSIVE</strong> — данных не хватает, чтобы судить. Валидный ответ, не провал.</li> <li><strong>STAT_CANDIDATE</strong> — сигнал статистически есть, но пока не торгуемый (мал по ёмкости или не прошёл все гейты).</li> <li><strong>TRADEABLE_CANDIDATE</strong> — прошёл все три гейта: значимость, ёмкость, доверие к данным.</li> </ul> <p>Идеи разложены по «этажам»: <strong>кирпич</strong> (одиночный сигнал) → <strong>композит</strong> (комбинация сигналов с логикой «ворота / вето / взвешенный ансамбль») → <strong>состояние рынка</strong> (режим-условие). Внутри — 6 статистических архетипов (кросс-секционный, моментум, событийный, стат-арбитраж и др.). Доказательство, что машина работает: она нашла реально независимый сигнал, построенный <em>после</em> движка, и корректно отказалась объявить его торгуемым. Свой калибровочный якорь она воспроизвела с точностью 19σ.</p>
+</div>
+  </div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Что прогнали — и где деньги на самом деле не искали</h2>
+    <div class="section__body"><p>Библиотека: 24 зарегистрированных фрейма (одиночные кирпичи + событийные + стат-арбитраж), 11 бесплатных композитов Class-A, ~50 машинных скринов. Бесплатный квадрант данных исчерпан по <strong>всем</strong> дешёвым осям:</p>
+</div>
+  </div>
+</section>
+
+<section class="hud-panel compare-table">
+  <span class="corner-br"></span>
+  <div class="compare-table__body"><table> <thead><tr><th>Квадрант данных</th><th>Стоимость</th><th>Статус</th><th>Результат</th></tr></thead> <tbody> <tr><td>Бесплатные дневные (одиночные сигналы)</td><td>$0</td><td>ИСЧЕРПАН</td><td>0 торгуемых; 1 стат-кандидат (не масштабируется)</td></tr> <tr><td>Бесплатные композиты (Class-A)</td><td>$0</td><td>ИСЧЕРПАН</td><td>0 из 11</td></tr> <tr><td>Бесплатный on-chain (MVRV / NUPL)</td><td>$0</td><td>ИСЧЕРПАН</td><td>Коллинеарен цене — не ортогональный сигнал</td></tr> <tr><td>Бесплатный макро (VIX / DXY)</td><td>$0</td><td>ИСЧЕРПАН</td><td>Поглощается ценой</td></tr> <tr><td>Платный intraday / микроструктура / ликвидации / on-chain / соцданные</td><td>$4 190–6 440/мес</td><td>ЗАБЛОКИРОВАН — go/no-go 08-07</td><td>Здесь живут деньги. Ещё не тестировано</td></tr> </tbody> </table>
+</div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Ключевой вывод — почему это сигнал, а не провал</h2>
+    <div class="section__body"><p id="signal">На бесплатных данных машина выдала <strong>0 торгуемых кандидатов</strong>. Честный диагноз (сверен с кодом и результатами): дело не в том, что «конвейер сломан» (статистическое ядро промышленное, 850+ автотестов зелёные) и не в том, что «альфы нет» (это как раз недоказано). Доминирующая причина — <strong>данные слишком грубые</strong>: каждый слабый сигнал, что мы видели, — это внутридневной механизм (ликвидации, короткий разворот, всплеск фандинга), раздавленный до дневной свечи.</p> <p>Два места, где реально живут деньги — <strong>(а) внутридневные механизмы</strong> и <strong>(б) комбинации слабых сигналов</strong> — на бесплатных данных не тестировались в принципе. Консервативная машина, наведённая на самый дешёвый и наименее вероятный квадрант, закономерно возвращает ~0. Она честно вычистила дешёвый квадрант — и это ровно то доказательство, которое обосновывает следующую трату.</p>
+</div>
+  </div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Buy-list — за что платить</h2>
+    <div class="section__body"><p id="buylist">Машина не просто выносит вердикты — она выдаёт <strong>ранжированный, обоснованный лист закупки</strong>: какие метрики не хватает, у какого вендора, на какой глубине истории, ранжированные по покрытию на доллар. Это кульминация Phase 1. Цифры — свежий перегон от 2026-07-27.</p>
+</div>
+  </div>
+</section>
+
+<section class="num-grid">
+  <div class="num-grid__cell">
+    <strong class="num-grid__value">$4 190/мес</strong>
+    <span class="num-grid__label">минимальная цель закупки на 3 года истории</span>
+  </div>
+  <div class="num-grid__cell">
+    <strong class="num-grid__value">$6 440/мес</strong>
+    <span class="num-grid__label">цель на 6 / 6.5 лет истории</span>
+  </div>
+  <div class="num-grid__cell">
+    <strong class="num-grid__value">+$2 250/мес</strong>
+    <span class="num-grid__label">вся разница 3→6 лет = ОДИН провайдер карт ликвидаций</span>
+  </div>
+  <div class="num-grid__cell">
+    <strong class="num-grid__value">$0</strong>
+    <span class="num-grid__label">все бесплатные тарифы — ОТКЛОНЕНЫ (нельзя доверять для бэктеста)</span>
+  </div>
+</section>
+
+<section class="hud-panel compare-table">
+  <span class="corner-br"></span>
+  <div class="compare-table__body"><table> <thead><tr><th>Провайдер (тариф)</th><th>$/мес</th><th>Гипотез</th><th>Что разблокирует</th></tr></thead> <tbody> <tr><td><strong>amberdata</strong> Self-Serve (годовой)</td><td>417</td><td>26</td><td>Поток ордеров / спред / рыночное воздействие / микроструктура L2</td></tr> <tr><td><strong>kaiko</strong> L2 Aggregations</td><td>2 000</td><td>19</td><td>Глубокая микроструктура L2 (дисбаланс потока, пустоты в стакане, перекос ММ)</td></tr> <tr><td><strong>glassnode</strong> Professional</td><td>525</td><td>16</td><td>On-chain режим (MVRV / SOPR / NUPL / нетто-потоки бирж / киты)</td></tr> <tr><td><strong>hyblock</strong> Professional (годовой)</td><td>250</td><td>4</td><td>Карта ликвидаций (каскад-контагион / форс-клоуз / кластеры ликвидаций) — на 3 года</td></tr> <tr><td><strong>santiment</strong> Business Max</td><td>999</td><td>4</td><td>Соцданные (всплеск объёма / сентимент / истощение нарратива)</td></tr> </tbody> </table>
+</div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Почему 6 лет, а не 3 — и что это честно означает</h2>
+    <div class="section__body"><p>Достаточность истории задаётся не числом баров, а четырьмя осями сразу: (1) календарный охват разных рыночных режимов; (2) эффективное число независимых наблюдений (крипта автокоррелирована — их сильно меньше, чем баров); (3) walk-forward через переходы режимов; (4) бюджет множественности — чем больше гипотез, тем длиннее нужна история.</p> <p><strong>3 года (≈2023–2026, один в основном risk-on цикл):</strong> честно скринят высокочастотные / микроструктурные грани (поток ордеров, спред, воздействие) — там сигнал копится внутри окна. Плюс скромный бюджет гипотез. Но 3 года <strong>не</strong> содержат чистого системного делевериджа.</p> <p><strong>Только 6 лет (≈2020–2026):</strong> добавляют режимы, которых в 3 годах нет — <strong>плечевая мания 2021</strong> и <strong>каскад делевериджа 2022</strong> (LUNA / 3AC / FTX). Именно там срабатывают механизмы ликвидаций, каскадов и хвостов. Эти гипотезы становятся тестируемыми <em>вообще</em> только на таком окне. И это ровно наша дельта 3→6: один провайдер карт ликвидаций, +$2 250/мес.</p> <p><strong>Честные оговорки (сказать прямо):</strong> эти рамки (MinBTL, walk-forward-окна) общие для акций/фьючерсов и <strong>не калиброваны на крипто-перпы</strong> — мы берём дисциплину, а не готовые пороги. Крипте с её отрицательной асимметрией и толстыми хвостами нужно скорее <strong>больше</strong> истории, не меньше. И важно: окно упирается в дату появления данных по картам ликвидаций (2020-07). <strong>Мартовский крах COVID-2020 отдельно НЕ покрывается</strong> — не утверждаем, что «6.5 лет покрывают COVID».</p>
+</div>
+  </div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Buy-list — это цель закупки, а не финальный заказ</h2>
+    <div class="section__body"><p>Подавать именно так: <strong>evidence-based procurement target, не purchase order.</strong> Мы уже знаем, какие данные и тарифы — рациональная цель. Но прежде чем считать бэктест доказательным, по выбранным вендорам надо подтвердить <strong>четыре факта</strong>:</p> <ol> <li>доступ к нужным endpoint'ам (entitlement);</li> <li>точную глубину истории;</li> <li>выгружаемость этой истории через API / bulk;</li> <li>point-in-time / revision-политику (отдаёт ли вендор «снимки как на дату»).</li> </ol> <p>Без них buy-list годен для <em>решения о закупке</em>, но не для заявлений о доходности. Отдельно про PiT: если вендор отдаёт <em>пересмотренный</em> ряд без версий «как на дату» — это не дырка в buy-list, а угроза <strong>честности бэктеста</strong> (завтрашняя правка протекает во вчерашнее решение). Поэтому PiT — это <strong>pre-backtest gate</strong>, а не пробел в покрытии. Fail-closed: PiT не подтверждён ⇒ метрику купить можно, но её бэктест пока не доказателен.</p>
+</div>
+  </div>
+</section>
+
+<section>
+  <span class="section-tag">ЗАПРОС</span>
+  <h2>Три стадии — и что решаем сейчас</h2>
+  <p class="sub">Просим деньги на данные в момент, когда это рычаг, а не спекуляция.</p>
+  <div class="feature-grid"><div class="feature-cell" id="ask">
+  <div class="icon">1 ▸</div>
+  <h3>Зелёный свет на закупку данных</h3>
+  <p>По buy-list (#94): $4 190/мес на 3 года или $6 440/мес на 6 лет. Движок таймфрейм-агностичен — внутридневные данные подключаются за дни, не за полгода интеграции. Тратим тогда, когда машина протестирует данные сразу.</p>
+</div> <div class="feature-cell">
+  <div class="icon">2 ▸</div>
+  <h3>Бюджет на добивание автоматизации</h3>
+  <p>Конвейер номинации гипотез и LLM-автоисследователь — следующие постройки, доводящие машину до ~90% автономии в генерации гипотез. Цена — в основном токен-бюджет, не инженерные месяцы.</p>
+</div> <div class="feature-cell">
+  <div class="icon">3 ▸</div>
+  <h3>Решение по бизнес-модели</h3>
+  <p>Проп-доходность / продукт-сигналы / сам инструмент как SaaS. Определяет требования к ёмкости и объёму live-стека. Не форсируем — совместное решение с Сергеем.</p>
+</div>
+</div>
+</section>
+
+<section class="section content-section">
+  <div class="section-inner">
+    <div class="section__label">// SECTION</div>
+    <h2 class="section__title">Честные пределы — что построено и чего нет</h2>
+    <div class="section__body"><p>Спайк реализует фабрику скрининга, а не полный продакшн-оркестратор. Из ~85 узлов исходного дизайна: <strong>~41% построено</strong>, <strong>~35% не построено</strong> (весь стек исполнения / live-торговля осознанно вне скоупа), <strong>~24% упрощено</strong>. Плюс 9 крупных компонентов, которых в исходном дизайне вообще не было (движок 6 архетипов, реестр множественности, система доверия к данным, машина вердиктов).</p> <p><strong>Названные, не спрятанные риски:</strong> на бесплатных данных потолок ортогональных кирпичей ≈ 1–2, а для композиции нужно ≥3 — на free это может быть структурно недостижимо (ожидаемо). Между стат-кандидатом и живой стратегией — целый слой непостроенных объектов (паспорт стратегии, реальная модель ёмкости, live-стек). Автоисследователь — планируемая постройка, не существующая система. Риск затухания альфы (реальна на истории ≠ жива сейчас) пока не тестируется.</p>
+</div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="cta-inner">
+    <a href="#buylist" class="cta-btn">Решение по платным данным — до 2026-08-07</a>
+  </div>
+</section>
+
+<footer>
+  <div class="motto">Fail-closed. <span>Никогда ложное «покупай».</span> Provenance на каждом числе.</div>
+  <p>crypto-regime-spike · закрытие Phase 1 · перегон buy-list 2026-07-27</p>
+  <p style="margin-top:1.5rem;font-size:0.55rem;letter-spacing:0.15em">Подготовлено для Сергея Спиридонова · Hou2Touch AI Platform</p>
+</footer>
+
+
+
+</body>
+</html>
