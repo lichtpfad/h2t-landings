@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCG — кабинет художника (lo-fi прототип)</title>
+<style>
+  :root{
+    --ink:#222; --muted:#777; --line:#bbb; --wire:#e9e9e9; --wire2:#f4f4f4;
+    --accentM:#2c7; --accentC:#59f; --bg:#fafafa; --card:#fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.45 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:2px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
+  header .who{display:flex;align-items:center;gap:10px}
+  header .avatar{width:34px;height:34px;border:2px dashed var(--line);border-radius:50%;background:var(--wire)}
+  header .name{font-weight:600}
+  header .sub{color:var(--muted);font-size:12px}
+  .modes{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .modes button{border:0;background:#fff;padding:7px 16px;cursor:pointer;font:inherit;color:var(--muted)}
+  .modes button.active{background:var(--ink);color:#fff}
+  .layout{display:flex;min-height:calc(100vh - 57px)}
+  nav{width:210px;border-right:1px solid var(--line);background:#fff;padding:12px 0;flex-shrink:0}
+  nav .grp{padding:6px 18px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+  nav a{display:flex;justify-content:space-between;padding:9px 18px;cursor:pointer;color:var(--ink);text-decoration:none;border-left:3px solid transparent}
+  nav a:hover{background:var(--wire2)}
+  nav a.active{background:var(--wire2);border-left-color:var(--ink);font-weight:600}
+  nav a .cnt{color:var(--muted);font-size:12px}
+  main{flex:1;padding:22px 28px;max-width:900px}
+  .screen{display:none}
+  .screen.active{display:block}
+  h1{font-size:20px;margin:0 0 4px}
+  .lead{color:var(--muted);margin:0 0 18px}
+  .badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;vertical-align:middle;margin-left:8px;font-weight:600;letter-spacing:.02em}
+  .badge.m{color:#0a5;border:1px solid var(--accentM);background:#eafaf1}
+  .badge.c{color:#25c;border:1px solid var(--accentC);background:#eef4ff}
+  .badge.f{color:#b70;border:1px solid #e90;background:#fff7e6}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:0 0 14px}
+  .card h3{margin:0 0 12px;font-size:14px;display:flex;align-items:center}
+  .field{margin:0 0 12px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin:0 0 4px}
+  .wire{border:1px dashed var(--line);background:var(--wire);border-radius:5px;height:34px}
+  .wire.tall{height:74px}
+  .wire.line{height:12px;margin:6px 0}
+  .wire.line.w70{width:70%} .wire.line.w50{width:50%} .wire.line.w85{width:85%}
+  .val{border:1px solid var(--line);background:#fff;border-radius:5px;padding:7px 10px;min-height:20px}
+  .val.tall{min-height:60px;font-size:13px;color:#333}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{border:1px dashed var(--line);background:var(--wire);border-radius:14px;padding:4px 12px;font-size:12px;color:var(--muted)}
+  .chip.add{border-style:solid;color:var(--ink);cursor:pointer}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .thumb{border:1px dashed var(--line);background:var(--wire);border-radius:6px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+  .btn{display:inline-block;border:1px solid var(--ink);background:#fff;border-radius:6px;padding:7px 14px;font:inherit;cursor:pointer}
+  .btn.primary{background:var(--ink);color:#fff}
+  .btn.ghost{border-style:dashed;color:var(--muted)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .spacer{flex:1}
+  .muted{color:var(--muted)}
+  .callcard{display:flex;gap:14px;align-items:flex-start}
+  .callcard .score{width:56px;height:56px;border:2px solid var(--accentM);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a5;flex-shrink:0}
+  .callcard .score.low{border-color:var(--line);color:var(--muted)}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .tag{font-size:11px;border-radius:10px;padding:2px 8px;border:1px solid var(--line);color:var(--muted)}
+  .tag.ok{border-color:var(--accentM);color:#0a5;background:#eafaf1}
+  .tag.warn{border-color:#e90;color:#b70;background:#fff7e6}
+  .tag.bad{border-color:#e55;color:#c22;background:#fdeeee}
+  .vote{margin-left:auto;display:flex;gap:6px}
+  .vote button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:15px}
+  /* wizard */
+  .steps{display:flex;gap:6px;margin:0 0 20px}
+  .steps .st{flex:1;text-align:center;font-size:12px;color:var(--muted);padding-bottom:8px;border-bottom:3px solid var(--wire)}
+  .steps .st.done{color:#0a5;border-color:var(--accentM)}
+  .steps .st.cur{color:var(--ink);font-weight:600;border-color:var(--ink)}
+  .wstep{display:none}
+  .wstep.active{display:block}
+  .note{font-size:12px;color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:14px 0}
+  /* project list + panes */
+  .projitem{cursor:pointer}
+  .projitem:hover{background:var(--wire2)}
+  .projitem.active{border-color:var(--ink)}
+  .projpane{display:none}
+  .projpane.active{display:block}
+  /* access control (Доступ) */
+  .access{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+  .access .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .access .seg button{border:0;border-right:1px solid var(--line);background:#fff;padding:4px 10px;cursor:pointer;font:inherit;font-size:12px;color:var(--muted)}
+  .access .seg button:last-child{border-right:0}
+  .access .seg button.on{background:var(--ink);color:#fff}
+  .access .lbl{color:var(--muted)}
+  .btn.copy{padding:4px 10px;font-size:12px}
+  .btn.copy:disabled{opacity:.45;cursor:not-allowed;border-style:dashed;color:var(--muted)}
+  .accbar{border:1px dashed var(--accentC);background:#eef4ff;border-radius:6px;padding:8px 12px;margin:0 0 12px}
+  /* public surface */
+  #pub{display:none;max-width:1000px;margin:0 auto;padding:28px 28px 60px}
+  .pubhero{border-bottom:2px solid var(--line);padding:0 0 22px;margin:0 0 26px}
+  .pubhero h1{font-size:30px;margin:0 0 6px}
+  .pubhero .htags{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .pubhero .htag{font-size:12px;border:1px solid var(--line);border-radius:12px;padding:3px 10px;color:var(--ink)}
+  .pubhero .hlinks{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--accentC)}
+  .pubsec{margin:0 0 34px}
+  .pubsec h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--wire);padding-bottom:6px;margin:0 0 14px}
+  .pubsec p{margin:0 0 10px;max-width:70ch}
+  .worksgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .workcard{border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff}
+  .workcard:hover{border-color:var(--ink)}
+  .workcard .wthumb{aspect-ratio:4/3;border-bottom:1px dashed var(--line);background:var(--wire);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+  .workcard .wmeta{padding:10px 12px}
+  .workcard .wmeta b{display:block}
+  .workcard .wmeta .muted{font-size:12px}
+  .cvrow{display:grid;grid-template-columns:120px 1fr;gap:10px 18px;font-size:13px}
+  .cvrow .yr{color:var(--muted)}
+  /* owner overlay */
+  .owner{background:#fff8e6;border:1px dashed #e90;border-radius:6px;padding:8px 12px;margin:0 0 14px;font-size:12px}
+  body.visitor .owner{display:none}
+  .prevtoggle{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+  /* escape hatch from visitor preview (visible ONLY in visitor mode) */
+  .exitprev{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:30;
+    background:var(--ink);color:#fff;border-radius:22px;padding:9px 18px;align-items:center;gap:14px;
+    font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.28)}
+  body.visitor .exitprev{display:flex}
+  .exitprev button{border:1px solid #fff;background:transparent;color:#fff;border-radius:14px;padding:3px 14px;cursor:pointer;font:inherit}
+  .exitprev button:hover{background:#fff;color:var(--ink)}
+  /* master toggle: hide the whole partner-explanation layer in one action.
+     covers: purpose badges (вектор/фильтр/кабинет), legends, note-blocks (ADR / dogfood findings),
+     and any element tagged .explain (field→open-call mappings, schema notes). */
+  body.no-explain .badge,
+  body.no-explain .legend,
+  body.no-explain .note,
+  body.no-explain .explain{display:none}
+  .anno{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
+  /* hero with artist photo */
+  .pubhero .herorow{display:flex;gap:22px;align-items:flex-start}
+  .pubhero .photo{width:128px;height:128px;flex-shrink:0;border:2px dashed var(--line);border-radius:8px;
+    background:var(--wire);display:flex;align-items:center;justify-content:center;color:var(--muted);
+    font-size:11px;text-align:center;line-height:1.3}
+  /* showcase curation (owner-only, backend) */
+  .curate{border:1px dashed var(--accentC);background:#eef4ff;border-radius:6px;padding:10px 12px;margin:0 0 12px;font-size:12px}
+  .curate .chip.sel{border-style:solid;border-color:var(--ink);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="exitprev">👁 Предпросмотр как посетитель <button onclick="togglePreview(false)">выйти</button></div>
+
+<header>
+  <div class="who">
+    <div class="avatar"></div>
+    <div>
+      <div class="name">Stanislav Glazov</div>
+      <div class="sub">Berlin, DE · audiovisual / new media · established</div>
+    </div>
+  </div>
+  <div class="modes">
+    <button id="mode-cab" class="active" onclick="setMode('cab')">Кабинет</button>
+    <button id="mode-match" onclick="setMode('match')">Матчинг</button>
+    <button id="mode-pub" onclick="setMode('pub')">Публичный профиль</button>
+  </div>
+  <label class="anno" title="Технический слой для партнёров: метки назначения полей (вектор/фильтр/кабинет), легенды, находки-заметки и маппинг полей на опен-колл. Снять — увидеть чистый продукт.">
+    <input type="checkbox" id="explain-toggle" checked onchange="toggleExplain(this.checked)"> пояснения для партнёров
+  </label>
+</header>
+
+<div class="layout" id="layout">
+  <nav id="nav">
+    <div class="grp">Онбординг</div>
+    <a data-s="wizard" onclick="show('wizard')">Визард профиля</a>
+    <a data-s="wizardproj" onclick="show('wizardproj')">Визард проекта</a>
+    <div class="grp">Профиль</div>
+    <a data-s="profile" class="active" onclick="show('profile')">Профиль художника</a>
+    <a data-s="projects" onclick="show('projects')">Проекты <span class="cnt">26</span></a>
+    <div class="grp">Матчинг-настройки</div>
+    <a data-s="availability" onclick="show('availability')">Доступность <span class="cnt">2</span></a>
+    <a data-s="dream" onclick="show('dream')">Dream calls <span class="cnt">6</span></a>
+    <a data-s="anti" onclick="show('anti')">Anti calls <span class="cnt">4</span></a>
+    <div class="grp">Результат</div>
+    <a data-s="matching" onclick="show('matching')">Матчинг</a>
+  </nav>
+
+  <main>
+
+    <!-- ONBOARDING WIZARD · PROFILE -->
+    <section class="screen" id="s-wizard">
+      <h1>Визард профиля</h1>
+      <p class="lead">Онбординг идентичности соискателя: кто ты, твоя практика, опен-колл мечты. Проекты заполняются отдельным «Визардом проекта». У кого контекст уже собран — путь через MCP (подключить своего агента), тут не показан.</p>
+      <div class="steps">
+        <div class="st cur" data-w="0">1 · Идентичность</div>
+        <div class="st" data-w="1">2 · Практика</div>
+        <div class="st" data-w="2">3 · Dream call</div>
+        <div class="st" data-w="3">4 · Готово</div>
+      </div>
+
+      <div class="wstep active" data-w="0">
+        <div class="card">
+          <h3>Кто ты <span class="badge m">matching</span></h3>
+          <div class="field"><label>Фото артиста <span class="badge c">кабинет / витрина</span></label>
+            <div class="row"><div class="photo" style="width:88px;height:88px">фото<br>артиста</div><button class="btn ghost">загрузить фото</button></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Имя</label><div class="wire"></div></div>
+            <div class="field"><label>Локация / гео</label><div class="wire"></div></div>
+            <div class="field"><label>Career stage (student / emerging / mid / established)</label><div class="wire"></div></div>
+            <div class="field"><label>Гражданство · виза · языки (eligibility)</label><div class="wire"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="1">
+        <div class="card">
+          <h3>Практика <span class="badge m">matching</span></h3>
+          <div class="field"><label>Practice statement — темы и медиумы (пойдёт в fit-вектор)</label><div class="wire tall"></div></div>
+          <div class="field"><label>Mediums</label><div class="chips"><span class="chip">видео</span><span class="chip">инсталляция</span><span class="chip">генеративное</span><span class="chip add">+ добавить</span></div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="2">
+        <div class="card">
+          <h3>Dream call <span class="badge m">matching</span></h3>
+          <div class="field"><label>Опиши опен-колл мечты словами настоящего колла (техника HyDE — сильнее всего двигает матчинг)</label><div class="wire tall"></div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="3">
+        <div class="card">
+          <h3>Готово</h3>
+          <p class="muted">Минимум профиля для первого матчинга собран. CV, биографию и artist statement можно добавить позже в Профиле — они для кабинета и помощи с заявкой, в скоринг не входят.</p>
+          <div class="row"><button class="btn primary" onclick="show('wizardproj')">Дальше: добавить проект</button><button class="btn ghost" onclick="setMode('match');show('matching')">Пропустить → матчинг</button></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn ghost w-back" onclick="wizard(-1,'wizard')">Назад</button>
+        <div class="spacer"></div>
+        <button class="btn primary w-next" onclick="wizard(1,'wizard')">Далее</button>
+      </div>
+    </section>
+
+    <!-- ONBOARDING WIZARD · PROJECT -->
+    <section class="screen" id="s-wizardproj">
+      <h1>Визард проекта</h1>
+      <p class="lead">Отдельный поток заполнения одной работы в пул. Профиль заполняется «Визардом профиля». Лучшая практика: держать пул готовых проектов и искать под них call, а не писать проект под каждый call.</p>
+      <div class="steps">
+        <div class="st cur" data-w="0">1 · Тип и название</div>
+        <div class="st" data-w="1">2 · Нарратив</div>
+        <div class="st" data-w="2">3 · Классификация</div>
+        <div class="st" data-w="3">4 · Медиа / rider</div>
+        <div class="st" data-w="4">5 · Готово</div>
+      </div>
+
+      <div class="wstep active" data-w="0">
+        <div class="card">
+          <h3>Идентичность работы <span class="badge m">matching</span></h3>
+          <div class="grid2">
+            <div class="field"><label>Название</label><div class="wire"></div></div>
+            <div class="field"><label>Год</label><div class="wire"></div></div>
+          </div>
+          <div class="field"><label>Kind — от него зависят дальнейшие поля <span class="badge f">видимость</span></label>
+            <div class="chips"><span class="chip" style="border-color:var(--ink);border-style:solid">artwork</span><span class="chip">tool</span><span class="chip">research</span></div>
+            <div class="muted explain" style="font-size:11px;margin-top:4px">поля визарда kind-условны: у tool/research другой набор (ADR project-unit)</div>
+          </div>
+          <div class="field"><label>Work type / форма <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label><div class="wire"></div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="1">
+        <div class="card">
+          <h3>Нарратив <span class="badge m">matching</span></h3>
+          <div class="field"><label>Concept / statement (тематизм — в fit-вектор)</label><div class="wire tall"></div></div>
+          <div class="field"><label>Short description (блерб)</label><div class="wire"></div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="2">
+        <div class="card">
+          <h3>Классификация <span class="badge m">matching</span></h3>
+          <div class="field"><label>Mediums / disciplines (общий словарь с опен-коллом)</label><div class="chips"><span class="chip add">+ из словаря</span><span class="chip add">+ свой</span></div></div>
+          <div class="field"><label>Themes</label><div class="chips"><span class="chip add">+ добавить</span></div></div>
+          <div class="field"><label>Authorship</label><div class="chips"><span class="chip" style="border-color:var(--ink);border-style:solid">solo</span><span class="chip">collaboration</span><span class="chip">collective</span></div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="3">
+        <div class="card">
+          <h3>Медиа / rider <span class="badge c">кабинет / заявка</span></h3>
+          <div class="field"><label>Фото / видео (ссылки)</label>
+            <div class="grid3"><div class="thumb add" style="border-style:solid">+ фото</div><div class="thumb add" style="border-style:solid">+ видео</div></div></div>
+          <div class="grid2">
+            <div class="field"><label>Rider — пространство / техника</label><div class="wire"></div></div>
+            <div class="field"><label>Бюджет</label><div class="wire"></div></div>
+          </div>
+          <div class="field"><label>Доступ работы</label>
+            <div class="chips"><span class="chip">Публично</span><span class="chip">По ссылке</span><span class="chip" style="border-color:var(--ink);border-style:solid">Приватно</span></div>
+            <div class="muted" style="font-size:11px;margin-top:4px">дефолт — Приватно; повысьте, чтобы работа попала в витрину</div></div>
+        </div>
+      </div>
+
+      <div class="wstep" data-w="4">
+        <div class="card">
+          <h3>Готово</h3>
+          <p class="muted">Работа добавлена в пул. Полнота карточки (rich / partial / thin) считается автоматически — thin-проекты не мусорят в матчинге. Добавьте ещё работу или перейдите к матчингу.</p>
+          <div class="row"><button class="btn ghost" onclick="wpos.wizardproj=0;wizard(0,'wizardproj')">+ ещё проект</button><button class="btn primary" onclick="setMode('match');show('matching')">Показать матчинг</button></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn ghost w-back" onclick="wizard(-1,'wizardproj')">Назад</button>
+        <div class="spacer"></div>
+        <button class="btn primary w-next" onclick="wizard(1,'wizardproj')">Далее</button>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="screen active" id="s-profile">
+      <h1>Профиль художника</h1>
+      <p class="lead">Идентичность соискателя. Поля помечены назначением; часть маппится на встречные поля опен-колла.</p>
+      <div class="legend">
+        <span><span class="badge m">вектор</span> в скоринг</span>
+        <span><span class="badge f">фильтр</span> eligibility</span>
+        <span><span class="badge c">кабинет</span> кабинет / заявка</span>
+      </div>
+
+      <div class="card">
+        <h3>Идентичность и eligibility <span class="badge f">фильтр</span></h3>
+        <div class="grid3">
+          <div class="field"><label>Имя</label><div class="wire"></div></div>
+          <div class="field"><label>Гражданство <span class="badge f">фильтр</span></label><div class="wire"></div><div class="muted explain" style="font-size:11px">to eligibility_countries</div></div>
+          <div class="field"><label>Дата рождения / возраст <span class="badge f">фильтр</span></label><div class="wire"></div><div class="muted explain" style="font-size:11px">to eligibility_age_min/max</div></div>
+          <div class="field"><label>База: город / страна <span class="badge f">фильтр</span></label><div class="wire"></div><div class="muted explain" style="font-size:11px">EU-only / work permit</div></div>
+          <div class="field"><label>Визы / work permit <span class="badge f">фильтр</span></label>
+            <div class="chips"><span class="chip">DE · Aufenthaltstitel §21</span><span class="chip">EU · freedom of movement</span><span class="chip add">+ виза</span></div>
+            <div class="muted explain" style="font-size:11px">страна + тип + срок; to eligibility_countries</div></div>
+          <div class="field"><label>Career stage <span class="badge f">фильтр</span> <span class="badge m">вектор</span></label><div class="wire"></div><div class="muted explain" style="font-size:11px">общий словарь: any / student / emerging / mid / established</div></div>
+          <div class="field"><label>Роли <span class="badge f">фильтр</span></label><div class="chips"><span class="chip">artist</span><span class="chip add">+</span></div><div class="muted explain" style="font-size:11px">to eligibility_roles</div></div>
+          <div class="field"><label>Языки <span class="badge f">мягкий</span></label><div class="chips"><span class="chip">EN</span><span class="chip">RU</span><span class="chip">DE</span><span class="chip add">+</span></div><div class="muted explain" style="font-size:11px">to application_languages</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Контакты <span class="badge c">кабинет</span></h3>
+        <div class="field"><label>Фото артиста <span class="badge c">витрина</span></label>
+          <div class="row"><div class="photo" style="width:96px;height:96px">фото<br>артиста</div><button class="btn ghost">загрузить / заменить</button><span class="muted" style="font-size:11px">показывается в hero публичной витрины</span></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label>Email</label><div class="wire line w85"></div></div>
+          <div class="field"><label>Телефон</label><div class="wire line w50"></div></div>
+          <div class="field"><label>Сайт / соцсети</label><div class="wire line w70"></div></div>
+        </div>
+        <div class="muted explain" style="font-size:11px">Availability вынесена в отдельный раздел «Доступность» (группа Матчинг-настройки).</div>
+      </div>
+
+      <div class="card">
+        <h3>Практика <span class="badge m">вектор</span></h3>
+        <div class="field"><label>Practice statement - темы и медиумы, выжимка (fit-вектор)</label><div class="wire tall"></div></div>
+        <div class="field"><label>Дисциплины / форматы (общий словарь с опен-коллом — ось формы) <span class="badge m">вектор</span></label>
+          <div class="chips"><span class="chip">audiovisual</span><span class="chip">new media</span><span class="chip">installation</span><span class="chip">performance</span><span class="chip add">+ добавить</span></div>
+        </div>
+        <div class="field"><label>Инструменты / технологии (ось инструмента, не дисциплины) <span class="badge m">вектор</span></label>
+          <div class="chips"><span class="chip">laser</span><span class="chip">generative</span><span class="chip">TouchDesigner</span><span class="chip">Kinect</span><span class="chip">modular synth</span><span class="chip add">+ добавить</span></div>
+        </div>
+        <div class="field"><label>Topics - исследовательские темы (по вектору на пункт)</label>
+          <div class="chips"><span class="chip">body & technology</span><span class="chip">immersion</span><span class="chip">real vs digital</span><span class="chip add">+ добавить</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Кабинетные тексты <span class="badge c">кабинет</span></h3>
+        <div class="field"><label>Artist statement <span class="badge c">кандидат в вектор</span></label>
+          <div class="wire tall"></div>
+        </div>
+        <div class="field"><label>Bio (закреплённая версия)</label>
+          <div class="row" style="margin-bottom:6px"><button class="btn ghost">импорт PDF с разбором</button><span class="muted" style="font-size:11px">или впишите одно закреплённое bio ниже</span></div>
+          <div class="wire tall"></div>
+        </div>
+        <div class="note">Продвинутый режим: хранить несколько версий bio и выбирать активную (личный кейс — у Глазова ~10 био). По умолчанию скрыто.
+          <div class="chips" style="margin-top:6px;opacity:.6"><span class="chip" style="border-color:var(--ink);border-style:solid">Bio for Derivative (активная)</span><span class="chip">Short Bio 2022</span><span class="chip">Full bio</span><span class="chip">New Bio</span><span class="chip add">+ версия</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>CV <span class="badge c">кабинет</span></h3>
+        <div class="grid3">
+          <div class="field"><label>Образование</label><div class="wire line w85"></div></div>
+          <div class="field"><label>Выставки / показы</label><div class="wire line"></div></div>
+          <div class="field"><label>Резиденции</label><div class="wire line w70"></div></div>
+          <div class="field"><label>Награды</label><div class="wire line w50"></div></div>
+          <div class="field"><label>Публикации</label><div class="wire line w70"></div></div>
+          <div class="field"><label>Импорт: doc / pdf</label><button class="btn ghost">импорт</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Готовность материалов <span class="badge c">кабинет</span> <span class="badge f">мягкий</span></h3>
+        <div class="chips">
+          <span class="chip">CV ready</span><span class="chip">artist statement ready</span><span class="chip">portfolio ready</span><span class="chip" style="border-style:solid;color:#c22">motivation letter missing</span>
+        </div>
+        <div class="muted explain" style="font-size:11px;margin-top:6px">to required_materials колла: показывает, чего не хватает под конкретную заявку</div>
+      </div>
+
+      <div class="note">Matching-config - в отдельных экранах Dream calls / Anti calls. Импорт профиля: doc / pdf. Externals (профиль по ссылке) отложены. Видео - ссылка на YouTube, не хостим.</div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="screen" id="s-projects">
+      <h1>Проекты</h1>
+      <p class="lead">Пул работ. Поля помечены назначением. Слева список, справа карточка. Данные - реальные работы Глазова.</p>
+      <div class="legend">
+        <span><span class="badge m">вектор</span> в скоринг</span>
+        <span><span class="badge f">фильтр</span> жесткий отбор</span>
+        <span><span class="badge c">кабинет</span> кабинет / заявка</span>
+      </div>
+      <div class="row" style="align-items:flex-start;gap:18px">
+        <div style="width:200px;flex-shrink:0">
+          <div class="muted" style="font-size:11px;padding:2px 4px 6px">6 разнотипных работ (кликабельны)</div>
+          <div class="card projitem active" style="padding:10px 12px" data-p="singularity" onclick="showProj('singularity')"><b>Singularity</b><div class="muted" style="font-size:12px">interactive performance · 2019 · collab · artwork</div></div>
+          <div class="card projitem" style="padding:10px 12px" data-p="subterraneans" onclick="showProj('subterraneans')"><b>SUBTERRANEANS</b><div class="muted" style="font-size:12px">panoramic AV performance · 2023 · solo · artwork</div></div>
+          <div class="card projitem" style="padding:10px 12px" data-p="matrix" onclick="showProj('matrix')"><b>Matrix</b><div class="muted" style="font-size:12px">kinematic laser installation · 2018 · solo · artwork</div></div>
+          <div class="card projitem" style="padding:10px 12px" data-p="performa" onclick="showProj('performa')"><b>Per Forma</b><div class="muted" style="font-size:12px">software / instrument · <b style="color:#25c">tool</b></div></div>
+          <div class="card projitem" style="padding:10px 12px" data-p="physarum" onclick="showProj('physarum')"><b>Physarum</b><div class="muted" style="font-size:12px"><b style="color:#25c">research</b> · thin</div></div>
+          <div class="card projitem" style="padding:10px 12px" data-p="dropit" onclick="showProj('dropit')"><b>Drop it</b><div class="muted" style="font-size:12px">music video · 2020 · collective (3) · commissioned</div></div>
+          <div class="muted" style="font-size:11px;padding:8px 4px 4px">ещё в базе (не заполнены):</div>
+          <div class="card projitem" style="padding:10px 12px;opacity:.55" onclick="return false"><b>Junction</b><div class="muted" style="font-size:12px">panoramic AV installation · 2023</div></div>
+          <div class="card projitem" style="padding:10px 12px;opacity:.55" onclick="return false"><b>Percepta</b><div class="muted" style="font-size:12px">AV dance performance · 2022 · collab</div></div>
+          <div class="muted" style="font-size:11px;padding:6px 4px">...ещё ~30 работ (2012-2023)</div>
+          <button class="btn ghost" style="width:100%" onclick="return false">+ новый проект</button>
+        </div>
+        <div style="flex:1">
+
+        <!-- PANE: SINGULARITY -->
+        <div class="projpane active" id="p-singularity">
+
+          <div class="accbar" data-acc="singularity">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" class="on" onclick="setAccess('singularity','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('singularity','link')">По ссылке</button>
+                <button data-lvl="priv" onclick="setAccess('singularity','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('singularity')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+            <div class="muted explain" style="font-size:11px;margin-top:4px">эффективный доступ = строже из (профиль, проект). Витрина показывает только «Публично».</div>
+          </div>
+
+          <div class="card">
+            <h3>Идентичность работы</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">Singularity</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label>
+                <div class="chips"><span class="chip">interactive performance</span><span class="chip">performance</span><span class="chip add">+ из словаря</span><span class="chip add">+ свой (other)</span></div>
+                <div class="muted explain" style="font-size:11px;margin-top:4px">расширяемый словарь (антология форм) + свободное значение</div>
+              </div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val">artwork</div><div class="muted" style="font-size:11px">artwork / tool / research</div></div>
+              <div class="field"><label>Status <span class="badge f">фильтр</span></label><div class="val">touring</div><div class="muted" style="font-size:11px">idea / research / in-dev / realized / touring</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:140px"><label>Год</label><div class="val">2019</div></div>
+              <div class="field"><label>Полнота карточки <span class="badge c">кабинет</span></label>
+                <div class="chips"><span class="chip" style="border-color:var(--accentM);color:#0a5;background:#eafaf1">rich</span><span class="chip">partial</span><span class="chip">thin</span></div>
+                <div class="muted explain" style="font-size:11px">маркер из находки досье №1: показать степень готовности проекта</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Нарратив</h3>
+            <div class="field"><label>Concept / statement <span class="badge m">вектор</span></label><div class="val tall">A dance solo in an interactive environment of body-generated visuals and sound. Explores the human body, its senses and feelings in an environment dominated by media and technology; the dancer defines the event as it happens, in full immersion.</div></div>
+            <div class="grid2">
+              <div class="field"><label>Short description (блерб) <span class="badge m">вектор</span></label><div class="val">Interactive dance performance; each movement, via sensors, generates sound and visuals, sculpted yet unpredictable.</div></div>
+              <div class="field"><label>Full description <span class="badge c">кабинет</span></label><div class="wire"></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Классификация</h3>
+            <div class="field"><label>Mediums / disciplines (общий словарь с опен-коллом) <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">TouchDesigner</span><span class="chip">Kinect</span><span class="chip">laser</span><span class="chip">modular synth</span><span class="chip add">+ добавить</span></div></div>
+            <div class="field"><label>Themes <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">body & technology</span><span class="chip">immersion</span><span class="chip">real vs digital</span><span class="chip add">+ добавить</span></div></div>
+          </div>
+
+          <div class="card">
+            <h3>Авторство и кредиты <span class="badge f">фильтр</span></h3>
+            <div class="field"><label>Authorship</label><div class="val" style="max-width:280px">collaboration</div><div class="muted" style="font-size:11px">solo / collaboration / collective</div></div>
+            <div class="field"><label>Соавторы - имя + роль (обязательно, если не solo)</label>
+              <div class="row" style="gap:8px;margin-bottom:6px"><div class="val" style="flex:2">Valentin Tszin</div><div class="val" style="flex:1">choreography / performance</div></div>
+              <div class="row" style="gap:8px"><div class="val" style="flex:2">Stanislav Glazov</div><div class="val" style="flex:1">concept / software / visuals</div></div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">role из словаря + свой</div>
+              <button class="btn ghost" style="margin-top:8px">+ соавтор</button>
+            </div>
+            <div class="field"><label>Контактное лицо (для коллектива)</label><div class="wire" style="max-width:280px"></div></div>
+          </div>
+
+          <div class="card">
+            <h3>Продакшн / техника (rider) <span class="badge c">кабинет / заявка</span></h3>
+            <div class="grid3">
+              <div class="field"><label>Пространство</label><div class="wire"></div></div>
+              <div class="field"><label>Проекция / экраны</label><div class="wire"></div></div>
+              <div class="field"><label>Звук</label><div class="wire"></div></div>
+              <div class="field"><label>Оборудование</label><div class="wire"></div></div>
+              <div class="field"><label>Crew / длительность / питание</label><div class="wire"></div></div>
+              <div class="field"><label>Бюджет <span class="badge c">+мягкий фильтр</span></label><div class="wire"></div></div>
+            </div>
+            <div class="field"><label>Варианты постановки <span class="badge c">позже</span></label>
+              <div class="chips"><span class="chip">V1 - 3 экрана + 5.1</span><span class="chip">V2 - 4-стенный бокс + media server</span><span class="chip add">+ вариант</span></div></div>
+            <div class="muted explain" style="font-size:11px">встречного поля venue-capability у опен-колла нет - вход для foundation (Евгений)</div>
+          </div>
+
+          <div class="card">
+            <h3>Медиа <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Фото (галерея, много)</label>
+              <div class="grid3"><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb add" style="border-style:solid">+ фото</div></div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">у каждого: подпись, credit (фотограф), год</div>
+            </div>
+            <div class="grid2" style="margin-top:12px">
+              <div class="field"><label>Видео (ссылки)</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip">teaser · Vimeo · 1080p · 1:30</span><span class="chip">trailer · Vimeo</span><span class="chip">documentation · full</span><span class="chip add">+ видео</span></div></div>
+              <div class="field"><label>Аудио / звук</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip">excerpt · wav</span><span class="chip">soundtrack · link</span><span class="chip add">+ аудио</span></div></div>
+            </div>
+            <div class="field"><label>Документы (PDF: portfolio, press, rider)</label>
+              <div class="chips"><span class="chip">technical-rider.pdf</span><span class="chip">press.pdf</span><span class="chip add">+ документ</span></div></div>
+            <div class="muted explain" style="font-size:11px">роль + спека (формат / разрешение / длительность) у каждого элемента</div>
+          </div>
+
+          <div class="card">
+            <h3>Контекст / провенанс <span class="badge c">кабинет / CV</span></h3>
+            <div class="field"><label>Премьера / история показов</label>
+              <div class="chips"><span class="chip">premiere 2019</span><span class="chip">Berlin Ballett</span><span class="chip add">+ показ</span></div></div>
+            <div class="field"><label>Связанные проекты</label>
+              <div class="chips"><span class="chip">Per Forma (software tool)</span><span class="chip add">+ связь</span></div></div>
+          </div>
+
+        </div>
+        <!-- /PANE: SINGULARITY -->
+
+        <!-- PANE: SUBTERRANEANS -->
+        <div class="projpane" id="p-subterraneans">
+
+          <div class="accbar" data-acc="subterraneans">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" class="on" onclick="setAccess('subterraneans','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('subterraneans','link')">По ссылке</button>
+                <button data-lvl="priv" onclick="setAccess('subterraneans','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('subterraneans')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Идентичность работы</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">SUBTERRANEANS</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label>
+                <div class="chips"><span class="chip">panoramic AV performance</span><span class="chip">performance</span><span class="chip add">+ из словаря</span><span class="chip add">+ свой (other)</span></div>
+                <div class="muted explain" style="font-size:11px;margin-top:4px">панорамная / мультиэкранная форма — своё значение поверх словаря</div>
+              </div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val">artwork</div><div class="muted" style="font-size:11px">artwork / tool / research</div></div>
+              <div class="field"><label>Status <span class="badge f">фильтр</span></label><div class="val">touring</div><div class="muted" style="font-size:11px">idea / research / in-dev / realized / touring</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:140px"><label>Год</label><div class="val">2023</div></div>
+              <div class="field"><label>Полнота карточки <span class="badge c">кабинет</span></label>
+                <div class="chips"><span class="chip">rich</span><span class="chip" style="border-color:#e90;color:#b70;background:#fff7e6">partial</span><span class="chip">thin</span></div>
+                <div class="muted explain" style="font-size:11px">есть концепт, но нет медиумов/rider/медиа — извлечь из прозы</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Нарратив</h3>
+            <div class="field"><label>Concept / statement <span class="badge m">вектор</span></label><div class="val tall">What is the underlying concept of everything? What principles govern our universe? Do we control our destiny, or do unseen forces manipulate us? How real are the images we see? What if there's something that can wipe out absolutely anything in the blink of an eye, from tiny insects to entire universes? Numerous attempts to explore these issues from an artistic perspective resulted in the audiovisual piece "Subterraneans".</div></div>
+            <div class="grid2">
+              <div class="field"><label>Short description (блерб) <span class="badge m">вектор</span></label><div class="val">Panoramic AV piece on instantaneous annihilation and the fragility of the tangible: what seems solid can vanish in the blink of an eye.</div></div>
+              <div class="field"><label>Full description <span class="badge c">кабинет</span></label><div class="wire"></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Классификация</h3>
+            <div class="field"><label>Mediums / disciplines (общий словарь с опен-коллом) <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">panoramic projection</span><span class="chip">multichannel sound</span><span class="chip add">+ добавить</span></div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">только из типа работы; конкретные инструменты на странице не перечислены — извлечь AI из прозы</div></div>
+            <div class="field"><label>Themes <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">apocalypse</span><span class="chip">fragility of the tangible</span><span class="chip">cosmology</span><span class="chip add">+ добавить</span></div></div>
+          </div>
+
+          <div class="card">
+            <h3>Авторство и кредиты <span class="badge f">фильтр</span></h3>
+            <div class="field"><label>Authorship</label><div class="val" style="max-width:280px">solo</div><div class="muted" style="font-size:11px">solo / collaboration / collective</div></div>
+            <div class="field"><label>Соавторы - имя + роль (обязательно, если не solo)</label>
+              <div class="muted" style="font-size:12px">solo — блок соавторов не заполняется</div>
+              <button class="btn ghost" style="margin-top:8px">+ соавтор</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Продакшн / техника (rider) <span class="badge c">кабинет / заявка</span></h3>
+            <div class="grid3">
+              <div class="field"><label>Пространство</label><div class="wire"></div></div>
+              <div class="field"><label>Проекция / экраны</label><div class="val">панорамная / мультиэкранная развёртка</div></div>
+              <div class="field"><label>Звук</label><div class="val">многоканальный</div></div>
+              <div class="field"><label>Оборудование</label><div class="wire"></div></div>
+              <div class="field"><label>Crew / длительность / питание</label><div class="wire"></div></div>
+              <div class="field"><label>Бюджет <span class="badge c">+мягкий фильтр</span></label><div class="wire"></div></div>
+            </div>
+            <div class="field"><label>Варианты постановки <span class="badge c">позже</span></label>
+              <div class="chips"><span class="chip">панорама 360°</span><span class="chip">фронтальная мультиэкранная</span><span class="chip add">+ вариант</span></div></div>
+            <div class="muted explain" style="font-size:11px">встречного поля venue-capability у опен-колла нет - вход для foundation (Евгений)</div>
+          </div>
+
+          <div class="card">
+            <h3>Медиа <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Фото (галерея, много)</label>
+              <div class="grid3"><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb add" style="border-style:solid">+ фото</div></div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">у каждого: подпись, credit (фотограф), год</div>
+            </div>
+            <div class="grid2" style="margin-top:12px">
+              <div class="field"><label>Видео (ссылки)</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip">documentation · YouTube</span><span class="chip add">+ видео</span></div></div>
+              <div class="field"><label>Аудио / звук</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip add">+ аудио</span></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Контекст / провенанс <span class="badge c">кабинет / CV</span></h3>
+            <div class="field"><label>Премьера / история показов</label>
+              <div class="chips"><span class="chip">Gamma Festival 2023</span><span class="chip">CTM Vorspiel Berlin 2023</span><span class="chip add">+ показ</span></div></div>
+            <div class="field"><label>Связанные проекты</label>
+              <div class="chips"><span class="chip add">+ связь</span></div></div>
+          </div>
+
+        </div>
+        <!-- /PANE: SUBTERRANEANS -->
+
+        <!-- PANE: MATRIX -->
+        <div class="projpane" id="p-matrix">
+
+          <div class="accbar" data-acc="matrix">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" class="on" onclick="setAccess('matrix','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('matrix','link')">По ссылке</button>
+                <button data-lvl="priv" onclick="setAccess('matrix','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('matrix')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Идентичность работы</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">Matrix</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label>
+                <div class="chips"><span class="chip">kinematic laser installation</span><span class="chip">installation</span><span class="chip add">+ из словаря</span><span class="chip add">+ свой (other)</span></div>
+                <div class="muted explain" style="font-size:11px;margin-top:4px">installation, не performance — другой rider и словарь дисциплин</div>
+              </div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val">artwork</div><div class="muted" style="font-size:11px">artwork / tool / research</div></div>
+              <div class="field"><label>Status <span class="badge f">фильтр</span></label><div class="val">realized</div><div class="muted" style="font-size:11px">idea / research / in-dev / realized / touring</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:140px"><label>Год</label><div class="val">2018</div></div>
+              <div class="field"><label>Полнота карточки <span class="badge c">кабинет</span></label>
+                <div class="chips"><span class="chip" style="border-color:var(--accentM);color:#0a5;background:#eafaf1">rich</span><span class="chip">partial</span><span class="chip">thin</span></div>
+                <div class="muted explain" style="font-size:11px">концепт + трейлер + presentation PDF</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Нарратив</h3>
+            <div class="field"><label>Concept / statement <span class="badge m">вектор</span></label><div class="val tall">An audiovisual kinematic laser installation. The challenge is to look at visual art from a different perspective, using the physical properties of light and optical effects. Matrix transforms the exhibition space with volumetric rays: a laser ray touches each moving prism in a procedural algorithm relative to rotation angle, speed of rotation, prism number, sound frequencies and panorama. The endless refractions fill the space with optical patterns and structures in the air.</div></div>
+            <div class="grid2">
+              <div class="field"><label>Short description (блерб) <span class="badge m">вектор</span></label><div class="val">A laser traces rotating prisms by a procedural algorithm; endless refractions fill the space with volumetric optical patterns in the air.</div></div>
+              <div class="field"><label>Full description <span class="badge c">кабинет</span></label><div class="wire"></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Классификация</h3>
+            <div class="field"><label>Mediums / disciplines (общий словарь с опен-коллом) <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">laser</span><span class="chip">kinetic prisms</span><span class="chip">procedural</span><span class="chip">sound-reactive</span><span class="chip">TouchDesigner</span><span class="chip add">+ добавить</span></div></div>
+            <div class="field"><label>Themes <span class="badge m">вектор</span></label>
+              <div class="chips"><span class="chip">light & optics</span><span class="chip">volumetric space</span><span class="chip">procedural systems</span><span class="chip add">+ добавить</span></div></div>
+          </div>
+
+          <div class="card">
+            <h3>Авторство и кредиты <span class="badge f">фильтр</span></h3>
+            <div class="field"><label>Authorship</label><div class="val" style="max-width:280px">solo</div><div class="muted" style="font-size:11px">solo / collaboration / collective</div></div>
+            <div class="field"><label>Соавторы - имя + роль (обязательно, если не solo)</label>
+              <div class="muted" style="font-size:12px">solo — блок соавторов не заполняется</div>
+              <button class="btn ghost" style="margin-top:8px">+ соавтор</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Продакшн / техника (rider) <span class="badge c">кабинет / заявка</span></h3>
+            <div class="grid3">
+              <div class="field"><label>Пространство</label><div class="val">затемнённый зал</div></div>
+              <div class="field"><label>Проекция / экраны</label><div class="muted" style="font-size:12px">нет — оптика в объёме</div></div>
+              <div class="field"><label>Звук</label><div class="val">многоканальный (sound-reactive)</div></div>
+              <div class="field"><label>Оборудование</label><div class="val">лазер + safety, ротор с призмами, haze/дым для объёмных лучей</div></div>
+              <div class="field"><label>Crew / длительность / питание</label><div class="wire"></div></div>
+              <div class="field"><label>Бюджет <span class="badge c">+мягкий фильтр</span></label><div class="wire"></div></div>
+            </div>
+            <div class="field"><label>Варианты постановки <span class="badge c">позже</span></label>
+              <div class="chips"><span class="chip">малый зал</span><span class="chip">большой объём</span><span class="chip add">+ вариант</span></div></div>
+            <div class="muted explain" style="font-size:11px">rider инсталляции (лазер/haze) сильно отличается от rider перформанса — проверка гибкости схемы</div>
+          </div>
+
+          <div class="card">
+            <h3>Медиа <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Фото (галерея, много)</label>
+              <div class="grid3"><div class="thumb">photo</div><div class="thumb">photo</div><div class="thumb add" style="border-style:solid">+ фото</div></div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">у каждого: подпись, credit (фотограф), год</div>
+            </div>
+            <div class="grid2" style="margin-top:12px">
+              <div class="field"><label>Видео (ссылки)</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip">trailer · Vimeo</span><span class="chip add">+ видео</span></div></div>
+              <div class="field"><label>Аудио / звук</label>
+                <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip add">+ аудио</span></div></div>
+            </div>
+            <div class="field"><label>Документы (PDF: portfolio, press, rider)</label>
+              <div class="chips"><span class="chip">LP_Matrix.pdf (presentation)</span><span class="chip add">+ документ</span></div></div>
+          </div>
+
+          <div class="card">
+            <h3>Контекст / провенанс <span class="badge c">кабинет / CV</span></h3>
+            <div class="field"><label>Премьера / история показов</label>
+              <div class="chips"><span class="chip">2018</span><span class="chip add">+ показ</span></div></div>
+            <div class="field"><label>Связанные проекты</label>
+              <div class="chips"><span class="chip">The Quantum (laser installation)</span><span class="chip add">+ связь</span></div></div>
+          </div>
+
+        </div>
+        <!-- /PANE: MATRIX -->
+
+        <!-- PANE: PER FORMA (kind=tool) -->
+        <div class="projpane" id="p-performa">
+
+          <div class="accbar" data-acc="performa">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" onclick="setAccess('performa','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('performa','link')">По ссылке</button>
+                <button data-lvl="priv" class="on" onclick="setAccess('performa','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('performa')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+            <div class="muted" style="font-size:11px;margin-top:4px">дефолт — Приватно; повысьте доступ, чтобы работа попала в витрину или открывалась по ссылке.</div>
+          </div>
+
+          <div class="note">Это <b>kind=tool</b>, не artwork. Карточка-шаблон заточена под работу (concept / rider / показы) и здесь не подходит: у инструмента другие поля - applications, integrations, tech stack, maturity, «что питает». <b>Находка для ADR project-unit: поля должны быть kind-условными.</b></div>
+
+          <div class="card">
+            <h3>Идентичность</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">Per Forma</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label>
+                <div class="chips"><span class="chip">software / instrument</span><span class="chip add">+ свой (other)</span></div></div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val" style="border-color:var(--accentC)">tool</div><div class="muted" style="font-size:11px">artwork / tool / research</div></div>
+              <div class="field"><label>Maturity <span class="badge f">фильтр</span></label><div class="val">production / in use</div><div class="muted explain" style="font-size:11px">для tool вместо status показа</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:180px"><label>Год (первый релиз)</label><div class="val">2019 -&gt;</div></div>
+              <div class="field"><label>Полнота карточки</label>
+                <div class="chips"><span class="chip" style="border-color:var(--accentM);color:#0a5;background:#eafaf1">rich</span><span class="chip">partial</span><span class="chip">thin</span></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Описание <span class="badge m">вектор</span></h3>
+            <div class="field"><div class="val tall">Per Forma is a music technology system that transforms human movement into musical expression through computer vision, multi-sensor integration and real-time sound synthesis. Originally developed for the "Singularity" performance, it evolved into a tool for precise gesture-controlled sound generation.</div></div>
+          </div>
+
+          <div class="card">
+            <h3>Tech stack / integrations <span class="badge m">вектор</span></h3>
+            <div class="field"><label>Компоненты (из текста страницы)</label>
+              <div class="chips"><span class="chip">TouchDesigner</span><span class="chip">Kinect</span><span class="chip">motion capture</span><span class="chip">modular synthesis</span><span class="chip">timecode sync</span><span class="chip">cue list / presets</span></div></div>
+            <div class="muted explain" style="font-size:11px">поле есть у tool, но НЕ у artwork-шаблона - ещё одна причина сделать поля kind-условными</div>
+          </div>
+
+          <div class="card">
+            <h3>Applications (антипод «истории показов»)</h3>
+            <div class="chips">
+              <span class="chip">live performance / dance</span><span class="chip">interactive sound installations</span><span class="chip">music production tool</span><span class="chip">education (movement-based composition)</span><span class="chip">experimental music research</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Что питает (провенанс инструмента) <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Работы на этом инструменте</label>
+              <div class="chips"><span class="chip">Singularity (2019)</span><span class="chip">CTRL+SHIFT (2020)</span><span class="chip add">+ связь</span></div>
+              <div class="muted explain" style="font-size:11px">у tool провенанс - это «что на нём сделано», а не «где показывали»</div></div>
+          </div>
+
+          <div class="card">
+            <h3>Медиа <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Скриншоты системы (UI, mapper, modulations)</label>
+              <div class="grid3"><div class="thumb">System UI</div><div class="thumb">mapper</div><div class="thumb">modulations</div></div></div>
+          </div>
+
+        </div>
+        <!-- /PANE: PER FORMA -->
+
+        <!-- PANE: PHYSARUM (kind=research, thin) -->
+        <div class="projpane" id="p-physarum">
+
+          <div class="accbar" data-acc="physarum">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" onclick="setAccess('physarum','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('physarum','link')">По ссылке</button>
+                <button data-lvl="priv" class="on" onclick="setAccess('physarum','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('physarum')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+          </div>
+
+          <div class="note">Это <b>тонкий</b> проект (полнота = thin). На странице только research-ссылки, нет концепта/медиумов/медиа. Заполнены <b>только достоверные факты из заголовка</b>; остальное пусто - и это нормально. <b>Догфуд-находка: без маркера полноты такой проект нельзя отличить от «недозаполненного» и он мусорит в матчинге.</b></div>
+
+          <div class="card">
+            <h3>Идентичность</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">Physarum</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span></label><div class="muted" style="font-size:12px">не указан - извлечь нечего</div></div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val" style="border-color:var(--accentC)">research</div></div>
+              <div class="field"><label>Status <span class="badge f">фильтр</span></label><div class="val">research / R&amp;D</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:140px"><label>Год</label><div class="muted" style="font-size:12px">не указан</div></div>
+              <div class="field"><label>Полнота карточки</label>
+                <div class="chips"><span class="chip">rich</span><span class="chip">partial</span><span class="chip" style="border-color:#c22;color:#c22;background:#fdeeee">thin</span></div>
+                <div class="muted explain" style="font-size:11px">жёсткий фильтр матчинга: thin-проекты не показывать как готовые</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Нарратив <span class="badge m">вектор</span></h3>
+            <div class="field"><label>Concept / statement</label><div class="wire tall"></div><div class="muted" style="font-size:11px;margin-top:4px">пусто - на странице прозы нет</div></div>
+          </div>
+
+          <div class="card">
+            <h3>Research-материалы (всё, что есть на странице) <span class="badge c">кабинет</span></h3>
+            <div class="chips" style="flex-direction:column;align-items:stretch">
+              <span class="chip">video - YouTube</span>
+              <span class="chip">reference - shadertoy (2 шейдера)</span>
+              <span class="chip">reference - github: morphogenesis-resources</span>
+            </div>
+            <div class="muted explain" style="font-size:11px;margin-top:6px">тема читается по ссылкам: morphogenesis / slime-mold simulation - но это инференс, не заявлено автором</div>
+          </div>
+
+        </div>
+        <!-- /PANE: PHYSARUM -->
+
+        <!-- PANE: DROP IT (music video, collective, commissioned) -->
+        <div class="projpane" id="p-dropit">
+
+          <div class="accbar" data-acc="dropit">
+            <div class="access">
+              <span class="lbl"><b>Доступ</b> проекта:</span>
+              <span class="seg">
+                <button data-lvl="pub" onclick="setAccess('dropit','pub')">Публично</button>
+                <button data-lvl="link" onclick="setAccess('dropit','link')">По ссылке</button>
+                <button data-lvl="priv" class="on" onclick="setAccess('dropit','priv')">Приватно</button>
+              </span>
+              <button class="btn copy" onclick="copyLink('dropit')">скопировать ссылку</button>
+              <span class="muted eff"></span>
+            </div>
+          </div>
+
+          <div class="note">Заказная работа в <b>коллективе из 3</b>. Полнота = thin (на странице только видео-ссылка), но метаданные заголовка дают уникальный тип. <b>Дырка в схеме: заказчик (Denise Rabe / Belief Defect) - это client, а не соавтор; модель collaborators[] его не держит.</b></div>
+
+          <div class="card">
+            <h3>Идентичность</h3>
+            <div class="field"><label>Название</label><div class="val" style="max-width:340px">Drop it</div></div>
+            <div class="grid3">
+              <div class="field"><label>Work type <span class="badge m">вектор</span> <span class="badge f">фильтр</span></label>
+                <div class="chips"><span class="chip">music video</span><span class="chip">commissioned</span><span class="chip add">+ свой (other)</span></div></div>
+              <div class="field"><label>Kind <span class="badge f">видимость</span></label><div class="val">artwork</div></div>
+              <div class="field"><label>Status <span class="badge f">фильтр</span></label><div class="val">realized</div></div>
+            </div>
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <div class="field" style="max-width:140px"><label>Год</label><div class="val">2020</div></div>
+              <div class="field"><label>Полнота карточки</label>
+                <div class="chips"><span class="chip">rich</span><span class="chip">partial</span><span class="chip" style="border-color:#c22;color:#c22;background:#fdeeee">thin</span></div>
+                <div class="muted explain" style="font-size:11px">концепт/mediums/rider пусты - на странице только видео</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Авторство и кредиты <span class="badge f">фильтр</span></h3>
+            <div class="field"><label>Authorship</label><div class="val" style="max-width:280px">collective (3)</div><div class="muted" style="font-size:11px">solo / collaboration / collective</div></div>
+            <div class="field"><label>Соавторы - имя + роль</label>
+              <div class="row" style="gap:8px;margin-bottom:6px"><div class="val" style="flex:2">Stanislav Glazov</div><div class="val" style="flex:1">visuals / AV</div></div>
+              <div class="row" style="gap:8px;margin-bottom:6px"><div class="val" style="flex:2">Valentin Tszin</div><div class="val" style="flex:1">choreography / performance</div></div>
+              <div class="row" style="gap:8px"><div class="val" style="flex:2">Natalie Golubenko</div><div class="val" style="flex:1">collab</div></div>
+              <button class="btn ghost" style="margin-top:8px">+ соавтор</button>
+            </div>
+            <div class="field"><label>Заказчик / client <span class="badge f">нет поля!</span></label>
+              <div class="val" style="max-width:340px;border-color:#c22;color:#c22">Denise Rabe / Belief Defect</div>
+              <div class="muted explain" style="font-size:11px;margin-top:4px">client != collaborator: нужен отдельный тип связи (commissioner / label / venue), collaborators[] его сейчас не держит</div></div>
+          </div>
+
+          <div class="card">
+            <h3>Медиа <span class="badge c">кабинет</span></h3>
+            <div class="field"><label>Видео</label>
+              <div class="chips" style="flex-direction:column;align-items:stretch"><span class="chip">music video - Vimeo</span></div></div>
+          </div>
+
+        </div>
+        <!-- /PANE: DROP IT -->
+
+        </div>
+      </div>
+    </section>
+
+    <!-- AVAILABILITY -->
+    <section class="screen" id="s-availability">
+      <h1>Доступность <span class="badge f">фильтр, резиденции</span></h1>
+      <p class="lead">Массив доступных окон под резиденции и события. Питает жёсткий фильтр дат (to даты резиденции / события). Отдельная сущность-намерение, вынесена из Профиля.</p>
+      <div class="card">
+        <h3>Доступные периоды</h3>
+        <div class="field">
+          <div class="row" style="gap:10px;margin-bottom:8px"><div class="val" style="flex:1">Aug 2026 — Oct 2026</div><div class="val" style="flex:2">резиденции / гастроли · открыт к переезду</div><button class="btn ghost" style="padding:4px 10px">✕</button></div>
+          <div class="row" style="gap:10px;margin-bottom:8px"><div class="val" style="flex:1">Mar 2027 — May 2027</div><div class="val" style="flex:2">только показы / installation</div><button class="btn ghost" style="padding:4px 10px">✕</button></div>
+          <button class="btn ghost">+ период</button>
+        </div>
+        <div class="muted explain" style="font-size:11px">grounded: форма Glenkeen «Possible Timeframes»</div>
+      </div>
+      <div class="note">P2: синк с календарём пользователя («календари пилотов») — отдельная интеграция, плейсхолдер. В wireframe только ручной массив периодов.</div>
+    </section>
+
+    <!-- DREAM CALLS -->
+    <section class="screen" id="s-dream">
+      <h1>Dream calls <span class="badge m">matching</span></h1>
+      <p class="lead">Описания опен-колла мечты словами реального колла (HyDE). Самый сильный рычаг качества матчинга.</p>
+      <div class="card"><b>art-technology-ai-festival</b><div class="wire line w85" style="margin-top:8px"></div><div class="wire line" ></div></div>
+      <div class="card"><b>dies-omnium-public-commission</b><div class="wire line w70" style="margin-top:8px"></div><div class="wire line w50"></div></div>
+      <div class="card"><b>postnational-thematic-group-show</b><div class="wire line" style="margin-top:8px"></div></div>
+      <button class="btn ghost">+ добавить dream call</button>
+    </section>
+
+    <!-- ANTI CALLS -->
+    <section class="screen" id="s-anti">
+      <h1>Anti calls <span class="badge m">matching</span></h1>
+      <p class="lead">Архетипы того, что НЕ подходит. Негативные векторы — понижают скор похожего.</p>
+      <div class="chips" style="gap:10px">
+        <span class="chip">curator job posting</span>
+        <span class="chip">student-only competition</span>
+        <span class="chip">vanity pay-to-play</span>
+        <span class="chip">editorial meta-post</span>
+        <span class="chip add">+ добавить архетип</span>
+      </div>
+      <div class="note">Плюс обучение на лету: 👍/👎 на карточках матчинга дописывают taught-good / taught-bad (до 30 каждого).</div>
+    </section>
+
+    <!-- MATCHING -->
+    <section class="screen" id="s-matching">
+      <h1>Матчинг</h1>
+      <p class="lead">Ради чего собран профиль. Скор = fit − anti + keyword. Жёсткие фильтры (fee / eligibility / deadline) отсекают до скоринга.</p>
+
+      <div class="card">
+        <div class="callcard">
+          <div class="score">0.71</div>
+          <div style="flex:1">
+            <b>Lowe! North Tyneside — public art commission</b>
+            <div class="tags"><span class="tag ok">eligibility ✓</span><span class="tag ok">free ✓</span><span class="tag">fit: dies-omnium</span><span class="tag">+format[commission,sculpture]</span></div>
+            <div class="muted" style="font-size:12px">deadline 2026-09-30 · UK</div>
+          </div>
+          <div class="vote"><button>👍</button><button>👎</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="callcard">
+          <div class="score">0.66</div>
+          <div style="flex:1">
+            <b>AI &amp; Art Festival — open call</b>
+            <div class="tags"><span class="tag ok">eligibility ✓</span><span class="tag warn">fee не проверен</span><span class="tag">fit: art-technology-ai</span></div>
+            <div class="muted" style="font-size:12px">deadline 2026-10-15 · international</div>
+          </div>
+          <div class="vote"><button>👍</button><button>👎</button></div>
+        </div>
+      </div>
+
+      <div class="card" style="opacity:.75">
+        <div class="callcard">
+          <div class="score low">0.54</div>
+          <div style="flex:1">
+            <b>ESEA-only residency (Kakilang)</b>
+            <div class="tags"><span class="tag bad">eligibility ✗ (UK/ESEA)</span><span class="tag">borderline</span></div>
+            <div class="muted explain" style="font-size:12px">почти отсеян — показан, чтобы поймать ложный авто-скип. Известный баг: eligibility надо перепроверять на host-странице.</div>
+          </div>
+          <div class="vote"><button>👍</button><button>👎</button></div>
+        </div>
+      </div>
+
+      <div class="note">Пороги (из скорера Максима): показывать ≥ 0.57 · high-match ≥ 0.65 · borderline-полка 0.50–0.57. Мультитенант: корпус и модель общие, векторы и обучение — на пользователя.</div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ PUBLIC PROFILE SURFACE (one render + owner overlay) ============ -->
+<div id="pub">
+
+  <!-- owner overlay: profile-level access + visitor preview toggle -->
+  <div class="prevtoggle owner">
+    <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="visitor-preview" onchange="togglePreview(this.checked)"> предпросмотр как посетитель</label>
+    <span class="muted" style="font-size:12px">— скрывает owner-контролы; ниже — та же страница, что видит посетитель по ссылке.</span>
+  </div>
+
+  <div class="owner" id="profile-access">
+    <div class="access">
+      <span class="lbl"><b>Доступ</b> профиля (внешний гейт):</span>
+      <span class="seg">
+        <button data-lvl="pub" class="on" onclick="setProfileAccess('pub')">Публично</button>
+        <button data-lvl="link" onclick="setProfileAccess('link')">По ссылке</button>
+        <button data-lvl="priv" onclick="setProfileAccess('priv')">Приватно</button>
+      </span>
+      <button class="btn copy" onclick="copyLink('__profile__')">скопировать ссылку профиля</button>
+    </div>
+    <div class="muted explain" style="font-size:11px;margin-top:4px">Проект не может быть открытее профиля. Тексты (bio, statement, CV, PDF) видны любому, кто может открыть эту страницу.</div>
+  </div>
+
+  <!-- ===== detail sub-view (hidden until a work is clicked) ===== -->
+  <div id="pub-detail" style="display:none">
+    <div class="row" style="margin-bottom:18px"><button class="btn ghost" onclick="pubHome()">← к профилю</button><span class="muted explain" style="font-size:12px">Страница проекта — доступна по своему уровню доступа (не всегда публична). Медиа, описание, кредиты. Без ML-разметки.</span></div>
+    <div id="pub-detail-body"></div>
+  </div>
+
+  <!-- ===== main profile view ===== -->
+  <div id="pub-main">
+
+    <!-- 1. HERO -->
+    <div class="pubhero">
+      <div class="herorow">
+        <div class="photo">фото<br>артиста</div>
+        <div style="flex:1">
+          <h1>Stanislav Glazov</h1>
+          <div class="muted">Media artist &amp; audiovisual performer — Berlin, DE</div>
+          <div class="htags">
+            <span class="htag">audiovisual</span>
+            <span class="htag">new media</span>
+            <span class="htag">installation</span>
+            <span class="htag">performance</span>
+            <span class="htag">· Berlin</span>
+          </div>
+          <p style="max-width:70ch;margin:12px 0 0">Работаю на стыке тела, света и вычислений: интерактивные среды, панорамный звук и лазерная оптика, где движение и алгоритм порождают образ в реальном времени.</p>
+          <div class="hlinks">
+            <span>website</span><span>vimeo</span><span>instagram</span><span>contact</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ABOUT (bio) -->
+    <div class="pubsec">
+      <h2>About</h2>
+      <p>Станислав Глазов — медиахудожник и audiovisual-перформер, живёт и работает в Берлине. Более 25 лет с процедурной графикой и системами реального времени (Houdini, TouchDesigner), автор перформансов, инсталляций и инструментов на стыке движения, звука и света.</p>
+      <p>Работы показывались на фестивалях и площадках в Европе (Gamma Festival, CTM Vorspiel Berlin, Berlin Ballett и др.). Основатель образовательной практики Hou2Touch.</p>
+    </div>
+
+    <!-- 3. ARTIST STATEMENT -->
+    <div class="pubsec">
+      <h2>Artist statement</h2>
+      <p>Меня занимает граница реального и цифрового: как тело, его чувства и восприятие существуют в среде, где доминируют медиа и технология. Я строю системы, в которых исполнитель или зритель сам определяет событие в момент его свершения — в полном погружении, где образ не воспроизводится, а рождается процедурно.</p>
+      <p>Методом становится алгоритм как соавтор: физика света, оптические эффекты, сенсоры и генеративные процессы задают не финальную картинку, а правила, по которым она разворачивается — управляемо, но непредсказуемо.</p>
+    </div>
+
+    <!-- 4. SELECTED WORKS (grid — only effective-public) -->
+    <div class="pubsec">
+      <h2>Selected works</h2>
+      <div class="curate owner">
+        <div class="row" style="gap:8px"><b>Курировать витрину</b><span class="muted">— какие работы показывать; фильтр по тегам</span></div>
+        <div class="row" style="gap:6px;margin:8px 0"><span class="muted">теги:</span>
+          <span class="chip sel">audiovisual</span><span class="chip">installation</span><span class="chip">performance</span><span class="chip">laser</span><span class="chip add">+ тег</span></div>
+        <div class="row" style="gap:6px"><span class="muted">добавить работу в витрину:</span>
+          <span class="chip add">SUBTERRANEANS</span><span class="chip add">Matrix</span><span class="chip add">Singularity</span><span class="chip add">Junction</span><span class="chip add">Percepta</span></div>
+        <div class="muted explain" style="font-size:11px;margin-top:6px">в витрину попадают только работы с эффективным доступом «Публично»; тег-фильтр сужает выбор внутри них</div>
+      </div>
+      <div class="worksgrid" id="works-grid">
+        <div class="workcard" data-work="subterraneans" onclick="showPubProj('subterraneans')">
+          <div class="wthumb">video · panoramic AV</div>
+          <div class="wmeta"><b>SUBTERRANEANS</b><span class="muted">panoramic AV performance · 2023</span></div>
+        </div>
+        <div class="workcard" data-work="matrix" onclick="showPubProj('matrix')">
+          <div class="wthumb">image · laser optics</div>
+          <div class="wmeta"><b>Matrix</b><span class="muted">kinematic laser installation · 2018</span></div>
+        </div>
+        <div class="workcard" data-work="singularity" onclick="showPubProj('singularity')">
+          <div class="wthumb">video · interactive</div>
+          <div class="wmeta"><b>Singularity</b><span class="muted">interactive performance · 2019</span></div>
+        </div>
+      </div>
+      <div class="muted owner" style="font-size:11px;margin-top:10px">В витрину попали только работы с эффективным доступом «Публично» (3 из пула). Остальные скрыты (Приватно / По ссылке).</div>
+    </div>
+
+    <!-- 5. CV-полоса -->
+    <div class="pubsec">
+      <h2>Selected CV</h2>
+      <div class="cvrow">
+        <span class="yr">2023</span><span>Gamma Festival · CTM Vorspiel, Berlin — SUBTERRANEANS (panoramic AV)</span>
+        <span class="yr">2019</span><span>Berlin Ballett — Singularity (interactive performance); 16K AV show, Alexandrinsky Theatre</span>
+        <span class="yr">2018</span><span>Matrix — kinematic laser installation</span>
+        <span class="yr">residencies</span><span>Glenkeen Garden (IE); selected AV / new-media residencies</span>
+        <span class="yr">awards</span><span>selected festival awards &amp; commissions (audiovisual / new media)</span>
+      </div>
+    </div>
+
+    <!-- 6. Контакты / PDF -->
+    <div class="pubsec">
+      <h2>Контакты / PDF</h2>
+      <p>Full CV &amp; bio доступны для кураторских запросов.</p>
+      <div class="row">
+        <button class="btn">download CV (PDF)</button>
+        <button class="btn ghost">download bio (PDF)</button>
+        <span class="muted" style="font-size:12px">contact for curatorial inquiries: studio@glazov.example</span>
+      </div>
+    </div>
+
+  </div><!-- /pub-main -->
+</div><!-- /pub -->
+
+<script>
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s-'+id).classList.add('active');
+    document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active',a.dataset.s===id));
+    // sync top mode toggle (cab vs match); pub is handled separately in setMode
+    var isMatch = (id==='matching');
+    document.getElementById('mode-match').classList.toggle('active',isMatch);
+    document.getElementById('mode-cab').classList.toggle('active',!isMatch);
+    document.getElementById('mode-pub').classList.remove('active');
+    window.scrollTo(0,0);
+  }
+  function setMode(m){
+    var layout = document.getElementById('layout');
+    var pub = document.getElementById('pub');
+    if(m==='pub'){
+      layout.style.display='none';
+      pub.style.display='block';
+      document.getElementById('mode-cab').classList.remove('active');
+      document.getElementById('mode-match').classList.remove('active');
+      document.getElementById('mode-pub').classList.add('active');
+      pubHome();
+      window.scrollTo(0,0);
+      return;
+    }
+    layout.style.display='';        // restore flex
+    pub.style.display='none';
+    document.getElementById('mode-pub').classList.remove('active');
+    if(m==='match'){ show('matching'); }
+    else { show('profile'); }
+  }
+  function showProj(p){
+    document.querySelectorAll('.projpane').forEach(x=>x.classList.toggle('active',x.id==='p-'+p));
+    document.querySelectorAll('.projitem').forEach(a=>a.classList.toggle('active',a.dataset.p===p));
+    window.scrollTo(0,0);
+  }
+
+  /* ===== Access model (Доступ) ===== */
+  var RANK = {pub:3, link:2, priv:1};          // Публично > По ссылке > Приватно
+  var LEVEL_RU = {pub:'Публично', link:'По ссылке', priv:'Приватно'};
+  var profileAccess = 'pub';                    // seed: profile is Публично
+  var projAccess = {                            // seed states
+    singularity:'pub', subterraneans:'pub', matrix:'pub',
+    performa:'priv', physarum:'priv', dropit:'priv'
+  };
+  function effective(id){                        // stricter of (profile, project)
+    return RANK[projAccess[id]] < RANK[profileAccess] ? projAccess[id] : profileAccess;
+  }
+  // meta for public work grid + detail
+  var WORKS = {
+    subterraneans:{title:'SUBTERRANEANS', meta:'panoramic AV performance · 2023', thumb:'video · panoramic AV',
+      desc:'Panoramic audiovisual piece on instantaneous annihilation and the fragility of the tangible: what seems solid can vanish in the blink of an eye. Numerous attempts to explore what principles govern our universe resulted in this work.',
+      credits:['Stanislav Glazov — concept, AV, sound (solo)'], shown:'Gamma Festival 2023 · CTM Vorspiel Berlin 2023'},
+    matrix:{title:'Matrix', meta:'kinematic laser installation · 2018', thumb:'image · laser optics',
+      desc:'An audiovisual kinematic laser installation. A laser ray touches each moving prism in a procedural algorithm; endless refractions fill the space with volumetric optical patterns and structures in the air.',
+      credits:['Stanislav Glazov — concept, software, laser (solo)'], shown:'2018'},
+    singularity:{title:'Singularity', meta:'interactive performance · 2019', thumb:'video · interactive',
+      desc:'A dance solo in an interactive environment of body-generated visuals and sound. Explores the human body, its senses and feelings in an environment dominated by media and technology; the dancer defines the event as it happens, in full immersion.',
+      credits:['Valentin Tszin — choreography / performance','Stanislav Glazov — concept / software / visuals'], shown:'Premiere 2019 · Berlin Ballett'}
+  };
+
+  function refreshAccessUI(){
+    // per-project accbars in backend
+    Object.keys(projAccess).forEach(function(id){
+      var bar = document.querySelector('.accbar[data-acc="'+id+'"]');
+      if(!bar) return;
+      bar.querySelectorAll('.seg button').forEach(function(b){
+        b.classList.toggle('on', b.dataset.lvl===projAccess[id]);
+      });
+      var eff = effective(id);
+      var copy = bar.querySelector('.btn.copy');
+      var priv = (eff==='priv');
+      copy.disabled = priv;
+      copy.title = priv ? "переключите в 'По ссылке', чтобы поделиться" : '';
+      var effSpan = bar.querySelector('.eff');
+      if(effSpan) effSpan.textContent = 'эффективно: '+LEVEL_RU[eff];
+    });
+    // profile-level accbar
+    var pbar = document.getElementById('profile-access');
+    if(pbar){
+      pbar.querySelectorAll('.seg button').forEach(function(b){
+        b.classList.toggle('on', b.dataset.lvl===profileAccess);
+      });
+      var pcopy = pbar.querySelector('.btn.copy');
+      pcopy.disabled = (profileAccess==='priv');
+      pcopy.title = (profileAccess==='priv') ? "переключите профиль в 'По ссылке', чтобы поделиться" : '';
+    }
+    refreshGrid();
+  }
+  function refreshGrid(){
+    document.querySelectorAll('#works-grid .workcard').forEach(function(c){
+      c.style.display = (effective(c.dataset.work)==='pub') ? '' : 'none';
+    });
+  }
+  function setAccess(id, lvl){ projAccess[id]=lvl; refreshAccessUI(); }
+  function setProfileAccess(lvl){ profileAccess=lvl; refreshAccessUI(); }
+  function copyLink(id){
+    if(id==='__profile__'){
+      if(profileAccess==='priv') return;
+      alert('Ссылка на профиль скопирована (wireframe).'); return;
+    }
+    if(effective(id)==='priv') return;   // disabled anyway
+    alert('Ссылка на работу «'+(WORKS[id]?WORKS[id].title:id)+'» скопирована (wireframe).');
+  }
+
+  /* ===== Public project detail ===== */
+  function showPubProj(id){
+    var w = WORKS[id]; if(!w) return;
+    var creditsHtml = w.credits.map(function(c){return '<li>'+c+'</li>';}).join('');
+    document.getElementById('pub-detail-body').innerHTML =
+      '<div class="pubhero" style="border-bottom:1px solid var(--wire);padding-bottom:14px">'+
+        '<h1 style="font-size:24px">'+w.title+'</h1>'+
+        '<div class="muted">'+w.meta+'</div>'+
+      '</div>'+
+      '<div class="pubsec"><div class="wthumb" style="aspect-ratio:16/7;border:1px dashed var(--line);background:var(--wire);display:flex;align-items:center;justify-content:center;color:var(--muted);border-radius:8px">'+w.thumb+' · media</div></div>'+
+      '<div class="pubsec"><h2>Description</h2><p>'+w.desc+'</p></div>'+
+      '<div class="pubsec"><h2>Credits</h2><ul style="margin:0;padding-left:18px">'+creditsHtml+'</ul></div>'+
+      '<div class="pubsec"><h2>Shown</h2><p>'+w.shown+'</p></div>';
+    document.getElementById('pub-main').style.display='none';
+    document.getElementById('pub-detail').style.display='block';
+    window.scrollTo(0,0);
+  }
+  function pubHome(){
+    document.getElementById('pub-detail').style.display='none';
+    document.getElementById('pub-main').style.display='block';
+    window.scrollTo(0,0);
+  }
+  function togglePreview(on){
+    document.body.classList.toggle('visitor', on);
+    var cb=document.getElementById('visitor-preview'); if(cb) cb.checked=on;
+  }
+  function toggleExplain(on){
+    // on = show the partner-explanation layer (checked). no-explain hides badges+legend+note+.explain.
+    document.body.classList.toggle('no-explain', !on);
+  }
+  // wizard — keyed per section ('wizard' = profile, 'wizardproj' = project)
+  var wpos={wizard:0, wizardproj:0};
+  function wizard(d, key){
+    var root=document.getElementById('s-'+key);
+    var steps=root.querySelectorAll('.wstep');
+    var max=steps.length-1;
+    wpos[key]=Math.max(0,Math.min(max,wpos[key]+d));
+    var i=wpos[key];
+    steps.forEach(s=>s.classList.toggle('active',+s.dataset.w===i));
+    root.querySelectorAll('.steps .st').forEach(s=>{
+      var n=+s.dataset.w;
+      s.classList.toggle('cur',n===i);
+      s.classList.toggle('done',n<i);
+    });
+    root.querySelector('.w-back').style.visibility = i===0?'hidden':'visible';
+    root.querySelector('.w-next').style.visibility = i===max?'hidden':'visible';
+  }
+  wizard(0,'wizard');
+  wizard(0,'wizardproj');
+  refreshAccessUI();
+</script>
+</body>
+</html>
