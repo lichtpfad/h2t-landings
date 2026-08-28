@@ -210,7 +210,7 @@ body {
       <span class="stats__label">плагинов</span>
     </div>
     <div class="col-4 col-sm-12 stats__item">
-      <span class="stats__value">29</span>
+      <span class="stats__value">28</span>
       <span class="stats__label">скилла</span>
     </div>
     <div class="col-4 col-sm-12 stats__item">
@@ -355,7 +355,7 @@ MeetGeek, Granola, веб-исследование.
 </div>
 
 <div class="h-panel" data-p="core" data-on="1">
-  <div class="h-meta">версия <b>3.2.35</b> · скиллов <b>10</b> · зависимостей нет</div>
+  <div class="h-meta">версия <b>3.2.36</b> · скиллов <b>10</b> · зависимостей нет</div>
   <p><strong>Зачем.</strong> Без него агент начинает каждую сессию с нуля.
   h2t-core держит непрерывность: собирает контекст до начала работы, показывает
   брифинг, в конце пишет запись, которую прочитает следующая сессия — в том числе
@@ -398,7 +398,7 @@ MeetGeek, Granola, веб-исследование.
 </div>
 
 <div class="h-panel" data-p="dev">
-  <div class="h-meta">версия <b>1.0.35</b> · скиллов <b>6</b></div>
+  <div class="h-meta">версия <b>1.0.36</b> · скиллов <b>6</b></div>
   <p><strong>Зачем.</strong> Документация и задачи разъезжаются молча. Этот плагин
   держит их форму: имена файлов, обязательные поля, связь плана с issue, единый
   набор меток во всех репозиториях, проверки перед мерджем.</p>
@@ -417,15 +417,14 @@ MeetGeek, Granola, веб-исследование.
 </div>
 
 <div class="h-panel" data-p="arch">
-  <div class="h-meta">версия <b>1.0.8</b> · скиллов <b>3</b></div>
+  <div class="h-meta">версия <b>1.0.9</b> · скиллов <b>2</b></div>
   <p><strong>Зачем.</strong> Архитектурная диаграмма, нарисованная руками, устаревает
   в день рисования. Здесь она собирается из описания и валидируется, а узлы
   документируются отдельно от картинки.</p>
   <ul class="h-list">
     <li><code>drawio</code> — генерация, экспорт и валидация файлов .drawio</li>
     <li><code>diagram-node</code> — аннотация узла: шесть строк на схеме плюс документ</li>
-    <li><code>node-researcher</code> — сбор материала по API или алгоритму для такого узла</li>
-  </ul>
+              </ul>
   <div class="h-note"><b>Стадия: узкий и устойчивый.</b> Самая маленькая поверхность
   в паке и самый низкий номер версии — не потому, что заброшен, а потому, что задача
   очерчена и почти не менялась.</div>
@@ -554,7 +553,7 @@ uv tool list   <span class="c"># должно быть 9 команд одним
   SKILL.md          <span class="c">← обязателен: без него каталог не скилл</span>
   references/       <span class="c">← читается по требованию, не при старте</span>
   scripts/          <span class="c">← детерминированная работа, которую нельзя доверять модели</span></div>
-<p>Из 29 скиллов пака четырнадцать — это только <code>SKILL.md</code>, у четырнадцати
+<p>Из 28 скиллов пака тринадцать — это только <code>SKILL.md</code>, у четырнадцати
 есть скрипты, у восьми — справочники. Медиана самого файла — 141 строка.</p>
 <p>Каталог без <code>SKILL.md</code> скиллом не является, даже лежа среди них: в
 дереве таких четыре, они держат <code>scripts/</code> для чужих скиллов. Разница не
@@ -817,7 +816,7 @@ cd ~/Projects/DocGraph      <span class="c">→ проект docgraph, доме�
   <div class="section-inner">
     <div class="section__label">// SECTION</div>
     <h2 class="section__title">Как это проверялось</h2>
-    <div class="section__body"><p>1953 теста, ruff с фиксированным набором правил и закреплённой версией,
+    <div class="section__body"><p>1955 тестов, ruff с фиксированным набором правил и закреплённой версией,
 линтер документации, guard структуры на каждую запись файла, git-хук,
 не дающий разъехаться <code>marketplace.json</code> и <code>plugin.json</code>.</p>
 <p>Два правила, выведенные из собственных ошибок, стоят отдельного упоминания.
@@ -840,7 +839,7 @@ cd ~/Projects/DocGraph      <span class="c">→ проект docgraph, доме�
 
 <footer class="section footer">
   <div class="footer-inner">
-    <span class="footer__copy">h2t-skills · 5 плагинов · 29 скиллов · 9 команд CLI · собрано скиллом h2t-creative:landing</span>
+    <span class="footer__copy">h2t-skills · 5 плагинов · 28 скиллов · 9 команд CLI · собрано скиллом h2t-creative:landing</span>
   </div>
 </footer>
 
