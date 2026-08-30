@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сайт REjuve — страницы услуг</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#faf9f6; --bg-light:#f0eeeb; --bg-card:#fff;
+  --text:#1a1a1a; --text-dim:#6b6b6b;
+  --accent:#c45a3c; --accent2:#2d5f8a; --accent3:#4a8a5f;
+  --border:#e0ddd8;
+  --font-heading:'Playfair Display','Georgia',serif;
+  --font-body:'Inter','Helvetica Neue','Arial',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.page-wrap{max-width:1040px;margin:0 auto;padding:48px 40px 80px;}
+@media (max-width:600px){.page-wrap{padding:24px 16px 60px;}}
+
+.site-header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:24px;}
+.client-label{font-size:10px;font-weight:600;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
+.site-header h1{font-family:var(--font-heading);font-size:30px;font-weight:700;line-height:1.2;}
+.site-header .meta{color:var(--text-dim);font-size:12px;margin-top:6px;}
+
+.lede{font-size:14px;color:var(--text);background:var(--bg-card);
+  border:1px solid var(--border);border-left:3px solid var(--accent3);
+  border-radius:4px;padding:16px 20px;margin-bottom:28px;}
+.lede p{margin-bottom:10px;}
+.lede p:last-child{margin-bottom:0;}
+.lede b{color:var(--text);}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+@media (max-width:720px){.grid{grid-template-columns:1fr;}}
+
+.card{background:var(--bg-card);border:1px solid var(--border);
+  border-top:3px solid var(--accent);border-radius:5px;padding:18px 20px;
+  display:flex;flex-direction:column;}
+.card h3{font-family:var(--font-heading);font-size:18px;font-weight:700;
+  margin-bottom:8px;line-height:1.25;}
+.card .num{font-size:11px;font-weight:600;color:var(--accent);
+  letter-spacing:1px;margin-bottom:4px;}
+.card .lead{color:var(--text);margin-bottom:12px;}
+.card dl{margin:0;}
+.card dt{font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text-dim);margin-top:8px;}
+.card dd{margin:2px 0 0;font-size:13px;}
+.card .note{margin-top:10px;font-size:12px;color:var(--text-dim);
+  border-left:2px solid var(--accent2);padding-left:8px;}
+
+.cta{margin-top:28px;background:var(--bg-light);border:1px solid var(--border);
+  border-radius:5px;padding:18px 20px;text-align:center;}
+.cta b{font-size:15px;}
+.cta p{color:var(--text-dim);font-size:13px;margin-top:4px;}
+
+.footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--border);
+  font-size:11px;color:var(--text-dim);}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<header class="site-header"><div class="client-label">REjuve</div><h1>Сайт REjuve — страницы услуг</h1><div class="meta">Черновик для обсуждения · 30 августа 2026</div></header>
+<div class="lede"><p>8 страниц-ответов сайта, собранных по принципу: <b>боль клиента → чем помогаем → как часто → чего ждать.</b> Каждая карточка — заготовка будущей страницы услуги.</p><p>Тексты здесь на русском — для нашего обсуждения. Итоговый сайт планируется на английском. Формулировки намеренно сдержанные: поддержка и восстановление, без обещаний лечения.</p></div>
+<div class="grid"><div class="card"><div class="num">Страница 1</div><h3>Нет сил и усталость</h3><p class="lead">Устаёте, хотя внешне всё в порядке и анализы «в норме»? Помогаем разобраться, что за этим стоит, и поддержать восстановление.</p><dl><dt>Как помогаем</dt><dd>Консультация (ищем причины) + студия — инфракрасный купол Iyashi Dome, красный свет, BioCharger.</dd><dt>Как часто</dt><dd>Курс 8–10 сеансов, 1–2 раза в неделю.</dd><dt>Чего ждать</dt><dd>Больше энергии, легче восстанавливаться.</dd><dt>Кому подходит</dt><dd>При стойкой усталости, стрессе, ощущении «на нуле».</dd></dl></div><div class="card"><div class="num">Страница 2</div><h3>Сон и стресс, выгорание</h3><p class="lead">Плохо спите, живёте на нервах? Помогаем телу переключиться в режим восстановления.</p><dl><dt>Как помогаем</dt><dd>Инфракрасный купол, BioCharger, криотерапия + рекомендации по питанию и режиму.</dd><dt>Как часто</dt><dd>Регулярно, 1–2 раза в неделю.</dd><dt>Чего ждать</dt><dd>Спокойнее, лучше сон, больше устойчивости к стрессу.</dd><dt>Кому подходит</dt><dd>При бессоннице, хроническом стрессе, выгорании.</dd></dl></div><div class="card"><div class="num">Страница 3</div><h3>Восстановление после родов</h3><p class="lead">Мягкая поддержка сил и тонуса после рождения ребёнка.</p><dl><dt>Как помогаем</dt><dd>Консультация по питанию и восстановлению + красный свет и щадящие процедуры.</dd><dt>Как часто</dt><dd>Курс, аккуратно, по самочувствию.</dd><dt>Чего ждать</dt><dd>Поддержка энергии и постепенное восстановление.</dd><dt>Кому подходит</dt><dd>Женщинам в послеродовом периоде.</dd></dl><p class="note">Начинаем с разговора; при жалобах, которые требуют врача, направим к специалисту.</p></div><div class="card"><div class="num">Страница 4</div><h3>Мужское здоровье и энергия</h3><p class="lead">Поддержка энергии, кровообращения и восстановления.</p><dl><dt>Как помогаем</dt><dd>Красный свет, BioCharger (свет и мягкие импульсы) + консультация.</dd><dt>Как часто</dt><dd>Курс регулярных сеансов.</dd><dt>Чего ждать</dt><dd>Больше энергии, поддержка общего тонуса.</dd><dt>Кому подходит</dt><dd>Мужчинам, которым важны энергия и восстановление.</dd></dl><p class="note">Это поддержка, а не лечение; при медицинских вопросах направим к врачу.</p></div><div class="card"><div class="num">Страница 5</div><h3>Восстановление после травм и нагрузок</h3><p class="lead">Хотите быстрее вернуться в форму после травмы или тяжёлых тренировок? Технологии восстановления помогают естественным процессам.</p><dl><dt>Как помогаем</dt><dd>Красный и инфракрасный свет, криотерапия.</dd><dt>Как часто</dt><dd>Чаще в первые недели, затем реже.</dd><dt>Чего ждать</dt><dd>Более быстрое восстановление (у одного клиента красный свет заметно ускорил заживление сухожилия).</dd><dt>Кому подходит</dt><dd>После травм, интенсивных тренировок, перегрузок.</dd></dl></div><div class="card"><div class="num">Страница 6</div><h3>Кожа и здоровое старение</h3><p class="lead">Поддержка кожи, тонуса и здорового старения — снаружи и изнутри.</p><dl><dt>Как помогаем</dt><dd>Красный свет, инфракрасный купол + рекомендации по питанию.</dd><dt>Как часто</dt><dd>Регулярно, курсом.</dd><dt>Чего ждать</dt><dd>Свежесть и тонус кожи, ощущение бодрости.</dd><dt>Кому подходит</dt><dd>Тем, кто заботится о коже и хочет стареть здорово.</dd></dl></div><div class="card"><div class="num">Страница 7</div><h3>Гормоны и цикл</h3><p class="lead">ПМС, сбои цикла, перименопауза? Помогаем понять причины и составить план.</p><dl><dt>Как помогаем</dt><dd>Консультация + при необходимости тест гормонов (DUTCH) + поддержка питанием и восстановлением в студии.</dd><dt>Как часто</dt><dd>По индивидуальному плану.</dd><dt>Чего ждать</dt><dd>Понимание причин и понятные следующие шаги.</dd><dt>Кому подходит</dt><dd>Женщинам с гормональными жалобами.</dd></dl><p class="note">Медицинские вопросы решаем вместе с врачом или направляем к специалисту.</p></div><div class="card"><div class="num">Страница 8</div><h3>Перезагрузка и детокс</h3><p class="lead">Хотите просто перезагрузиться и почувствовать себя лучше? Мягкий вход без обязательств.</p><dl><dt>Как помогаем</dt><dd>Инфракрасный купол (детокс-перезагрузка) + функциональные напитки; можно разово или сделать привычкой по абонементу.</dd><dt>Как часто</dt><dd>Разово → при желании регулярно.</dd><dt>Чего ждать</dt><dd>Перезагрузка, забота о себе как привычка.</dd><dt>Кому подходит</dt><dd>Тем, кто хочет начать мягко, без большого плана.</dd></dl></div></div>
+<div class="cta"><b>Как начать — единый вход для всех страниц</b><p>Бесплатный 15-минутный разговор (Discovery Call): помогаем выбрать подходящий первый шаг.</p></div>
+<div class="footer">REjuve · страницы услуг · черновик · 30 августа 2026</div>
+</div>
+</body>
+</html>
