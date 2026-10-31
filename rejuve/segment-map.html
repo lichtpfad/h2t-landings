@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Карта сегментов REjuve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6; --bg-light: #f0eeeb; --bg-card: #fff;
+  --text: #1a1a1a; --text-dim: #6b6b6b;
+  --accent: #c45a3c; --accent2: #2d5f8a; --accent3: #4a8a5f;
+  --border: #e0ddd8;
+  --font-heading: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-body); font-size: 14px; line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.page-wrap { max-width: 900px; margin: 0 auto; padding: 48px 40px 80px; }
+@media (max-width: 620px) { .page-wrap { padding: 24px 16px 60px; } }
+
+/* Header */
+.site-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+.site-header h1 {
+  font-family: var(--font-heading); font-size: 28px; font-weight: 700; line-height: 1.2;
+}
+.site-header .meta { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+
+/* Honesty banner */
+.lede {
+  font-size: 14px; color: var(--text-dim); background: var(--bg-card);
+  border: 1px solid var(--border); border-left: 3px solid var(--accent3);
+  border-radius: 4px; padding: 14px 18px; margin-bottom: 28px;
+}
+
+/* TOC */
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+nav.toc a {
+  font-size: 12px; font-weight: 600; color: var(--accent2); text-decoration: none;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 14px;
+}
+nav.toc a:hover { background: var(--bg-light); }
+
+/* Sections */
+.section { margin-bottom: 48px; }
+
+/* Markdown-generated headings */
+.section h1 {
+  font-family: var(--font-heading); font-size: 22px; font-weight: 700;
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 16px; margin-top: 28px;
+}
+.section h2 {
+  font-family: var(--font-heading); font-size: 19px; font-weight: 700;
+  margin: 24px 0 10px; color: var(--accent2);
+}
+.section h3 {
+  font-size: 15px; font-weight: 700; margin: 18px 0 8px;
+}
+.section h4 { font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
+.section p { margin-bottom: 12px; }
+.section ul, .section ol { padding-left: 22px; margin-bottom: 12px; }
+.section li { margin-bottom: 4px; }
+
+/* Blockquotes */
+.section blockquote {
+  border-left: 3px solid var(--accent); background: var(--bg-card);
+  border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 4px; padding: 12px 16px; margin: 14px 0;
+  color: var(--text-dim); font-size: 13px;
+}
+
+/* Tables */
+.table-wrap { overflow-x: auto; max-width: 100%; margin: 16px 0; -webkit-overflow-scrolling: touch; }
+.section table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+}
+@media (max-width: 620px) {
+  .section table:has(th:nth-child(3)) { min-width: 520px; }  /* двухколоночные — по ширине экрана */
+  .section th, .section td { padding: 8px 10px; }
+}
+.section th {
+  background: var(--bg-light); font-weight: 700; padding: 10px 14px;
+  text-align: left; border-bottom: 2px solid var(--border); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim);
+}
+.section td {
+  padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top;
+}
+.section tr:last-child td { border-bottom: none; }
+.section tr:hover td { background: var(--bg-light); }
+
+/* Footer */
+.footer {
+  margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-dim);
+}
+
+.source { font-size: 12px; color: var(--text-dim); margin-top: 24px; }
+/* разделы карты — h2 верхнего уровня: та же терракотовая линия, что у h1 модулей дашборда */
+.section h2 { font-family: var(--font-heading); font-size: 22px; font-weight: 700; color: var(--text);
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 16px; margin-top: 28px; }</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header class="site-header">
+  <h1>Карта сегментов REjuve</h1>
+  <div class="meta">Внутренний документ команды · данные на 2026-10-31</div>
+</header>
+
+<section class="section">
+<p>Сводит два разбиения аудитории, которые до сих пор жили порознь, и показывает, где
+сигналы совпадают, а где расходятся.</p>
+<hr />
+<h2>Почему разбиений два</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Разбиение</th>
+<th>На ком построено</th>
+<th>Что описывает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Канон JTBD</strong></td>
+<td>6 интервью с клиентами REjuve + анкеты + бронирования</td>
+<td>тех, кто <strong>дошёл</strong> до студии и заплатил</td>
+</tr>
+<tr>
+<td><strong>Этнография</strong></td>
+<td>221 цитата с форумов и отзывов (EN + DE), двойная кодировка</td>
+<td>тех, кто <strong>ищет решение</strong> и пишет о нём в сети</td>
+</tr>
+</tbody>
+</table></div>
+<p>Это разные стадии воронки, поэтому расхождения между ними — не противоречие, а информация:
+сегмент, сильный снаружи и пустой внутри, означает спрос, который до студии не доходит.</p>
+<hr />
+<h2>Карта</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Кандидат</th>
+<th>Снаружи (этнография)</th>
+<th>Внутри (голоса клиентов)</th>
+<th>Анкета</th>
+<th>След в данных</th>
+<th>Класс</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Энергия / «не гореть»</strong></td>
+<td>сильный, 12 цитат</td>
+<td>подтверждённый: S3, S10 (+S5)</td>
+<td>63.0%</td>
+<td>вход через Iyashi Dome</td>
+<td><strong>ядро</strong></td>
+</tr>
+<tr>
+<td><strong>Долголетие / профилактика</strong></td>
+<td>сильный, 10 цитат</td>
+<td>подтверждённый: S3, S10 (+S5, S6)</td>
+<td>62.6%</td>
+<td>несколько процедур у одного человека</td>
+<td><strong>ядро</strong></td>
+</tr>
+<tr>
+<td><strong>Боль и болезнь / восстановление</strong></td>
+<td><strong>сильнейший, 17 цитат</strong></td>
+<td>один голос: S9 (несмещённый)</td>
+<td>27.4%</td>
+<td>не выделен: старт как у всех</td>
+<td><strong>недошедший спрос</strong></td>
+</tr>
+<tr>
+<td><strong>Тревога и ментальное здоровье</strong></td>
+<td>сильный, 9 цитат</td>
+<td>голосов нет</td>
+<td><strong>опции нет</strong></td>
+<td>Dry Float — 12.7% клиентов</td>
+<td><strong>неизмеренное</strong></td>
+</tr>
+<tr>
+<td><strong>Любопытство / по рекомендации</strong></td>
+<td>слабый, 4 цитаты</td>
+<td>один голос: S10</td>
+<td><strong>опции нет</strong></td>
+<td>бесплатная проба → конверсия</td>
+<td><strong>неизмеренное</strong></td>
+</tr>
+<tr>
+<td><strong>Тело: вес и форма</strong></td>
+<td><strong>сигнала нет</strong></td>
+<td>три голоса, <strong>все смещены</strong></td>
+<td>40.6%</td>
+<td>Iyashi бронировали 35 из 45 в группе</td>
+<td><strong>докупка (гипотеза)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>Что означает каждый класс</h2>
+<h3>Ядро — энергия и долголетие</h3>
+<p>Сигнал совпадает во всех трёх источниках: люди так говорят снаружи, наши клиенты так
+говорят внутри, анкеты подтверждают. Это основа привлечения, здесь ничего менять не нужно.</p>
+<h3>Недошедший спрос — боль и болезнь</h3>
+<p><strong>Самое заметное расхождение карты.</strong> Снаружи это сильнейший сигнал корпуса — 17 цитат,
+больше чем у любого другого сегмента. Внутри — один клиент.</p>
+<p>Триггер у этих людей специфический: годы безуспешного лечения. Формулировка из корпуса —
+<em>«провал обычной медицины»</em>: человек приходит из отчаяния, а не из любопытства, и язык
+для него — «наконец нашёл», а не «попробуй».</p>
+<p>Единственный наш голос в этом сегменте (S9) описывает ровно этот путь: перепробовала
+конвенциональную и комплементарную медицину, пришла из поиска Google.</p>
+<p><strong>Вывод:</strong> спрос существует и он крупный, но студия его почти не получает. Это не слабый
+сегмент — это незакрытый канал.</p>
+<h3>Неизмеренное — тревога и любопытство</h3>
+<p>Оба кандидата невозможно оценить количественно: <strong>в анкете нет соответствующих опций</strong>.
+Отсутствие опции — не отсутствие спроса (та же ошибка, что с детоксом: 4 отметки при
+отсутствующей опции в немецкой форме).</p>
+<ul>
+<li><strong>Тревога и ментальное здоровье</strong> — 9 цитат, сильный сигнал, и у нас есть подходящая
+  процедура: Dry Float брали 12.7% клиентов. В прежней редакции этнографии сегмент был
+  исключён с обоснованием «флоатинг в REjuve отсутствует» — это была
+  фактическая ошибка, исправлена 17.09.</li>
+<li><strong>Любопытство</strong> — снаружи слабый сигнал, но подтверждается свежим интервью: вход через
+  знакомого, интерес к теме, решение принимает бесплатная проба. Это не «долголетие»:
+  мотива инвестиции в будущее нет, есть любопытство и лёгкий вход.</li>
+</ul>
+<h3>Докупка — тело</h3>
+<p>Зеркальный случай: сильный внутри (три голоса, 40.6% анкет), <strong>полностью отсутствует
+снаружи</strong>. Правдоподобное объяснение: это не запрос, с которым приходят, а то, что
+докупают, уже став клиентом.</p>
+<p>Осторожность: корпус собирался по процедурам REjuve, а тему веса обсуждают в других
+контекстах (диеты, препараты). Отсутствие снаружи может быть артефактом сбора, а не
+фактом. Проверяется целевым сбором по теме веса.</p>
+<hr />
+<h2>Что делать</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Приоритет</th>
+<th>Действие</th>
+<th>Почему</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Добавить в анкету опции «тревога / настроение» и «попробовать новое»</strong></td>
+<td>два кандидата нельзя оценить; правка формы бесплатна и работает сама</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Проверить канал для сегмента боли</strong></td>
+<td>крупнейший внешний сигнал при одном клиенте; вероятная точка роста</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Взять язык сегмента боли из корпуса</strong></td>
+<td>17 цитат дают формулировки, которых нет в интервью</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Целевой сбор по теме веса</strong></td>
+<td>подтвердить или опровергнуть гипотезу «докупка»</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Интервью по тревоге и любопытству</td>
+<td>подтверждение кандидатов; медленный путь</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>Границы честности</h2>
+<ul>
+<li>Обновлено на данных 31.10: 219 анкет, 1262 брони, 102 человека связаны с анкетой по email. Классы карты не изменились.</li>
+<li>«След в данных» у сегмента «тело» в версии 17.09 звучал как «Iyashi у половины группы» — на данных 17.09 эта мера не воспроизводится (бронировали Iyashi 34 из 46). Здесь — воспроизводимая мера: бронировал Iyashi хотя бы раз.</li>
+<li>
+<p>Цель «вес» до 31.10 завышалась: поиск по слову «gewicht» засчитывал в неё немецкий вариант «Hormonelles Gleichgewicht» (гормональный баланс). Исправлено в <code>extract_icp.py</code> и <code>measure_behavior_segments.py</code>; 40.6% совпадает с каноническим пересчётом (89 из 219). Прежние 43.2% (17.09) — с этой ошибкой.</p>
+</li>
+<li>
+<p>Этнография — <strong>не клиенты REjuve</strong>. Даёт язык, структуру и гипотезы; не даёт ни размеров,
+  ни права называть кандидата подтверждённым сегментом.</p>
+</li>
+<li>Корпус смещён в позитив: 177 цитат «ценность» против 23 «разочарование». Частотность
+  отсюда не берём, считаем только силу сигнала внутри корпуса.</li>
+<li>Проценты анкет — доля выборки из 219 ответов, не рыночные доли. Мультивыбор: сумма
+  превышает 100%.</li>
+<li>Классы («ядро», «недошедший спрос», «докупка», «неизмеренное») — <strong>интерпретация
+  расхождений</strong>, а не измеренные категории.</li>
+</ul>
+<p class="source">S3, S5, S6, S9, S10 — коды клиентских интервью; имён на странице нет.</p>
+</section>
+
+<footer class="footer">
+  Подготовлено командой REjuve · данные на 2026-10-31.
+</footer>
+
+</div>
+</body>
+</html>
