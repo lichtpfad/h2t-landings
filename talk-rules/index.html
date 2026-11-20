@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дерево правил</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050507;--fg:#f2f2f2}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:'JetBrains Mono',monospace}
+#gl,#l2{position:fixed;inset:0}#l2{pointer-events:none}
+/* lane card: docked panel, lives alongside an open item card */
+.lane{pointer-events:auto;cursor:pointer}
+#legend{transition:opacity .4s}body.lane-on #legend{opacity:0;pointer-events:none}
+#lanecard{position:fixed;left:34px;top:150px;width:400px;z-index:6;box-sizing:border-box;background:rgba(8,8,11,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 0 80px -24px var(--c);padding:22px 26px 18px;opacity:0;transform:translateX(-30px);transition:opacity .4s,transform .4s;pointer-events:none}
+#lanecard.in{opacity:1;transform:none;pointer-events:auto}
+#lanecard .c{position:absolute;width:14px;height:14px;border:solid var(--c);border-width:0}
+#lanecard .c1{left:-1px;top:-1px;border-top-width:2px;border-left-width:2px}#lanecard .c2{right:-1px;top:-1px;border-top-width:2px;border-right-width:2px}
+#lanecard .c3{left:-1px;bottom:-1px;border-bottom-width:2px;border-left-width:2px}#lanecard .c4{right:-1px;bottom:-1px;border-bottom-width:2px;border-right-width:2px}
+#lanecard .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#777}
+#lanecard h2{font-size:26px;margin:6px 0 2px;color:var(--c);letter-spacing:.04em}
+#lanecard .en{font-size:12px;color:#888;margin-bottom:12px}
+#lanecard .q{font-size:17px;line-height:1.4;color:#fff;margin-bottom:10px}
+#lanecard .ab{font-size:14px;line-height:1.5;color:#bbb}
+#lanecard .lad{margin-top:14px;border-top:1px solid #222;padding-top:10px;display:grid;gap:5px}
+#lanecard .row{display:grid;grid-template-columns:150px 1fr;align-items:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#666}
+#lanecard .row.has{color:#bbb}
+#lanecard .row span{display:flex;gap:6px;flex-wrap:wrap}
+#lanecard .row i{font-style:normal;font-size:11px;padding:1px 6px;border:1px solid var(--sc);color:var(--sc);cursor:pointer;text-transform:none;letter-spacing:0}
+#lanecard .row i.on{background:#f2f2f2;border-color:#f2f2f2;color:#000;font-weight:700}
+#lanecard .dl{margin-top:14px;background:transparent;border:1px solid var(--c);color:#eee;font:12px 'JetBrains Mono',monospace;letter-spacing:.06em;padding:7px 12px;cursor:pointer;text-transform:uppercase}
+#lanecard .dl:hover{background:var(--c);color:#050507}
+#lanecard .x{position:absolute;right:12px;top:4px;color:#777;cursor:pointer;font-size:20px}
+/* dashed survey grid with crosshairs, very faint */
+#grid{position:fixed;inset:0;pointer-events:none;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cg stroke='%23fff' fill='none'%3E%3Cpath d='M0 120.5H240M120.5 0V240' stroke-opacity='.07' stroke-dasharray='5 7'/%3E%3Cpath d='M112 120.5H129M120.5 112V129' stroke-opacity='.22'/%3E%3C/g%3E%3C/svg%3E");background-position:center}
+/* film grain over everything, ~8% */
+#grain{position:fixed;inset:-50%;pointer-events:none;z-index:8;opacity:.08;animation:grain .6s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-7%,4%)}40%{transform:translate(5%,-6%)}60%{transform:translate(-4%,-3%)}80%{transform:translate(6%,5%)}100%{transform:translate(0,0)}}
+/* HUD leader line: marker → up → card top */
+#lead{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .4s}
+#lead.on{opacity:1}
+/* thin white callout with a slight chromatic split, as on the reference */
+#lead{filter:drop-shadow(1px 0 0 rgba(255,60,60,.55)) drop-shadow(-1px 0 0 rgba(60,220,255,.55))}
+#lead path{fill:none;stroke:#f2f2f2;stroke-width:1.2}
+#lead circle{fill:none;stroke:#f2f2f2;stroke-width:1.2}#lead circle.in{fill:var(--c,#fff);stroke:none}
+#lead text{fill:#f2f2f2;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.08em}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:4}
+#hud .cr{position:absolute;width:28px;height:28px;border:solid rgba(255,255,255,.35);border-width:0}
+#hud .tl{left:14px;top:14px;border-top-width:1px;border-left-width:1px}#hud .tr{right:14px;top:14px;border-top-width:1px;border-right-width:1px}
+#hud .bl{left:14px;bottom:14px;border-bottom-width:1px;border-left-width:1px}#hud .br{right:14px;bottom:14px;border-bottom-width:1px;border-right-width:1px}
+#hud .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px)}
+#hud .vig{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65) 100%)}
+#read{position:fixed;left:34px;bottom:30px;z-index:5;font-size:13px;letter-spacing:.08em;color:#9a9a9a;text-transform:uppercase}
+#read b{color:var(--c,#fff);font-weight:700}#read .pg{color:#555;margin-left:14px}
+#legend{position:fixed;left:34px;bottom:70px;z-index:5;display:flex;flex-direction:column;gap:6px}
+#legend .li{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#bbb;display:flex;align-items:center;gap:10px}
+#legend .li i{width:22px;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+#legend .li i.ln{height:0;background:none;box-shadow:none;border-top:2px var(--ls,dashed) #aaa}
+#legend .ttl{font-size:11px;color:#666;letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+#contact{position:fixed;right:34px;top:28px;z-index:6;display:flex;gap:14px;align-items:center;background:rgba(8,8,10,.82);border:1px solid #2a2a33;padding:12px 14px;font-size:11px;letter-spacing:.06em;color:#888}
+#contact a{display:block;background:#ececf1;padding:6px;line-height:0}#contact svg{width:96px;height:96px;display:block}
+#contact b{display:block;color:#ececf1;font-size:13px;margin-bottom:6px;letter-spacing:.04em}#contact div div{line-height:1.7}
+#hint{position:fixed;right:34px;bottom:30px;font-size:11px;color:#555;z-index:5;letter-spacing:.06em;text-transform:uppercase}
+#ui{position:fixed;left:34px;top:28px;right:34px;z-index:5}
+#ui h1{font-size:22px;margin:0 0 4px;font-weight:700;letter-spacing:.04em}
+#ui .sub{font-size:12px;color:#777;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+#ui .tabs{display:flex;flex-wrap:wrap;border-top:1px solid #222;border-left:1px solid #222;width:max-content;max-width:100%}
+#ui button{background:rgba(8,8,10,.6);border:0;border-right:1px solid #222;border-bottom:1px solid #222;color:#777;font:12px 'JetBrains Mono';letter-spacing:.06em;padding:7px 12px;cursor:pointer;text-transform:uppercase}
+#ui button:hover{color:#ddd}#ui button.on{color:#000;background:#e8e8e8}
+#err{position:fixed;inset:40% 20% auto;z-index:9;color:#ff4d5e;font-size:16px;text-align:center}
+/* markers: shape = status of the strongest tool */
+.ev{position:relative;width:0;height:0;transition:opacity .6s}
+.ev .mk{position:absolute;left:-7px;top:-7px;width:14px;height:14px;box-sizing:border-box;border:2px solid var(--c);border-radius:50%;background:rgba(5,5,7,.85);pointer-events:auto;cursor:pointer}
+.ev[data-st=works] .mk{background:var(--c);box-shadow:0 0 12px var(--c)}
+.ev[data-st=tested] .mk{border-radius:2px;background:var(--c)}
+.ev[data-st=ours] .mk{background:linear-gradient(90deg,var(--c) 50%,rgba(5,5,7,.85) 50%)}
+.ev[data-st=found] .mk{border-style:dashed}
+.ev[data-st=none] .mk{left:-4px;top:-4px;width:8px;height:8px;border:0;background:#777}
+.ev .tx{position:absolute;top:0;left:18px;transform:translateY(-50%);width:max-content;background:rgba(5,5,7,.72);border-left:2px solid var(--c);padding:5px 10px 6px;max-width:320px;pointer-events:auto;cursor:pointer;transition:opacity .7s ease}
+.ev.left .tx{left:auto;right:18px;border-left:0;border-right:2px solid var(--c);text-align:right}
+.ev .dt{font-size:11px;color:#8a8a8a;letter-spacing:.1em}
+.ev .tt{font-size:15px;color:#ececec;line-height:1.3}
+.ev:hover .tx{background:rgba(25,25,30,.92)}
+.ev.dot .tx{opacity:0;pointer-events:none}
+.lane{font-size:15px;font-weight:700;color:var(--c);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 18px var(--c);padding:4px 10px;border:1px solid var(--c);background:rgba(5,5,7,.6);transition:opacity .6s}
+.stp{font-size:13px;color:#666;letter-spacing:.15em;text-transform:uppercase}
+.stp b{display:block;color:#bbb}
+/* card */
+.cardwrap{width:0;height:0;position:relative}
+.card{position:absolute;left:210px;top:0;translate:0 -35%;width:620px;box-sizing:border-box;pointer-events:auto;background:rgba(8,8,11,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 0 80px -20px var(--c);padding:26px 32px 20px;color:#eee;opacity:0;transform:scale(.94);transition:opacity .35s,transform .35s}
+.card.in{opacity:1;transform:none}
+.card .c{position:absolute;width:16px;height:16px;border:solid var(--c);border-width:0}
+.card .c1{left:-1px;top:-1px;border-top-width:2px;border-left-width:2px}.card .c2{right:-1px;top:-1px;border-top-width:2px;border-right-width:2px}
+.card .c3{left:-1px;bottom:-1px;border-bottom-width:2px;border-left-width:2px}.card .c4{right:-1px;bottom:-1px;border-bottom-width:2px;border-right-width:2px}
+.card .hd{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#888;border-bottom:1px solid #222;padding-bottom:9px}
+.card .hd b{color:var(--c)}
+.card h2{font-size:28px;line-height:1.2;margin:14px 0 2px;font-weight:700}
+.card .en{font-size:13px;color:#888;letter-spacing:.06em;margin-bottom:10px}
+.card .desc{font-size:17px;line-height:1.45;color:#ddd;margin:8px 0 16px}
+.card h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);margin:12px 0 6px}
+.card ul{margin:0;padding-left:18px;font-size:15px;line-height:1.45;color:#ccc}
+.card ul li{margin-bottom:4px}
+.card .sol{font-size:16px;line-height:1.45;color:#eee}
+.card .tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.card .tool{font-size:12px;padding:4px 9px;border:1px solid #333;color:#ccc;letter-spacing:.03em}
+.card .tool i{font-style:normal;color:var(--c);margin-right:5px}
+.card .tool a{color:#fff;text-decoration:underline dotted;text-decoration-color:var(--c);text-underline-offset:3px}
+.card .tool a:hover{color:var(--c)}
+.card .tool small{color:#777;margin-left:6px}
+.card .todo{margin-top:10px;color:#ffd84d;font-size:13px}
+.card .ft{margin-top:14px;padding-top:9px;border-top:1px solid #222;font-size:12px;color:#777;letter-spacing:.04em;line-height:1.6}
+.card .ft span{cursor:pointer;color:#aaa;text-decoration:underline dotted}
+.card .x{position:absolute;right:14px;top:6px;color:#777;cursor:pointer;font-size:22px;z-index:2}
+</style>
+<script src="cards.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="gl"></div><div id="grid"></div><div id="grain"></div>
+<svg id="lead"><path/><circle r="9"/><circle class="in" r="2.5"/><text text-anchor="end"></text></svg>
+<div id="l2"></div>
+<div id="hud"><div class="scan"></div><div class="vig"></div><div class="cr tl"></div><div class="cr tr"></div><div class="cr bl"></div><div class="cr br"></div></div>
+<div id="ui"><h1>Как держать агента в рамках</h1><div class="sub" id="sub"></div><div class="tabs" id="tabs"></div></div>
+<div id="legend"></div><div id="lanecard"></div>
+<div id="read">обзор</div>
+<div id="contact"><a href="https://t.me/prcdrl" target="_blank" rel="noopener" title="t.me/prcdrl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"><path class="qrline" stroke="#050507" d="M0 0.5h7m1 0h3m4 0h1m2 0h7m-25 1h1m5 0h1m2 0h1m2 0h2m1 0h2m1 0h1m5 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h3m5 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h2m2 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m4 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-25 1h1m5 0h1m1 0h2m1 0h1m1 0h1m1 0h2m1 0h1m5 0h1m-25 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-17 1h3m1 0h1m3 0h1m-16 1h1m1 0h1m1 0h4m1 0h3m3 0h4m1 0h2m1 0h1m-24 1h1m1 0h1m3 0h1m2 0h1m1 0h2m2 0h4m4 0h1m-23 1h1m3 0h4m2 0h3m2 0h1m1 0h2m2 0h2m-25 1h1m1 0h1m2 0h1m2 0h1m4 0h2m3 0h1m1 0h1m-20 1h1m1 0h6m1 0h1m1 0h1m1 0h1m2 0h3m1 0h1m1 0h2m-24 1h1m1 0h1m1 0h1m2 0h2m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m-25 1h1m3 0h7m1 0h1m3 0h1m2 0h2m1 0h1m1 0h1m-24 1h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h3m4 0h1m2 0h1m-24 1h8m1 0h4m1 0h1m1 0h7m-15 1h2m2 0h3m1 0h1m3 0h2m2 0h1m-25 1h7m1 0h1m1 0h1m4 0h2m1 0h1m1 0h2m1 0h2m-25 1h1m5 0h1m1 0h7m1 0h1m3 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m3 0h1m5 0h6m1 0h2m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m2 0h4m-23 1h1m1 0h3m1 0h1m3 0h2m2 0h3m2 0h2m1 0h1m1 0h1m-25 1h1m5 0h1m1 0h2m1 0h1m3 0h3m3 0h1m-22 1h7m2 0h1m1 0h1m2 0h1m1 0h4m3 0h2"/></svg></a><div><b>Стас Глазов</b><div>TG @prcdrl</div><div>IG glazov_av</div><div>hou2touch.com</div></div></div>
+<div id="hint">клик — карточка · ← → по порядку · пробел — вращение · c — цвет ветка/статус · esc — обзор</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {CSS2DRenderer,CSS2DObject} from 'three/addons/renderers/CSS2DRenderer.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+// grain texture: random gray noise tile, generated once
+{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),d=x.createImageData(256,256);
+ for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}
+ x.putImageData(d,0,0);document.getElementById('grain').style.backgroundImage=`url(${c.toDataURL()})`}
+// ───────── data: talk-rules/cards.js, built from talk-rules/cards/*.yaml by build_cards.py ─────────
+const T=window.TALK;
+if(!T){document.body.insertAdjacentHTML('beforeend','<div id="err">нет данных: запусти python talk-rules/build_cards.py</div>');throw new Error('no TALK')}
+const LANES=T.lanes,ST=T.statuses,LK=T.link_kinds,STEPS=T.steps;
+const RANK={works:0,tested:1,ours:2,found:3,none:4};
+const STC={works:'#3fd18a',tested:'#ffd84d',ours:'#4ea1ff',found:'#9a9a9a',none:'#555'};
+const C=T.cards.map(c=>{const at=(c.tools||[]).filter(t=>t.step===c.step);const best=(at.length?at:(c.tools||[])).map(t=>t.status).sort((a,b)=>RANK[a]-RANK[b])[0]||'none';
+ return {...c,key:c.lane+'/'+c.id,st:best,l:LANES.find(l=>l.id===c.lane)}});
+document.getElementById('sub').textContent=`${LANES.length} веток · ${STEPS.length} ступеней от записки до двери в данных · ${C.length} карточек`;
+
+// ───────── geometry (same spiral as the history tree): height = step band, branches wind outward ─────────
+// band height per step grows with the largest number of cards any lane has on that step
+const H=72,YB=-H/2;
+const cnt=STEPS.map(s=>Math.max(...LANES.map(l=>C.filter(c=>c.lane===l.id&&c.step===s.n).length)));
+const wsum=cnt.reduce((a,c)=>a+1+c,0),BH=cnt.map(c=>H*(1+c)/wsum),BS=BH.map((h,i)=>YB+BH.slice(0,i).reduce((a,b)=>a+b,0));
+const band=s=>BS[s-1],bandH=s=>BH[s-1];      // step s occupies [band(s), band(s)+bandH(s)]
+const R=28,ang={},y0={};
+LANES.forEach((l,i)=>{ang[l.id]=i/LANES.length*Math.PI*2+0.4;y0[l.id]=YB-11+i*0.9});   // staggered start on the trunk
+function along(lane,y){const s=Math.max(0,y-y0[lane]),r=R*(1-Math.exp(-s/8))+0.5*Math.min(1,s),a=ang[lane]+0.04*s;
+ return new THREE.Vector3(Math.cos(a)*r,y+Math.min(s,1)*0.2,Math.sin(a)*r)}
+const trunk=y=>new THREE.Vector3(Math.sin(y*.15)*.5,y,Math.cos(y*.13)*.5);
+function pos(c){const n=C.filter(z=>z.lane===c.lane&&z.step===c.step).sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true})),i=n.indexOf(c);
+ return along(c.lane,band(c.step)+bandH(c.step)*(i+1)/(n.length+1))}
+
+// ───────── scene ─────────
+const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x050507,0.008);
+const cam=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,500);cam.position.set(108,12,108);
+const gl=new THREE.WebGLRenderer({antialias:true});gl.setPixelRatio(Math.min(devicePixelRatio,2));gl.setSize(innerWidth,innerHeight);gl.setClearColor(0x050507);
+document.getElementById('gl').appendChild(gl.domElement);
+const r2=new CSS2DRenderer({element:document.getElementById('l2')});r2.setSize(innerWidth,innerHeight);
+const ctl=new OrbitControls(cam,gl.domElement);ctl.enableDamping=true;ctl.autoRotate=true;ctl.autoRotateSpeed=0.35;ctl.target.set(0,3,0);
+const comp=new EffectComposer(gl);comp.addPass(new RenderPass(scene,cam));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.35,0.2));comp.addPass(new OutputPass());
+{const g=new THREE.BufferGeometry(),p=[];for(let i=0;i<2500;i++){const v=new THREE.Vector3().randomDirection().multiplyScalar(80+Math.random()*120);p.push(v.x,v.y,v.z)}
+ g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x666677,size:0.25,fog:false})))}
+
+const stepTags=[];
+// background: faint topographic contour lines; they drift slowly and shift with camera movement
+const bgMat=new THREE.ShaderMaterial({depthWrite:false,depthTest:false,fog:false,
+ uniforms:{uT:{value:0},uO:{value:new THREE.Vector2()},uZ:{value:1},uA:{value:innerWidth/innerHeight}},
+ vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,1.0,1.0);}`,
+ fragmentShader:`uniform float uT,uZ,uA;uniform vec2 uO;varying vec2 vUv;
+ float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+ float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+1.),f.x),f.y);}
+ float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n2(p);p*=2.03;a*=.5;}return s;}
+ void main(){vec2 p=(vUv-.5)*vec2(uA,1.)*2.2*uZ+uO;
+  float n=fbm(p+vec2(uT*.012,uT*.007))+.12*fbm(p*2.3-uT*.015);
+  float k=n*16.,w=fwidth(k);float line=1.-smoothstep(.0,1.2,abs(fract(k)-.5)/w);
+  float major=step(.5,fract(k/5.+.1))<.5?1.:.55;
+  gl_FragColor=vec4(vec3(.00017,.00017,.00026)+line*major*vec3(.009,.009,.0105),1.);}`});
+const bg=new THREE.Mesh(new THREE.PlaneGeometry(2,2),bgMat);bg.frustumCulled=false;bg.renderOrder=-10;scene.add(bg);
+
+// trunk + step rings (step boundaries, label at each band)
+{const pts=[];for(let y=YB-13;y<=YB+H+2;y+=1)pts.push(trunk(y));const cv=new THREE.CatmullRomCurve3(pts);
+ scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(cv.getPoints(200)),new THREE.LineBasicMaterial({color:0xe6e6e6})));
+ scene.add(new THREE.Mesh(new THREE.TubeGeometry(cv,200,0.16,8),new THREE.MeshBasicMaterial({color:0x555555,transparent:true,opacity:.55})))}
+STEPS.forEach(s=>{const y=band(s.n);
+ const ring=new THREE.Mesh(new THREE.RingGeometry(R+3.4,R+3.5,96),new THREE.MeshBasicMaterial({color:0x2a2a33,side:THREE.DoubleSide,transparent:true,opacity:.45}));
+ ring.rotation.x=-Math.PI/2;ring.position.y=y;scene.add(ring);
+ const el=document.createElement('div');el.className='stp';el.innerHTML=`<b>${s.n} · ${s.name}</b>${s.verb}`;
+ const o=new CSS2DObject(el);o.position.set(R+4.2,y+bandH(s.n)/2,0);o.center.set(0,.5);scene.add(o);stepTags.push({el,at:o.position})});
+
+// branches
+const laneTags=[],LG=document.getElementById('legend');
+LANES.forEach(l=>{const pts=[trunk(y0[l.id])];for(let i=0;i<=120;i++){pts.push(along(l.id,y0[l.id]+(YB+H-y0[l.id])*i/120))}
+ const curve=new THREE.CatmullRomCurve3(pts),c=new THREE.Color(l.c);
+ scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(400)),new THREE.LineBasicMaterial({color:c})));
+ scene.add(new THREE.Mesh(new THREE.TubeGeometry(curve,300,0.07,8),new THREE.MeshBasicMaterial({color:c.clone().multiplyScalar(.55),transparent:true,opacity:.55})));
+ const el=document.createElement('div');el.className='lane';el.style.setProperty('--c',l.c);el.textContent=l.n;el.onclick=ev=>{ev.stopPropagation();openLane(l.id)};
+ // label sits on the branch end: its bottom edge touches the line
+ const o=new CSS2DObject(el);o.position.copy(along(l.id,YB+H));o.center.set(.5,1);scene.add(o);laneTags.push({el,o,at:o.position});
+ const li=document.createElement('div');li.className='li';li.style.setProperty('--c',l.c);li.innerHTML=`<i></i>${l.n}`;LG.appendChild(li)});
+
+// cards as markers
+const nodes=[],geo=new THREE.SphereGeometry(1,20,14);
+C.forEach((c,i)=>{const p=pos(c);
+ const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:new THREE.Color(c.l.c),transparent:true}));
+ m.scale.setScalar(c.st==='none'?0.1:0.17);m.position.copy(p);m.userData.i=i;scene.add(m);
+ const el=document.createElement('div');el.className='ev';el.dataset.st=c.st;el.style.setProperty('--lc',c.l.c);el.style.setProperty('--sc',STC[c.st]);el.style.setProperty('--c','var(--lc)');
+ el.innerHTML=`<div class="mk"></div><div class="tx"><div class="dt">${c.id} · ${c.l.n}</div><div class="tt">${c.term}</div></div>`;
+ el.onclick=ev=>{ev.stopPropagation();openCard(i)};el.onmouseenter=()=>hover=i;el.onmouseleave=()=>{if(hover===i)hover=null};
+ const lab=new CSS2DObject(el);lab.position.copy(p);scene.add(lab);
+ nodes.push({m,lab,el,c,p})});
+
+// cross links: dash pattern = kind
+const DASH={checks:[.45,.3],born:[.08,.28],holds:[1.3,.5],loop:[.45,.3]};
+const lines=[];
+C.forEach((c,i)=>(c.links||[]).forEach(L=>{const j=C.findIndex(z=>z.key===L.to);if(j<0)return;
+ const p1=nodes[i].p,p2=nodes[j].p,m=p1.clone().add(p2).multiplyScalar(.5);m.y+=2.5;m.multiplyScalar(L.kind==='loop'?0.4:1.1);
+ const col=L.kind==='loop'?'#ffffff':C[j].l.c,[d,g]=DASH[L.kind]||[.5,.35];
+ const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(new THREE.QuadraticBezierCurve3(p1,m,p2).getPoints(60)),new THREE.LineDashedMaterial({color:col,dashSize:d,gapSize:g,transparent:true,opacity:.75}));
+ line.computeLineDistances();scene.add(line);lines.push({line,a:i,b:j})}));
+{const t=document.createElement('div');t.className='ttl';t.textContent='связи';LG.appendChild(t);
+ [['checks','dashed'],['born','dotted'],['holds','dashed'],['loop','dashed']].forEach(([k,s])=>{const li=document.createElement('div');li.className='li';li.innerHTML=`<i class="ln" style="--ls:${s};${k==='holds'?'border-top-width:3px':''}"></i>${LK[k]}`;LG.appendChild(li)})}
+{const t=document.createElement('div');t.className='ttl';t.textContent='статус механизма';LG.appendChild(t);
+ Object.entries(ST).forEach(([k,v])=>{const li=document.createElement('div');li.className='li';li.style.setProperty('--c',STC[k]);li.innerHTML=`<i style="width:10px;height:10px;border-radius:50%"></i>${v.n}`;LG.appendChild(li)})}
+
+// ───────── card ─────────
+let card=null,cur=-1;const drag={x:0,y:0};const READ=document.getElementById('read'),LEAD=document.getElementById('lead');
+const stepName=n=>STEPS.find(s=>s.n===n)?.name||'';
+// tool names -> links from talk-rules/tool-links.yaml; longest key first so "codex (Terra)" beats a shorter fragment
+const TL=T.tool_links||{},TLK=Object.keys(TL).sort((a,b)=>b.length-a.length);
+const TLRX=TLK.length?new RegExp('(?<![\\w-])('+TLK.map(k=>k.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')).join('|')+')(?![\\w-])','g'):null;
+const linkify=s=>TLRX?s.replace(TLRX,m=>`<a href="${TL[m]}" target="_blank" rel="noopener">${m}</a>`):s;
+function openCard(i){closeCard(false);cur=i;const n=nodes[i],c=n.c,k=tour.indexOf(i);
+ READ.style.setProperty('--c',c.l.c);
+ READ.innerHTML=`<b>${c.l.n}</b> · ${c.id} · ${c.term}<span class="pg">${String(k+1).padStart(2,'0')} / ${tour.length}</span>`;
+ const el=document.createElement('div');el.className='card';el.style.setProperty('--c',c.l.c);
+ const tools=(c.tools||[]).map(t=>`<span class="tool"><i>${ST[t.status]?.mark||''}</i>${linkify(t.name)}<small>${t.step} · ${ST[t.status]?.n||''}</small></span>`).join('');
+ const links=(c.links||[]).map(L=>{const j=C.findIndex(z=>z.key===L.to);return j<0?'':`${LK[L.kind]}: <span data-j="${j}">${C[j].l.n} ${C[j].id} · ${C[j].term}</span>`}).filter(Boolean);
+ const back=C.flatMap((z,j)=>(z.links||[]).filter(L=>L.to===c.key).map(L=>`${LK[L.kind]} ← <span data-j="${j}">${z.l.n} ${z.id} · ${z.term}</span>`));
+ el.innerHTML=`<i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i><div class="x">×</div>
+ <div class="hd"><span><b>${c.l.n}</b> · ${c.id}</span><span>ступень ${c.step} · ${stepName(c.step)}</span></div>
+ <h2>${c.term}</h2>${c.term_en?`<div class="en">${c.term_en}</div>`:''}<div class="desc">${c.desc}</div>
+ <h3>Проблема</h3><ul>${(c.problem||[]).map(p=>`<li>${p}</li>`).join('')}</ul>
+ <h3>Решение</h3><div class="sol">${c.solution}</div><div class="tools">${tools}</div>
+ ${c.todo?`<div class="todo">${c.todo}</div>`:''}
+ ${links.length||back.length?`<div class="ft">${[...links,...back].join('<br>')}</div>`:''}`;
+ el.querySelector('.x').onclick=closeCard;
+ // drag by the top bar; the offset is kept for the next cards
+ el.style.left=(210+drag.x)+'px';el.style.top=drag.y+'px';
+ const hd=el.querySelector('.hd');hd.style.cursor='grab';
+ hd.onpointerdown=e=>{e.stopPropagation();hd.setPointerCapture(e.pointerId);const s={x:e.clientX-drag.x,y:e.clientY-drag.y};hd.style.cursor='grabbing';
+  hd.onpointermove=m=>{drag.x=m.clientX-s.x;drag.y=m.clientY-s.y;el.style.left=(210+drag.x)+'px';el.style.top=drag.y+'px'};
+  hd.onpointerup=()=>{hd.onpointermove=null;hd.style.cursor='grab'}};el.querySelectorAll('[data-j]').forEach(s=>s.onclick=()=>openCard(+s.dataset.j));
+ const wrap=document.createElement('div');wrap.className='cardwrap';wrap.appendChild(el);
+ card=new CSS2DObject(wrap);card.center.set(.5,.5);card.position.copy(n.p);scene.add(card);card.element=wrap;
+ requestAnimationFrame(()=>el.classList.add('in'));fly(n.p);ctl.autoRotate=false;
+ if(laneOpen&&laneOpen!==c.lane)openLane(c.lane);   // lane card follows the open card
+ LC.querySelectorAll('[data-i]').forEach(e=>e.classList.toggle('on',+e.dataset.i===i))}
+// closing a card pulls the camera back out (same viewing angle, overview distance)
+function closeCard(back=true){const was=!!card;if(card){scene.remove(card);card=null}cur=-1;READ.textContent='обзор';
+ if(back&&was){const T0=new THREE.Vector3(lf?ctl.target.x:0,3,lf?ctl.target.z:0),dir=cam.position.clone().sub(ctl.target).normalize();
+  flyT={t:0,fromC:cam.position.clone(),fromT:ctl.target.clone(),toT:T0,toC:T0.clone().addScaledVector(dir,lf?60:150)}}}
+
+// lane card: what the lane means + its cards by step (click a chip to open that card)
+const LC=document.getElementById('lanecard');let laneOpen=null;
+function openLane(id){const l=LANES.find(z=>z.id===id);laneOpen=id;LC.style.setProperty('--c',l.c);
+ const rows=[...STEPS].reverse().map(s=>{const cs=nodes.map((n,i)=>({n,i})).filter(o=>o.n.c.lane===id&&o.n.c.step===s.n);
+  return `<div class="row${cs.length?' has':''}"><div>${s.n} · ${s.name}</div><span>${cs.map(o=>`<i style="--sc:${STC[o.n.c.st]}" data-i="${o.i}" title="${o.n.c.term}">${o.n.c.id}</i>`).join('')||'—'}</span></div>`}).join('');
+ LC.innerHTML=`<i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i><div class="x">×</div>
+ <div class="k">ветка · ${C.filter(c=>c.lane===id).length} карточек</div><h2>${l.n}</h2><div class="en">${l.en||''}</div>
+ <div class="q">${l.q||''}</div><div class="ab">${l.about||''}</div><div class="lad">${rows}</div>
+ ${T.checklists?.[id]?'<button class="dl">↓ чек-лист ветки .md</button>':''}`;
+ // checklist text is built by build_cards.py (same text as talk-rules/checklists/<lane>.md)
+ LC.querySelector('.dl')?.addEventListener('click',()=>{const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([T.checklists[id]],{type:'text/markdown;charset=utf-8'}));a.download=`checklist-${id}.md`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+ LC.querySelector('.x').onclick=closeLane;LC.querySelectorAll('[data-i]').forEach(e=>{e.onclick=()=>openCard(+e.dataset.i);e.classList.toggle('on',+e.dataset.i===cur)});
+ LC.classList.add('in');document.body.classList.add('lane-on')}
+function closeLane(){LC.classList.remove('in');document.body.classList.remove('lane-on');laneOpen=null}
+
+let flyT=null;
+function fly(p,d=38,shift=4){const dir=cam.position.clone().sub(ctl.target).normalize();
+ flyT={t:0,fromC:cam.position.clone(),fromT:ctl.target.clone(),toT:p.clone().add(new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,0).multiplyScalar(shift)),toC:p.clone().addScaledVector(dir,d)}}
+// lane tab: fly to the middle of that lane's cards, far enough to see all of them
+function flyLane(id){const ps=nodes.filter(n=>n.c.lane===id).map(n=>n.p);if(!ps.length)return;
+ const c=ps.reduce((a,p)=>a.add(p),new THREE.Vector3()).multiplyScalar(1/ps.length);
+ const out=new THREE.Vector3(c.x,0,c.z).normalize();
+ flyT={t:0,fromC:cam.position.clone(),fromT:ctl.target.clone(),toT:c.clone(),toC:c.clone().addScaledVector(out,48).add(new THREE.Vector3(0,6,0))};ctl.autoRotate=false}
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=null,hover=null;
+gl.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+gl.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const h=pick(e);if(h)openCard(h.object.userData.i);else closeCard()});
+gl.domElement.addEventListener('pointermove',e=>{const h=pick(e);hover=h?h.object.userData.i:null;gl.domElement.style.cursor=h?'pointer':''});
+function pick(e){mouse.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(mouse,cam);return ray.intersectObjects(nodes.map(n=>n.m),false)[0]}
+
+// tour: lane by lane, by id
+const tour=nodes.map((n,i)=>i).sort((a,b)=>LANES.indexOf(C[a].l)-LANES.indexOf(C[b].l)||C[a].id.localeCompare(C[b].id,undefined,{numeric:true}));
+addEventListener('keydown',e=>{
+ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const scope=lf||laneOpen||(cur>=0?nodes[cur].c.lane:null);/* arrows loop inside one lane */const vis=tour.filter(i=>!scope||nodes[i].c.lane===scope);const k=vis.indexOf(cur),N=vis.length;if(!N)return;
+  // wrap around: after the last card comes the first, before the first comes the last
+  const j=k<0?(e.key==='ArrowRight'?0:N-1):(k+(e.key==='ArrowRight'?1:-1)+N)%N;openCard(vis[j])}
+ if(e.key==='Escape'){if(card)closeCard();else closeLane()}
+ if(e.key==='c'||e.key==='C'||e.key==='с'||e.key==='С')setMode(!bySt);
+ if(e.key===' '){ctl.autoRotate=!ctl.autoRotate;e.preventDefault()}});
+
+// colour mode: lane / status
+let bySt=false;const mb=document.createElement('button');mb.onclick=()=>setMode(!bySt);
+function setMode(v){bySt=v;nodes.forEach(n=>{n.m.material.color.set(v?STC[n.c.st]:n.c.l.c);n.el.style.setProperty('--c',v?'var(--sc)':'var(--lc)')});mb.textContent='цвет: '+(v?'статус':'ветка')}
+// lane filter tabs
+let lf=null;const ui=document.getElementById('tabs');
+[['all','все'],...LANES.map(l=>[l.id,l.n])].forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.dataset.k=k;if(k==='all')b.className='on';
+ b.onclick=()=>{lf=k==='all'?null:k;closeCard(false);[...ui.querySelectorAll('button')].forEach(z=>{if(z!==mb)z.className=''});b.className='on';
+  if(lf)flyLane(lf);else{flyT={t:0,fromC:cam.position.clone(),fromT:ctl.target.clone(),toT:new THREE.Vector3(0,3,0),toC:new THREE.Vector3(108,12,108)};ctl.autoRotate=true}};ui.appendChild(b)});
+ui.appendChild(mb);const qs=new URLSearchParams(location.search);setMode(qs.has('status'));
+const match=n=>!lf||n.c.lane===lf;
+
+const cx=new THREE.Vector3(),ax=new THREE.Vector3();
+function loop(){requestAnimationFrame(loop);
+ if(flyT){flyT.t=Math.min(1,flyT.t+0.018);const k=ease(flyT.t);cam.position.lerpVectors(flyT.fromC,flyT.toC,k);ctl.target.lerpVectors(flyT.fromT,flyT.toT,k);if(flyT.t>=1)flyT=null}
+ ctl.update();
+ bgMat.uniforms.uT.value=performance.now()/1000;
+ bgMat.uniforms.uO.value.set(ctl.getAzimuthalAngle()*.9,ctl.getPolarAngle()*.9);
+ bgMat.uniforms.uZ.value=.8+cam.position.distanceTo(ctl.target)/400;
+ const W2=innerWidth/2,H2=innerHeight/2,placed=[];
+ // a card opened this frame is not laid out yet (zero rect): keep the previous callout one frame instead of flying to 0,0
+ if(card&&card.element.firstChild.getBoundingClientRect().width){const r=card.element.firstChild.getBoundingClientRect();placed.push([r.left,r.top,r.right,r.bottom]);
+  // callout: one straight diagonal from the marker ring to an elbow, then a short tick into the card edge
+  // the tick enters the card side that faces the marker
+  cx.copy(nodes[cur].p).project(cam);const sx=(cx.x+1)*W2,sy=(1-cx.y)*H2,rt=sx>r.left+r.width/2,edge=rt?r.right:r.left,ex=rt?edge+34:edge-34,ey=r.top+46;
+  const dx=ex-sx,dy=ey-sy,dl=Math.hypot(dx,dy)||1,ox=sx+dx/dl*14,oy=sy+dy/dl*14;
+  LEAD.style.setProperty('--c',nodes[cur].c.l.c);LEAD.classList.add('on');
+  LEAD.querySelector('path').setAttribute('d',`M${ox} ${oy}L${ex} ${ey}L${edge} ${ey}`);
+  LEAD.querySelector('text').setAttribute('text-anchor',rt?'start':'end');
+  LEAD.querySelectorAll('circle').forEach(c=>{c.setAttribute('cx',sx);c.setAttribute('cy',sy)});
+  const tg=LEAD.querySelector('text');tg.setAttribute('x',rt?ex+4:ex-4);tg.setAttribute('y',ey-8);tg.textContent=nodes[cur].c.id}
+ else if(!card)LEAD.classList.remove('on');
+ if(laneOpen){const r=LC.getBoundingClientRect();placed.push([r.left,r.top,r.right,r.bottom])}
+ placed.push([0,0,innerWidth,150]);{const r=document.getElementById('contact').getBoundingClientRect();placed.push([r.left,r.top,r.right,r.bottom])}placed.push([0,innerHeight-560,280,innerHeight]);
+ stepTags.forEach(t=>{cx.copy(t.at).project(cam);if(cx.z<1){const sx=(cx.x+1)*W2,sy=(1-cx.y)*H2;placed.push([sx-4,sy-20,sx+230,sy+20])}});
+ laneTags.forEach(t=>{cx.copy(t.at).project(cam);const sx=(cx.x+1)*W2,sy=(1-cx.y)*H2,w=t.el.textContent.length*11+24,r=[sx-w/2,sy-32,sx+w/2,sy];
+  const ok=cx.z<1&&!placed.some(p=>r[0]<p[2]&&r[2]>p[0]&&r[1]<p[3]&&r[3]>p[1]);if(ok)placed.push(r);t.el.style.opacity=cx.z>=1?0:ok?1:.28});   // overlapped lane names fade, never vanish
+ lines.forEach(L=>L.line.material.opacity=!lf||C[L.a].lane===lf||C[L.b].lane===lf?.75:.06);
+ const cand=nodes.map((n,i)=>{const on=match(n),dist=cam.position.distanceTo(n.p);
+  cx.copy(n.p).project(cam);ax.set(0,n.p.y,0).project(cam);
+  const dx=cx.x-ax.x;if(n.left===undefined)n.left=dx<0;else if(n.left&&dx>0.03)n.left=false;else if(!n.left&&dx<-0.03)n.left=true;
+  return {n,i,on,dist,sx:(cx.x+1)*W2,sy:(1-cx.y)*H2,vis:cx.z<1,pr:(i===hover?0:dist<30?1:2)-(n.shown?0.5:0)}}).sort((a,b)=>a.pr-b.pr||a.dist-b.dist);
+ cand.forEach(c=>{const {n,i,on,sx,sy}=c,left=n.left;n.m.material.opacity=on?1:.12;
+  let full=false;
+  if(on&&c.vis&&i!==cur){const w=Math.min(330,Math.max(n.c.term.length,16)*9.2)+34,h=52;
+   const r=left?[sx-w-18,sy-h/2,sx+8,sy+h/2]:[sx-8,sy-h/2,sx+w+18,sy+h/2];
+   if(!placed.some(p=>r[0]<p[2]&&r[2]>p[0]&&r[1]<p[3]&&r[3]>p[1])){placed.push(r);full=true}}
+  // debounce by time: a label must be free 0.25 s to appear and blocked 0.6 s to disappear
+  const now=performance.now();if(full){n.blkT=0;n.freeT=n.freeT||now}else{n.freeT=0;n.blkT=n.blkT||now}
+  if(!n.shown&&full&&now-n.freeT>=250)n.shown=true;else if(n.shown&&!full&&now-n.blkT>=600)n.shown=false;
+  if(n.shown&&!full)placed.push(n.lastR||[0,0,0,0]);
+  if(full)n.lastR=placed[placed.length-1];
+  n.el.classList.toggle('dot',!n.shown);n.el.classList.toggle('left',left);
+  n.el.style.opacity=on?(i===cur?.9:1):.1;n.el.querySelector('.mk').style.pointerEvents=on?'auto':'none'});
+ comp.render();r2.render(scene,cam)}
+loop();
+addEventListener('resize',()=>{bgMat.uniforms.uA.value=innerWidth/innerHeight;cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();[gl,r2,comp].forEach(r=>r.setSize(innerWidth,innerHeight))});
+if(qs.has('open'))setTimeout(()=>{openCard(+qs.get('open'));flyT.t=0.999},300);
+if(qs.has('lane'))setTimeout(()=>{ui.querySelector(`[data-k="${qs.get('lane')}"]`)?.click();flyT.t=0.999},300);
+if(qs.has('lanecard'))openLane(qs.get('lanecard'));
+// test hook: ?navtest sweeps ←/→ over every scope (all, each tab, each lane card, tab + foreign lane card)
+// and writes PASS/FAIL lines into <pre id="navtest">; read with chrome --headless --dump-dom
+if(qs.has('navtest'))setTimeout(()=>{const out=[],key=k=>dispatchEvent(new KeyboardEvent('keydown',{key:k}));
+ const tab=k=>ui.querySelector(`button[data-k="${k}"]`).click();
+ const sweep=(name,setup,lane)=>{for(const dir of ['ArrowRight','ArrowLeft']){closeCard(false);closeLane();tab('all');setup();
+  const vis=tour.filter(i=>!lane||nodes[i].c.lane===lane),N=vis.length,want=dir==='ArrowRight'?[...vis,vis[0]]:[...vis].reverse().concat(vis[N-1]),got=[];
+  for(let s=0;s<=N;s++){key(dir);got.push(cur)}
+  const ok=N>0&&got.join()===want.join()&&(!lane||got.every(i=>nodes[i].c.lane===lane));
+  out.push(`${ok?'PASS':'FAIL'} ${name} ${dir==='ArrowRight'?'→':'←'} ${N} карточек`+(ok?'':` ждали ${want.map(i=>C[i].id)} получили ${got.map(i=>C[i].id)}`))}};
+ // no tab, no lane card: a card opened from the overview loops inside its own lane
+ LANES.forEach(l=>{const vis=tour.filter(i=>nodes[i].c.lane===l.id),N=vis.length;
+  for(const dir of ['ArrowRight','ArrowLeft']){closeCard(false);closeLane();tab('all');openCard(vis[0]);const got=[];
+   for(let s=0;s<N;s++){key(dir);got.push(cur)}
+   const want=dir==='ArrowRight'?[...vis.slice(1),vis[0]]:[...vis].reverse();
+   const ok=got.join()===want.join();
+   out.push(`${ok?'PASS':'FAIL'} обзор, карточка ${l.id} ${dir==='ArrowRight'?'→':'←'} ${N} карточек`+(ok?'':` ждали ${want.map(i=>C[i].id)} получили ${got.map(i=>C[i].id)}`))}});
+ LANES.forEach(l=>{sweep('вкладка '+l.id,()=>tab(l.id),l.id);sweep('карточка ветки '+l.id,()=>openLane(l.id),l.id)});
+ // tab wins over a lane card of another lane
+ sweep('вкладка plan + карточка ветки pr',()=>{tab('plan');openLane('pr')},'plan');
+ const pre=document.createElement('pre');pre.id='navtest';pre.textContent=out.join('\n')+`\n${out.every(s=>s.startsWith('PASS'))?'PASS':'FAIL'}: ${out.length} проходов`;document.body.appendChild(pre)},800);
+// test hook: ?press=ArrowRight,ArrowLeft replays keys after load
+if(qs.has('press'))setTimeout(()=>qs.get('press').split(',').forEach(k=>dispatchEvent(new KeyboardEvent('keydown',{key:k}))),600);
+</script></body></html>
